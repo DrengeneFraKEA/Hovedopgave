@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hovedopgave.Server", "Hoved
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "hovedopgave.client", "hovedopgave.client\hovedopgave.client.esproj", "{D9D905CE-406F-4FD2-90F6-8932E2260E08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
