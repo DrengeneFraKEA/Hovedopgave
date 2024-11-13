@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hovedopgave.Server", "Hovedopgave.Server\Hovedopgave.Server.csproj", "{360BB7E6-D4AC-486B-89B9-BED2882D806D}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "hovedopgave.client", "hovedopgave.client\hovedopgave.client.esproj", "{D9D905CE-406F-4FD2-90F6-8932E2260E08}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{360BB7E6-D4AC-486B-89B9-BED2882D806D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{360BB7E6-D4AC-486B-89B9-BED2882D806D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{360BB7E6-D4AC-486B-89B9-BED2882D806D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{360BB7E6-D4AC-486B-89B9-BED2882D806D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9D905CE-406F-4FD2-90F6-8932E2260E08}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {458F86A8-646F-4EF6-86BF-D6D03C5F9591}
+	EndGlobalSection
+EndGlobal
