@@ -35,7 +35,7 @@ jobs:
 
       - name: Generate coverage report in JaCoCo format
         run: |
-          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report"
+          reportgenerator -reports:"home/runner/work/Hovedopgave/Hovedopgave/Tests/TestResults/**/coverage.xml" -targetdir:"coverage-report"
           mv coverage-report/coverage.xml coverage.xml 
 
       - name: Log coverage report content
