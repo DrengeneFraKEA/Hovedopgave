@@ -50,5 +50,5 @@ jobs:
           args:
             -Dsonar.projectKey=DrengeneFraKEA_Hovedopgave
             -Dsonar.organization=drengenefrakea
-            -Dsonar.coverageReportPaths=coverage.cobertura.xml
+            -Dsonar.coverageReportPaths=home/runner/work/Hovedopgave/Hovedopgave/Tests/TestResults/**/coverage.cobertura.xml
           projectBaseDir: .
