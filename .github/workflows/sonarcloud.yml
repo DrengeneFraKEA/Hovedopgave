@@ -24,24 +24,31 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Install dotnet-sonarscanner
-        run: |
-          dotnet tool install --global dotnet-sonarscanner
-          dotnet-sonarscanner --version
-          
-      - name: Install dotnet-coverage
-        run: |
-          dotnet tool install --global dotnet-coverage
-          dotnet tool list --global
-          dotnet-coverage --version
+      - name: Install ReportGenerator tool
+        run: dotnet tool install -g dotnet-reportgenerator-globaltool
 
-      - name: Begin SonarCloud analysis
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"DrengeneFraKEA_Hovedopgave" /o:"drengenefrakea" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-  
       - name: Build project
         run: dotnet build
 
-      - name: End SonarCloud analysis
+      - name: Run tests with coverage
+        run: dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Generate coverage report in JaCoCo format
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report"
+          mv coverage-report/coverage.xml coverage.xml 
+
+      - name: Log coverage report content
+        run: |
+          cat coverage.xml
+
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
+        with:
+          args:
+            -Dsonar.projectKey=DrengeneFraKEA_Hovedopgave
+            -Dsonar.organization=drengenefrakea
+            -Dsonar.coverage.jacoco.xmlReportPaths=coverage.xml 
+          projectBaseDir: .
