@@ -39,7 +39,7 @@ jobs:
 
       - name: Log coverage report content
         run: |
-          cat coverage-report/coverage.cobertura.xml
+          cat /home/runner/work/Hovedopgave/Hovedopgave/Tests/TestResults/**/coverage.cobertura.xml
 
           
       - name: Analyze with SonarCloud
