@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - sonarcloud
 
 jobs:
   build:
@@ -13,4 +13,8 @@ jobs:
       - uses: actions/checkout@v2
           
       - name: Test
-        run: dotnet test
+        run: dotnet test --collect:"XPlat Code Coverage"
+
+      - name: Generate coverage report
+        run: |
+          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report"
