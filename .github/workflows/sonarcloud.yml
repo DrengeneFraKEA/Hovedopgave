@@ -36,6 +36,11 @@ jobs:
       - name: Generate coverage report
         run: |
           reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report"
+
+      - name: Log coverage report content
+        run: |
+          cat coverage-report/coverage.cobertura.xml
+
           
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
