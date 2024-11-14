@@ -31,11 +31,11 @@ jobs:
         run: dotnet build
 
       - name: Run tests with coverage
-        run: dotnet test --collect:"XPlat Code Coverage" --logger:"trx;LogFileName=coverage.trx"
+        run: dotnet test --collect:"XPlat Code Coverage"
 
       - name: Generate coverage report
         run: |
-          reportgenerator -reports:"**/*.trx" -targetdir:"coverage-report" -reporttypes:Cobertura
+          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report"
           
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
@@ -45,5 +45,5 @@ jobs:
           args:
             -Dsonar.projectKey=DrengeneFraKEA_Hovedopgave
             -Dsonar.organization=drengenefrakea
-            -Dsonar.coverageReportPaths=coverage-report/coverage.cobertura.xml
+            -Dsonar.coverageReportPaths=coverage.cobertura.xml
           projectBaseDir: .
