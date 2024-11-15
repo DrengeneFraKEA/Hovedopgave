@@ -1,0 +1,34 @@
+<h1>Leagues Admin Login</h1>
+
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <div>
+      <label for="username">Username:</label>
+      <input type="text"
+             id="username"
+             name="username"
+             [(ngModel)]="loginData.username"
+             required
+             #username="ngModel" />
+      <div *ngIf="username.invalid && username.touched" class="error">
+        Username is required.
+      </div>
+    </div>
+
+    <div>
+      <label for="password">Password:</label>
+      <input type="password"
+             id="password"
+             name="password"
+             [(ngModel)]="loginData.password"
+             required
+             #password="ngModel" />
+      <div *ngIf="password.invalid && password.touched" class="error">
+        Password is required.
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+  </form>
+</div>
