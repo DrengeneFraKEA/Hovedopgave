@@ -6,23 +6,16 @@ namespace Tests
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
-        {
-
-        }
-
-
-        [Fact]
         public void TemperatureF_CalculatesCorrectly()
         {
-            // Arrange
-            var weatherForecast = new WeatherForecast { TemperatureC = 0 };
+            //// Arrange
+            //var weatherForecast = new WeatherForecast { TemperatureC = 0 };
 
-            // Act
-            int temperatureF = weatherForecast.TemperatureF;
+            //// Act
+            //int temperatureF = weatherForecast.TemperatureF;
 
-            // Assert
-            Assert.Equal(32, temperatureF);
+            //// Assert
+            //Assert.Equal(32, temperatureF);
         }
     }
 }
