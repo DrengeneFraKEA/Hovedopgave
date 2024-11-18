@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Hovedopgave.Server.DTO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,17 +10,18 @@ namespace Hovedopgave.Server.Controllers
     [Route("[controller]")]
     public class LoginController : ControllerBase
     {
-        [HttpGet]
-        public void Get() 
+        // DELETE THIS
+        public Dictionary<string, string> tempAccounts = new Dictionary<string, string>() 
         {
-        
-        }
-
+            {"john", "1234" },
+        };
 
         [HttpPost]
-        public bool Login()
+        public bool Login(LoginDTO credentials)
         {
-            return true;
+            foreach (var element in tempAccounts) if (element.Key == credentials.username && element.Value == credentials.password) return true;
+            
+            return false;
         }
     }
 }

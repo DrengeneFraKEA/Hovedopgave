@@ -86,10 +86,10 @@ input::placeholder {
   color: #aaa;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 500px) {
-  .login-container {
-    padding: 20px;
-    margin: 50px auto;
-  }
+.error-message {
+  color: #ff4d4d;
+  font-size: 14px;
+  margin-top: 10px;
+  font-weight: 600;
+  text-align: center;
 }

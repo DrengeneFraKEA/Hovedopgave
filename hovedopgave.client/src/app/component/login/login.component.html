@@ -2,6 +2,12 @@
 
 <div class="login-container">
   <h2>Login</h2>
+
+  <!-- Display error message if errorMessage is not null -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
   <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
     <div>
       <label for="username">Username:</label>
