@@ -310,3 +310,8 @@ button {
   .submit:hover {
     background-color: #0056b3;
   }
+
+.password-reset-message {
+  color: green;
+  margin-top: 10px;
+}

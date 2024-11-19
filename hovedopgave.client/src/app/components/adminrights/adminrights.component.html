@@ -66,8 +66,9 @@
         </div>
         <div class="modal-footer">
           <p>Edit Credentials</p>
-          <input type="text" placeholder="New username" />
-          <button class="send-password" (click)="sendNewPassword()">Send New Password</button>
+          <input type="text" placeholder="New display name" />
+          <button class="send-password" (click)="sendNewPassword()">Reset password</button>
+          <p *ngIf="passwordResetMessage" class="password-reset-message">{{ passwordResetMessage }}</p>
         </div>
       </div>
       <div class="modal-actions">
