@@ -5,12 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { LoginComponent } from './component/login/login.component';
 import { AppComponent } from './app.component';
-;
+import { AdminrightsComponent } from './components/adminrights/adminrights.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    AdminrightsComponent
   ],
   imports: [
     BrowserModule,
