@@ -20,7 +20,7 @@ export class LoginComponent {
   onSubmit() {
     this.http.post('https://localhost:7213/login', this.loginData).subscribe(
       (response) => {
-        if (response === true) {
+        if (response != null) {
           alert("Korrekt!");
           this.errorMessage = null;
         } else {

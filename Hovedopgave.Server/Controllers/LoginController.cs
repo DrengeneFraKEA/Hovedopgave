@@ -1,7 +1,12 @@
-﻿using Hovedopgave.Server.DTO;
+﻿using Hovedopgave.Server.Database;
+using Hovedopgave.Server.DTO;
+using Hovedopgave.Server.Services;
+using Hovedopgave.Server.Utils;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using System.Text.Json;
 
 namespace Hovedopgave.Server.Controllers
 {
@@ -17,11 +22,25 @@ namespace Hovedopgave.Server.Controllers
         };
 
         [HttpPost]
-        public bool Login(LoginDTO credentials)
+        public async Task<string> Login(LoginAttemptDTO credentials)
         {
-            foreach (var element in tempAccounts) if (element.Key == credentials.username && element.Value == credentials.password) return true;
+            // This is for temp password generation - ignore
+            // string salt = string.Empty;
+            // string test = PasswordHandler.GenerateSaltAndHashedPassword(credentials.password, out salt);
+
+            LoginServices LS = new LoginServices();
+            try 
+            {
+                LoginDTO loginDto = await LS.Login(credentials);
+
+                if (loginDto != null) return JsonSerializer.Serialize(loginDto);
+            }
+            catch (Exception e) 
+            {
             
-            return false;
+            }
+
+            return string.Empty;
         }
     }
 }
