@@ -1,0 +1,32 @@
+<div class="dashboard-container">
+  <app-sidebar (navigate)="navigateTo($event)"></app-sidebar>
+
+  <div class="main-content">
+    <div class="top-bar">
+      <button (click)="setFilter('daily')">Daily</button>
+      <button (click)="setFilter('weekly')">Weekly</button>
+      <button (click)="setFilter('monthly')">Monthly</button>
+      <button>Export CSV</button>
+    </div>
+
+    <div class="dashboard-stats">
+      <div class="stat-box">
+        <h3>Total Users</h3>
+        <p>{{ stats.totalUsers }}</p>
+      </div>
+      <div class="stat-box">
+        <h3>Matches Played</h3>
+        <p>{{ stats.totalMatches }}</p>
+      </div>
+      <div class="stat-box">
+        <h3>Total Teams</h3>
+        <p>{{ stats.totalTeams }}</p>
+      </div>
+    </div>
+
+    <div class="graphs">
+      <p>Sorted by {{ selectedFilter }} </p>
+      <p>Graph for {{ selectedView }}</p>
+    </div>
+  </div>
+</div>

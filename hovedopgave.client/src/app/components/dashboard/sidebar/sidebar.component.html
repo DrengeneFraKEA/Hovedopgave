@@ -1,0 +1,10 @@
+<div class="sidebar" [class.collapsed]="collapsed">
+  <div class="burger-menu" (click)="toggleSidebar()">
+    &#9776; <!-- Burger menu icon -->
+  </div>
+  <ul *ngIf="!collapsed">
+    <li><a (click)="navigateTo('users')">Users</a></li>
+    <li><a (click)="navigateTo('matches')">Matches</a></li>
+    <li><a (click)="navigateTo('teams')">Teams</a></li>
+  </ul>
+</div>
