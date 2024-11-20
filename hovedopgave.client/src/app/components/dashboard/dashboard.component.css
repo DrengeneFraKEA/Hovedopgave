@@ -1,0 +1,43 @@
+.dashboard-container {
+  display: flex;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-collapsed + .main-content {
+  margin-left: 60px; 
+}
+
+.sidebar-expanded + .main-content {
+  margin-left: 200px; 
+}
+
+.top-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+  .top-bar button {
+    padding: 10px;
+    cursor: pointer;
+  }
+
+.dashboard-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-box {
+  border: 1px solid #ddd;
+  padding: 20px;
+  text-align: center;
+}
+
+.graphs {
+  margin-top: 20px;
+}
