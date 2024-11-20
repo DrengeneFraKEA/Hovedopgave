@@ -7,7 +7,7 @@ namespace Hovedopgave.Server.Database
         private bool uselocaldb { get; set; }
         private string username { get; set; }
         private string password { get; set; }
-        private string port { get; set; } = "5242";
+        private string port { get; set; } = "5432";
         public string connectionstring {get; set; }
 
         public PostgreSQL(bool uselocaldb) 

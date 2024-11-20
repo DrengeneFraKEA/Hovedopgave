@@ -21,6 +21,7 @@
       <Version>8.*-*</Version>
     </PackageReference>
     <PackageReference Include="Npgsql" Version="9.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
   </ItemGroup>
 
 </Project>
