@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,9 +16,11 @@ export class DashboardComponent implements OnInit {
   selectedFilter: string = 'daily';
   selectedView: string = 'users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private route: Router) { }
 
   ngOnInit() {
+    var token = localStorage.getItem("token");
+    if (token === null || token === "") this.route.navigate(['login']);
     this.fetchStats();
   }
 

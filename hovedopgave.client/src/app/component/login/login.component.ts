@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 interface Login {
   username: string;
@@ -15,15 +16,29 @@ export class LoginComponent {
   loginData: Login = { username: '', password: '' };
   errorMessage: string | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor
+    (
+    private http: HttpClient,
+    private route: Router
+  ) { }
 
   onSubmit() {
     this.http.post('https://localhost:7213/login', this.loginData).subscribe(
       (response) => {
         if (response != null) {
-          alert("Korrekt!");
+          var loginDto = JSON.parse(JSON.stringify(response));
+
+          // Check if anything is missing.
+          if (loginDto.user_id === null || loginDto.user_id === "" || loginDto.username === null || loginDto.username === "" || loginDto.token === null || loginDto.token === "") return;
+
+          localStorage.setItem("user_id", loginDto.user_id);
+          localStorage.setItem("username", loginDto.username);
+          localStorage.setItem("token", loginDto.token);
+
+          this.route.navigate(['dashboard']);
           this.errorMessage = null;
-        } else {
+        } else
+        {
           this.errorMessage = "User not found!"; 
         }
       },

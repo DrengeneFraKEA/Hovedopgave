@@ -34,21 +34,23 @@ namespace Hovedopgave.Server.Services
             }
 
             // Take the saved salted password and salt the provided password in the login attempt, then hash it and compare if it is the same.
-            string hashedPasswordAttempt = PasswordHandler.GetHashedPassword(credentials.password, tempUser.password_salt);
-
-            if (tempUser != null && hashedPasswordAttempt == tempUser.password) 
+            if (tempUser != null) 
             {
-                JwtTokenGenerator jwt = new JwtTokenGenerator();
+                string hashedPasswordAttempt = PasswordHandler.GetHashedPassword(credentials.password, tempUser.password_salt);
 
-                LoginDTO loginDto = new LoginDTO()
+                if (hashedPasswordAttempt == tempUser.password && tempUser.role == Roles.Role.SYSTEMADMIN || tempUser.role == Roles.Role.SUPERUSER || tempUser.role == Roles.Role.MODERATOR)
                 {
-                    username = tempUser.display_name,
-                    user_id = tempUser.id,
-                    role = tempUser.role,
-                    token = jwt.GenerateToken(tempUser.id, tempUser.role.ToString())
-                };
+                    JwtTokenGenerator jwt = new JwtTokenGenerator();
 
-                return loginDto;
+                    LoginDTO loginDto = new LoginDTO()
+                    {
+                        username = tempUser.display_name,
+                        user_id = tempUser.id,
+                        token = jwt.GenerateToken(tempUser.id, tempUser.role.ToString())
+                    };
+
+                    return loginDto;
+                }
             }
 
             return null;
