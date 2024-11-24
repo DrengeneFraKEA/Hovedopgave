@@ -13,6 +13,12 @@
             SYSTEMADMIN = 6
         }
 
+        public enum RoleDB
+        {
+            user,
+            admin
+        }
+
         public static Role GetRoleByName(string role) 
         {
             // Should be changed ofcourse.
