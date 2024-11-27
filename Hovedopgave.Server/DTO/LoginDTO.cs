@@ -6,7 +6,6 @@ namespace Hovedopgave.Server.DTO
     {
         public string user_id { get; set; }
         public string username { get; set; }
-        public Role role { get; set; }
         public string token { get; set; }
     }
 }
