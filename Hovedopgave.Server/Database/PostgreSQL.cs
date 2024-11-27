@@ -19,7 +19,7 @@ namespace Hovedopgave.Server.Database
             {
                 // Connect to local DB
                 this.username = "postgres"; // ignore for now
-                this.password = "1234"; // ignore for now
+                this.password = "postgres"; // ignore for now
 
                 this.connectionstring = $"Host=localhost;Username={this.username};Password={this.password};Database=postgres";
             }

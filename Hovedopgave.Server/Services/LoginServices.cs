@@ -15,7 +15,7 @@ namespace Hovedopgave.Server.Services
             PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-            await using var command = conn.CreateCommand($"SELECT * FROM users WHERE display_name='{credentials.username}'");
+            await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE display_name='{credentials.username}'");
             await using var reader = await command.ExecuteReaderAsync();
 
             Users tempUser = null;

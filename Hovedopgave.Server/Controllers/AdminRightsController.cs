@@ -24,15 +24,15 @@ namespace Hovedopgave.Server.Controllers
             return Ok("Hello, World!");
         }
 
-        [HttpGet("users")]
-        public async Task<IActionResult> GetUsers()
+        [HttpGet("admins")]
+        public async Task<IActionResult> GetAdmins()
         {
 
             try
             {
-                List<GetAllUsersDTO> users = await adminRightsServices.GetAllUsers();
+                List<UserDTO> admins = await adminRightsServices.GetAllAdmins();
 
-                return Ok(users);
+                return Ok(admins);
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace Hovedopgave.Server.Controllers
                 }
                 else
                 {
-                    return NotFound(new { message = $"User with display name '{displayName}' not found or already deleted." });
+                    return NotFound(new { message = $"Display name '{newDisplayName}' already exists" });
                 }
             }
             catch (Exception ex)

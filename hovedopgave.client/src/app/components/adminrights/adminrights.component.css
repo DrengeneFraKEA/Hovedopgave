@@ -50,6 +50,7 @@ input {
   width: 100%;
   box-sizing: border-box;
   transition: border 0.3s ease;
+  height: 40px;
 }
 
   input:focus {
@@ -61,6 +62,11 @@ input {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #fff;
 }
 
 .user {
@@ -87,6 +93,7 @@ button {
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  height: 40px;
 }
 
   button:hover {
@@ -167,6 +174,7 @@ button {
     width: 100%;
     box-sizing: border-box;
     transition: border 0.3s ease;
+    height: 40px;
   }
 
     .modal-body input:focus {
@@ -181,35 +189,6 @@ button {
   align-items: stretch;
   flex: 1;
 }
-
-  .modal-footer button {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s ease;
-  }
-
-  .modal-footer .delete {
-    background-color: #dc3545;
-    color: #fff;
-    border: none;
-  }
-
-    .modal-footer .delete:hover {
-      background-color: #b02a37;
-    }
-
-  .modal-footer .save {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-  }
-
-    .modal-footer .save:hover {
-      background-color: #0056b3;
-    }
 
 .close-modal {
   position: absolute;
@@ -235,25 +214,19 @@ button {
   border-radius: 10px;
   background-color: #f9f9f9;
   text-align: center;
+  cursor: pointer;
 }
-
-  .privilege-item.systemadmin {
-    background-color: #f8d7da;
+  .privilege-item:hover {
+    background-color: #e0e0e0;
   }
 
-  .privilege-item.superuser {
-    background-color: #f8d7da;
+  .privilege-item.selected {
+    border-color: #007bff;
+    background-color: #e7f1ff;
   }
 
-  .privilege-item.moderator {
+  .privilege-item.current {
     background-color: #d4edda;
-  }
-
-  .privilege-item.creator,
-  .privilege-item.affiliate,
-  .privilege-item.privi_user,
-  .privilege-item.guest {
-    background-color: #fff3cd;
   }
 
 .send-password {
@@ -272,11 +245,37 @@ button {
     background-color: #0056b3;
   }
 
+.display-name-container {
+  display: flex;
+  gap: 5px;
+}
+
+  .display-name-container input {
+    flex: 1;
+    height: 40px;
+  }
+
+.update-display-name {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  height: 40px;
+}
+
+  .update-display-name:hover {
+    background-color: #218838;
+  }
 
 .modal-actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  align-items: center;
 }
 
 .delete-user {
@@ -295,23 +294,16 @@ button {
     background-color: #b02a37;
   }
 
-.submit {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-  .submit:hover {
-    background-color: #0056b3;
-  }
-
 .password-reset-message {
   color: green;
   margin-top: 10px;
+}
+
+.send-password {
+  margin-left: auto;
+}
+
+.error-message {
+  color: red;
+  margin-top: 1px;
 }
