@@ -15,7 +15,7 @@ namespace Tests
         {
             // Act
             AdminRightsServices service = new AdminRightsServices();
-            var result = await service.GetAllUsers();
+            var result = await service.GetAllAdmins();
 
             // Assert
             Assert.NotEmpty(result);
@@ -47,7 +47,7 @@ namespace Tests
         }
 
         [Fact]
-        public async Task SoftDeleteAndUpdateUsersRole()
+        public async Task SoftDeleteAndUpdateUsersRoleAndDisplayName()
         {
             // Arrange
             AdminRightsServices service = new AdminRightsServices();
@@ -82,16 +82,23 @@ namespace Tests
             // Assert 2: Assert that the user display name was updated successfully
             Assert.True(updateDisplayNameResult);
             testUserName = "TestUserChangedName";
-            // Act 3: Soft delete the user
+
+            // Act 3: Verify that the user CAN NOT be updated with an existing display name 
+            var updateWithAnExistingOneResult= await service.UpdateUsersDisplayName(testUserName, "Quad");
+
+            // Assert 3: Assert that the user display name was not updated successfully
+            Assert.False(updateWithAnExistingOneResult);
+
+            // Act 4: Soft delete the user
             var softDeleteResult = await service.SoftDeleteUser(testUserName);
 
-            // Assert 3: Assert that the user was soft deleted successfully
+            // Assert 4: Assert that the user was soft deleted successfully
             Assert.True(softDeleteResult);
 
-            // Act 4: Try to soft delete the same user again (should return false)
+            // Act 5: Try to soft delete the same user again (should return false)
             var softDeleteAgainResult = await service.SoftDeleteUser(testUserName);
 
-            // Assert 4: Assert that trying to delete an already deleted user returns false
+            // Assert 5: Assert that trying to delete an already deleted user returns false
             Assert.False(softDeleteAgainResult);
 
             // Step 2: Delete the test user from the database to clean up

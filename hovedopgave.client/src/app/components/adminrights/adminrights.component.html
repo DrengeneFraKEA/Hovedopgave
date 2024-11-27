@@ -4,23 +4,16 @@
   <!-- Search Users Section -->
   <div class="section-container">
     <h2>Search users</h2>
-    <input type="text" placeholder="Search users..." />
+    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" />
     <div class="user-list">
-      <div class="user">
-        <span>johnsmith36</span>
-        <button (click)="openEditModal({ username: 'johnsmith36' })">Edit</button>
-      </div>
-      <div class="user">
-        <span>johndoe50</span>
-        <button (click)="openEditModal({ username: 'johndoe50' })">Edit</button>
-      </div>
-      <div class="user">
-        <span>johnny900</span>
-        <button (click)="openEditModal({ username: 'johnny900' })">Edit</button>
-      </div>
-      <div class="user">
-        <span>johnsmith99</span>
-        <button (click)="openEditModal({ username: 'johnsmith99' })">Edit</button>
+      <div *ngIf="searchQuery.trim() !== ''">
+        <div class="user" *ngFor="let user of searchResult; let i = index">
+          <span>{{ user.displayName }}</span>
+          <button (click)="openEditModal(user)">Edit</button>
+        </div>
+        <div *ngIf="!searchResult">
+          <span>No user found with display name "{{ searchQuery }}"</span>
+        </div>
       </div>
     </div>
   </div>
@@ -29,17 +22,9 @@
   <div class="section-container">
     <h2>List of current admins</h2>
     <div class="admin-list">
-      <div class="user">
-        <span>johnsmith36</span>
-        <button>Edit</button>
-      </div>
-      <div class="user">
-        <span>janedoe9</span>
-        <button>Edit</button>
-      </div>
-      <div class="user">
-        <span>johnny900</span>
-        <button>Edit</button>
+      <div class="user" *ngFor="let admin of admins; let i = index">
+        <span>{{ admin.displayName }}</span>
+        <button (click)="openEditModal(admin)">Edit</button>
       </div>
     </div>
   </div>
@@ -49,31 +34,31 @@
     <div class="modal-content">
       <button class="close-modal" (click)="closeModal()">×</button>
       <div class="modal-header">
-        Editing {{ selectedUser?.username }}
+        Editing {{ selectedUser?.displayName }}
       </div>
       <div class="modal-body-footer-container">
         <div class="modal-body">
           <p>Privileges</p>
           <div class="privileges">
-            <div class="privilege-item systemadmin">SYSTEMADMIN</div>
-            <div class="privilege-item superuser">SUPERUSER</div>
-            <div class="privilege-item moderator">MODERATOR</div>
-            <div class="privilege-item creator">CREATOR</div>
-            <div class="privilege-item affiliate">AFFILIATE</div>
-            <div class="privilege-item privi_user">USER</div>
-            <div class="privilege-item guest">GUEST</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'admin'" [class.current]="selectedUser?.role === 'admin'" (click)="changeUsersRole('admin')">ADMIN</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'user'" [class.current]="selectedUser?.role === 'user'" (click)="changeUsersRole('user')">USER</div>
           </div>
         </div>
         <div class="modal-footer">
-          <p>Edit Credentials</p>
-          <input type="text" placeholder="New display name" />
-          <button class="send-password" (click)="sendNewPassword()">Reset password</button>
+          <p>Change Display Name</p>
+          <div class="display-name-container">
+            <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" />
+            <button class="update-display-name" (click)="changeUsersDisplayName()">Update</button>
+          </div>
+          <p *ngIf="displayNameError" class="error-message">{{ displayNameError }}</p>
           <p *ngIf="passwordResetMessage" class="password-reset-message">{{ passwordResetMessage }}</p>
         </div>
       </div>
       <div class="modal-actions">
         <button class="delete-user" (click)="deleteUser()">Delete User</button>
-        <button class="submit" (click)="submitChanges()">Submit</button>
+        <button class="send-password" (click)="sendNewPassword()">Reset password</button>
       </div>
     </div>
   </div>
+</div>
+
