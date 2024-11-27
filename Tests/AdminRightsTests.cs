@@ -43,7 +43,7 @@ namespace Tests
             // Act
             var result = await service.GetUserByDisplayName(displayName);
             // Assert
-            Assert.Null(result);
+            Assert.Empty(result);
         }
 
         [Fact]
