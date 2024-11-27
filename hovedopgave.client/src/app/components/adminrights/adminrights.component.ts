@@ -15,7 +15,7 @@ export class AdminrightsComponent implements OnInit {
   selectedUser: { displayName: string, role: string } | null = null;
   passwordResetMessage: string | null = null;
   admins: User[] = [];
-  searchResult: User | null = null;
+  searchResult: User[] = [];
   searchQuery: string = '';
   selectedRole: string | null = null;
   newDisplayName: string = '';
@@ -49,19 +49,15 @@ export class AdminrightsComponent implements OnInit {
     if (this.searchQuery.trim() !== '') {
       this.adminrightsService.getUserByDisplayName(this.searchQuery).subscribe(
         (data) => {
-          if (data.role === 'user') {
             this.searchResult = data;
-          } else {
-            this.searchResult = null;
-          }
         },
         (error) => {
           console.error('Error fetching user: ', error);
-          this.searchResult = null;
+          this.searchResult = [];
         }
       );
     } else {
-      this.searchResult = null;
+      this.searchResult = [];
     }
   }
 

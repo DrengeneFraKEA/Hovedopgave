@@ -32,32 +32,34 @@ namespace Hovedopgave.Server.Services
         }
 
 
-        public async Task<UserDTO?> GetUserByDisplayName(string displayName)
+        public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
+            List<UserDTO> users = new List<UserDTO>();
+
             // Query to fetch user by display_name
             await using var command = conn.CreateCommand(
-                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name = @displayName"
+                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT 20"
             );
 
             // Add the displayName parameter
-            command.Parameters.AddWithValue("displayName", displayName);
+            command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            // Check if a user is found
-            if (await reader.ReadAsync())
+            // Iterate through the results and populate the list 
+            while (await reader.ReadAsync())
             {
-                return new UserDTO
+                users.Add(new UserDTO
                 {
                     DisplayName = reader.GetString(0),
                     Role = reader.GetString(1),
-                };
+                });
             }
 
-            return null;
+            return users;
         }
 
 

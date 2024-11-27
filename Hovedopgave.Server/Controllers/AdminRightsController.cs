@@ -45,14 +45,14 @@ namespace Hovedopgave.Server.Controllers
         {
             try
             {
-                var user = await adminRightsServices.GetUserByDisplayName(displayName);
+                List<UserDTO> users = await adminRightsServices.GetUserByDisplayName(displayName);
 
-                if (user == null)
+                if (users == null)
                 {
                     return NotFound(new { message = $"User with display name '{displayName}' not found." });
                 }
 
-                return Ok(user);
+                return Ok(users);
             }
             catch (Exception ex)
             {

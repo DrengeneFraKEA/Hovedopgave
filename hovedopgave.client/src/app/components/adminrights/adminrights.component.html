@@ -7,9 +7,9 @@
     <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" />
     <div class="user-list">
       <div *ngIf="searchQuery.trim() !== ''">
-        <div class="user" *ngIf="searchResult">
-          <span>{{ searchResult.displayName }}</span>
-          <button (click)="openEditModal(searchResult)">Edit</button>
+        <div class="user" *ngFor="let user of searchResult; let i = index">
+          <span>{{ user.displayName }}</span>
+          <button (click)="openEditModal(user)">Edit</button>
         </div>
         <div *ngIf="!searchResult">
           <span>No user found with display name "{{ searchQuery }}"</span>
