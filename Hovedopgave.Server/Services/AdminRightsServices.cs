@@ -32,20 +32,22 @@ namespace Hovedopgave.Server.Services
         }
 
 
-        public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName)
+        public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName, int page, int pageSize)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
 
-            // Query to fetch user by display_name
+            // Query to fetch user by display_name with pagination
             await using var command = conn.CreateCommand(
-                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT 20"
+                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT @pageSize OFFSET @offset"
             );
 
             // Add the displayName parameter
             command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
 
             await using var reader = await command.ExecuteReaderAsync();
 

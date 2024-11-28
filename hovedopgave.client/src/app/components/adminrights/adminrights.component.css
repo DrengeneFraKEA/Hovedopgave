@@ -307,3 +307,26 @@ button {
   color: red;
   margin-top: 1px;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+  .pagination-controls span {
+    color: #007BFF;
+    transition: color 0.3s ease;
+  }
+
+    .pagination-controls span.disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .pagination-controls span:hover:not(.disabled) {
+      color: #0056b3;
+    }

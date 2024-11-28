@@ -20,7 +20,8 @@ export class AdminrightsComponent implements OnInit {
   selectedRole: string | null = null;
   newDisplayName: string = '';
   displayNameError: string | null = null
-  
+  currentPage: number = 1;
+  pageSize: number = 5;
   constructor(private http: HttpClient, private route: Router, private adminrightsService: AdminrightsService) { }
 
   ngOnInit() {
@@ -47,7 +48,7 @@ export class AdminrightsComponent implements OnInit {
 
   searchUser() {
     if (this.searchQuery.trim() !== '') {
-      this.adminrightsService.getUserByDisplayName(this.searchQuery).subscribe(
+      this.adminrightsService.getUserByDisplayName(this.searchQuery, this.currentPage, this.pageSize).subscribe(
         (data) => {
             this.searchResult = data;
         },
@@ -58,6 +59,18 @@ export class AdminrightsComponent implements OnInit {
       );
     } else {
       this.searchResult = [];
+    }
+  }
+
+  nextPage() {
+    this.currentPage++;
+    this.searchUser();
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.searchUser();
     }
   }
 
