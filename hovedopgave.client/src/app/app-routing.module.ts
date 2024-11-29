@@ -8,9 +8,6 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'adminrights', component: AdminrightsComponent },
   { path: 'dashboard', component: DashboardComponent },
- // { path: 'dashboard/users', component: UsersComponent }, Til forskellige dashboard views senere hen
- // { path: 'dashboard/matches', component: MatchesComponent },
- // { path: 'dashboard/teams', component: TeamsComponent },
 ];
 
 @NgModule({
