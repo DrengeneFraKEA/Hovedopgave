@@ -38,6 +38,22 @@
   text-align: center;
 }
 
+.date-range-filter {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+  .date-range-filter label {
+    font-weight: bold;
+  }
+
+  .date-range-filter input {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
 .graphs {
   margin-top: 20px;
 }
