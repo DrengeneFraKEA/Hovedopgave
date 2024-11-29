@@ -3,6 +3,16 @@
 
   <div class="main-content">
     <div class="top-bar">
+      <div class="date-range-filter">
+        <div>
+          <label for="fromDate">From:</label>
+          <input id="fromDate" type="date" [(ngModel)]="filter.fromDate" (change)="applyDateRange(filter.fromDate, filter.toDate)" />
+        </div>
+        <div>
+          <label for="toDate">To:</label>
+          <input id="toDate" type="date" [(ngModel)]="filter.toDate" (change)="applyDateRange(filter.fromDate, filter.toDate)" />
+        </div>
+      </div>
       <button (click)="setFilter('daily')">Daily</button>
       <button (click)="setFilter('weekly')">Weekly</button>
       <button (click)="setFilter('monthly')">Monthly</button>
@@ -11,16 +21,16 @@
 
     <div class="dashboard-stats">
       <div class="stat-box">
-        <h3>Total Users</h3>
-        <p>{{ stats.totalUsers }}</p>
+        <h3>Total User Signups</h3>
+        <p>{{ stats.userSignups }}</p>
       </div>
       <div class="stat-box">
-        <h3>Matches Played</h3>
-        <p>{{ stats.totalMatches }}</p>
+        <h3>Total Team Signups</h3>
+        <p>{{ stats.teamSignups }}</p>
       </div>
       <div class="stat-box">
-        <h3>Total Teams</h3>
-        <p>{{ stats.totalTeams }}</p>
+        <h3>Total Organization Signups</h3>
+        <p>{{ stats.organizationSignups }}</p>
       </div>
     </div>
 
