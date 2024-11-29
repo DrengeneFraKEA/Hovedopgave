@@ -11,9 +11,13 @@
           <span>{{ user.displayName }}</span>
           <button (click)="openEditModal(user)">Edit</button>
         </div>
-        <div *ngIf="!searchResult">
+        <div *ngIf="!searchResult.length">
           <span>No user found with display name "{{ searchQuery }}"</span>
         </div>
+        <div class="pagination-controls">
+          <button (click)="previousPage()" [disabled]="currentPage === 1">←</button>
+          <button (click)="nextPage()">→</button>
+        </div>  
       </div>
     </div>
   </div>
