@@ -28,8 +28,10 @@ namespace Tests
             // Arrange
             AdminRightsServices service = new AdminRightsServices();
             string displayName = "Quad";
+            int page = 1;
+            int pageSize = 5;
             // Act
-            var result = await service.GetUserByDisplayName(displayName);
+            var result = await service.GetUserByDisplayName(displayName, page, pageSize);
             // Assert
             Assert.NotNull(result);
         }
@@ -40,8 +42,10 @@ namespace Tests
             // Arrange
             AdminRightsServices service = new AdminRightsServices();
             string displayName = "FakeFaker";
+            int page = 1;
+            int pageSize = 5;
             // Act
-            var result = await service.GetUserByDisplayName(displayName);
+            var result = await service.GetUserByDisplayName(displayName, page, pageSize);
             // Assert
             Assert.Empty(result);
         }
