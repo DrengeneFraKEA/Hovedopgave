@@ -4,3 +4,17 @@ GET {{Hovedopgave.Server_HostAddress}}/login/
 Accept: application/json
 
 ###
+
+GET {{Hovedopgave.Server_HostAddress}}/adminrights/users
+
+###
+
+GET {{Hovedopgave.Server_HostAddress}}/adminrights/display-name/Quad
+
+
+###
+
+PUT {{Hovedopgave.Server_HostAddress}}/adminrights/soft-delete/Faker
+
+###
+PUT {{Hovedopgave.Server_HostAddress}}/adminrights/update-role/admin/user/Quad

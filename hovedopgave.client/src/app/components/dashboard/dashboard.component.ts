@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsService, SignupStats } from '../../Services/Statistics.service';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -29,9 +32,12 @@ export class DashboardComponent implements OnInit {
   };
 
   constructor(private statisticsService: StatisticsService) { }
+  constructor(private http: HttpClient, private route: Router) { }
 
   ngOnInit() {
-    this.fetchStats(); 
+    var token = localStorage.getItem("token");
+    if (token === null || token === "") this.route.navigate(['login']);
+    this.fetchStats();
   }
 
   setFilter(filter: string) {

@@ -1,5 +1,4 @@
 ﻿using Npgsql;
-
 namespace Hovedopgave.Server.Database
 {
     public class PostgreSQL
@@ -14,7 +13,7 @@ namespace Hovedopgave.Server.Database
         {
             this.uselocaldb = uselocaldb;
 
-
+            
             // Setup connection
             if (this.uselocaldb) 
             {
