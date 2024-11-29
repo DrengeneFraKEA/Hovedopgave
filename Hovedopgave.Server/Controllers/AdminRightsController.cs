@@ -41,13 +41,13 @@ namespace Hovedopgave.Server.Controllers
         }
 
         [HttpGet("display-name/{displayName}")]
-        public async Task<IActionResult> GetUserByDisplayName(string displayName)
+        public async Task<IActionResult> GetUserByDisplayName(string displayName, [FromQuery] int page, [FromQuery] int pageSize)
         {
             try
             {
-                List<UserDTO> users = await adminRightsServices.GetUserByDisplayName(displayName);
+                List<UserDTO> users = await adminRightsServices.GetUserByDisplayName(displayName, page, pageSize);
 
-                if (users == null)
+                if (users == null || users.Count == 0)
                 {
                     return NotFound(new { message = $"User with display name '{displayName}' not found." });
                 }

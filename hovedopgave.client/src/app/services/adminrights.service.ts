@@ -17,9 +17,9 @@ export class AdminrightsService {
     return this.http.get<User[]>(this.apiURL + '/admins/')
   }
 
-  getUserByDisplayName(displayName: string): Observable<User[]>
+  getUserByDisplayName(displayName: string, page: number, pageSize: number): Observable<User[]>
   {
-    return this.http.get<User[]>(this.apiURL + '/display-name/' + displayName)
+    return this.http.get<User[]>(this.apiURL + '/display-name/' + displayName + '?page=' + page + '&pageSize=' + pageSize)
   }
 
   softDeleteUser(displayName: string): Observable<any>
