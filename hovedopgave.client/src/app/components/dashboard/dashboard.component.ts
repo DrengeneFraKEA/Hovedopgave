@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StatisticsService, SignupStats } from '../../Services/Statistics.service';
+import { StatisticsService, SignupStats } from '../../services/Statistics.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -31,8 +31,7 @@ export class DashboardComponent implements OnInit {
     toDate: ''
   };
 
-  constructor(private statisticsService: StatisticsService) { }
-  constructor(private http: HttpClient, private route: Router) { }
+  constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService) { }
 
   ngOnInit() {
     var token = localStorage.getItem("token");
