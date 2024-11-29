@@ -1,6 +1,11 @@
 ﻿using Hovedopgave.Server.Database;
 using Npgsql;
+using System.Diagnostics.Metrics;
 using System.Net;
+using static Hovedopgave.Server.Models.Roles;
+using System.Numerics;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace Hovedopgave.Server.Utils
 {
@@ -574,6 +579,47 @@ namespace Hovedopgave.Server.Utils
             "Enemy"
         };
 
+        private List<string> PluralObjects = new List<string>()
+        {
+            "Kings",
+            "Dragons",
+            "Lions",
+            "Ninjas",
+            "Cobras",
+            "Snakes",
+            "Tigers",
+            "Eagles",
+            "Knights",
+            "Warriors",
+            "Survivors",
+            "Fighters",
+            "Hitters",
+            "Hitmen",
+            "Assassins",
+            "Snipers",
+            "Shooters",
+            "Thiefs",
+            "Robbers",
+            "Soldiers",
+            "Pirates",
+            "Sailors",
+            "Stars",
+            "Planets",
+            "Bears",
+            "T1",
+            "T2",
+            "T3",
+            "K1",
+            "K2",
+            "K3",
+            "TR1",
+            "TR2",
+            "TR3",
+            "JP1",
+            "JP2",
+            "JP3"
+        };
+
         private List<string> Gender = new List<string>()
         {
             "male",
@@ -612,6 +658,17 @@ namespace Hovedopgave.Server.Utils
             "ES",
             "PT",
             "KR"
+        };
+
+        private List<string> Regions = new List<string>()
+        {
+            "EUNE",
+            "EUW",
+            "NA",
+            "KR",
+            "CN",
+            "JP",
+            "TR"
         };
 
         public void SeedUsers(int amount) 
@@ -663,6 +720,98 @@ namespace Hovedopgave.Server.Utils
 
                 using var command = conn.CreateCommand($"INSERT INTO users (id, full_name, display_name, role, gender, email, password_salt, password, phone_ext, phone, country, discord_id, birthday, created_at, updated_at)" +
                     $"VALUES ('{id}', '{name}', '{display_name}', '{role}', '{gender}', '{email}', '{salt}', '{hashedPw}', '{phoneExt}', '{phone}', '{country}', '{discordId}', '{birthday}', '{createdAt}', '{updatedAt}')");
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }
+
+        public void SeedOrganizations(int amount) 
+        {
+            Random rnd = new Random();
+            HashSet<string> hashset = new HashSet<string>();
+
+            for (int i = 0; i < amount; i++) 
+            {
+                int rndAdjectiveIndex = rnd.Next(Adjectives.Count);
+                int rndPluralObjectIndex = rnd.Next(PluralObjects.Count);
+                int rndRegionIndex = rnd.Next(Regions.Count);
+                int rndCountryIndex = rnd.Next(Country.Count);
+
+                string id = Guid.NewGuid().ToString("n").Substring(0, 30);
+                string orgName = $"{Adjectives.ElementAt(rndAdjectiveIndex)} {PluralObjects.ElementAt(rndPluralObjectIndex)}";
+                string region = $"{Regions.ElementAt(rndRegionIndex)}";
+                string country = $"{Country.ElementAt(rndCountryIndex)}";
+                string summary = $"{orgName} is a company out of {country} that has been active at the Esports scene for years!";
+                string description = $"{orgName} is a company out of {country} that has been active at the Esports scene for years!";
+                string createdAt = RandomDate(2022, 2024);
+                string updatedAt = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss").Replace('.', ':');
+
+
+                // If hashset contains display_name, skip and try again.
+                if (hashset.Contains(orgName))
+                {
+                    i--;
+                    continue;
+                }
+
+                hashset.Add(orgName);
+
+                PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+                using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+                using var command = conn.CreateCommand($"INSERT INTO organizations (id, name, region, country, summary, description, created_at, updated_at)" +
+                $"VALUES ('{id}', '{orgName}', '{region}', '{country}', '{summary}', '{description}', '{createdAt}', '{updatedAt}')");
+                try
+                {
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }
+
+        public void SeedTeams(int amount) 
+        {
+            Random rnd = new Random();
+            HashSet<string> hashset = new HashSet<string>();
+
+            for (int i = 0; i < amount; i++)
+            {
+                int rndAdjectiveIndex = rnd.Next(Adjectives.Count);
+                int rndPluralObjectIndex = rnd.Next(PluralObjects.Count);
+                int rndCountryIndex = rnd.Next(Country.Count);
+
+                string id = Guid.NewGuid().ToString("n").Substring(0, 30);
+                string teamName = $"{Adjectives.ElementAt(rndAdjectiveIndex)} {PluralObjects.ElementAt(rndPluralObjectIndex)}";
+                string country = $"{Country.ElementAt(rndCountryIndex)}";
+                string initials = $"{Adjectives.ElementAt(rndAdjectiveIndex).Substring(0,1)}{PluralObjects.ElementAt(rndPluralObjectIndex).Substring(0,1)}";
+                string game = "league-of-legends";
+                string createdAt = RandomDate(2022, 2024);
+                string updatedAt = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss").Replace('.', ':');
+
+
+                // If hashset contains display_name, skip and try again.
+                if (hashset.Contains(teamName))
+                {
+                    i--;
+                    continue;
+                }
+
+                hashset.Add(teamName);
+
+                PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+                using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+                using var command = conn.CreateCommand($"INSERT INTO teams (id, name, initials, game, country, created_at, updated_at)" +
+                $"VALUES ('{id}', '{teamName}', '{initials}', '{game}', '{country}', '{createdAt}', '{updatedAt}')");
                 try
                 {
                     command.ExecuteNonQuery();
