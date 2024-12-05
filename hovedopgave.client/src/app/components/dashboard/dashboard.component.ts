@@ -96,4 +96,35 @@ export class DashboardComponent implements OnInit {
     this.fetchStats();
   }
 
+  // Exports the currently displayed data to a CSV file
+  exportToCSV() {
+    const headers = ['Metric', 'Value'];
+    const rows = [
+      ['Total Signups', this.stats.totalSignups],
+      ['User Signups', this.stats.userSignups],
+      ['Team Signups', this.stats.teamSignups],
+      ['Organization Signups', this.stats.organizationSignups],
+      ['Daily Signups', this.stats.dailySignups],
+      ['Weekly Signups', this.stats.weeklySignups],
+      ['Monthly Signups', this.stats.monthlySignups]
+    ];
+
+    // Generate CSV content
+    const csvContent = [
+      headers.join(','), // Add headers
+      ...rows.map(row => row.join(',')) // Add each row
+    ].join('\n');
+
+    // Create a Blob with the CSV content
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+
+    // Create an object URL and download it
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `signup_statistics_${new Date().toISOString()}.csv`;
+    link.click();
+
+    // Clean up URL object
+    window.URL.revokeObjectURL(link.href);
+  }
 }
