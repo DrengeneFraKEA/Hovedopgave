@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
     monthlySignups: 0
   }; 
 
-  selectedFilter: string = 'daily'; // Indicates the active filter (daily, weekly, monthly)
+  selectedFilter: string = 'daily'; // active filter (daily, weekly, monthly)
   selectedView: string = 'users';  
   fromDate: string | null = null; 
   toDate: string | null = null;   
