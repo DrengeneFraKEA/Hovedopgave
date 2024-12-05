@@ -15,7 +15,7 @@ namespace Hovedopgave.Server.Services
             List<UserDTO> admins = new List<UserDTO>();
 
             // Query to fetch only the display_name and role columns
-            await using var command = conn.CreateCommand("SELECT display_name, role FROM public.users where deleted_at is null AND role = 'admin'");
+            await using var command = conn.CreateCommand("SELECT display_name, role FROM public.users where deleted_at is null AND role = 'SYSTEMADMIN'");
             await using var reader = await command.ExecuteReaderAsync();
 
             // Iterate through the results and populate the list
