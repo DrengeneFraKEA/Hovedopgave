@@ -86,7 +86,7 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersRole(string displayName, Roles.RoleDB role)
+        public async Task<bool> UpdateUsersRole(string displayName, Roles.Role role)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);

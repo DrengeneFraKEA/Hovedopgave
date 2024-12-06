@@ -5,11 +5,10 @@ Accept: application/json
 
 ###
 
-GET {{Hovedopgave.Server_HostAddress}}/adminrights/users
-
+GET {{Hovedopgave.Server_HostAddress}}/adminrights/admins
 ###
 
-GET {{Hovedopgave.Server_HostAddress}}/adminrights/display-name/Quad
+GET {{Hovedopgave.Server_HostAddress}}/adminrights/display-name/BigSky1
 
 
 ###

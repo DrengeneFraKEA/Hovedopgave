@@ -77,6 +77,16 @@ input {
   border-radius: 4px;
   background-color: #fafafa;
   align-items: center;
+  position: relative;
+}
+.user-display-name {
+  flex: 1;
+}
+
+.user-role {
+  color: gray;
+  position: absolute;
+  right: 100px;
 }
 
   .user:hover {

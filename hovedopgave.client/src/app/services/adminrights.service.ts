@@ -29,7 +29,7 @@ export class AdminrightsService {
 
   updateUsersRole(role: string, displayName: string): Observable<any> 
   {
-    return this.http.put(this.apiURL + '/update-role/' + role + '/user/' + displayName, {});
+    return this.http.put(this.apiURL + '/update-role/' + role + '/name/' + displayName, {});
   }
 
   updateUsersDisplayName(newDisplayName: string, displayName: string): Observable<any> {

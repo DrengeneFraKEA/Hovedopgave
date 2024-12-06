@@ -13,17 +13,6 @@
             SYSTEMADMIN = 9
         }
 
-        public enum RoleDB
-        {
-            GUEST,
-            USER,
-            AFFILIATE,
-            CREATOR,
-            MODERATOR,
-            SUPERUSER,
-            SYSTEMADMIN
-        }
-
         public static Role GetRoleByName(string role)
         {
             return role.ToUpperInvariant() switch

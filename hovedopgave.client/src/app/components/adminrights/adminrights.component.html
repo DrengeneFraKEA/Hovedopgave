@@ -8,7 +8,8 @@
     <div class="user-list">
       <div *ngIf="searchQuery.trim() !== ''">
         <div class="user" *ngFor="let user of searchResult; let i = index">
-          <span>{{ user.displayName }}</span>
+          <span class="user-display-name">{{ user.displayName }}</span>
+          <span class="user-role">{{ user.role }}</span>
           <button (click)="openEditModal(user)">Edit</button>
         </div>
         <div *ngIf="!searchResult.length">
@@ -44,8 +45,13 @@
         <div class="modal-body">
           <p>Privileges</p>
           <div class="privileges">
-            <div class="privilege-item" [class.selected]="selectedRole === 'admin'" [class.current]="selectedUser?.role === 'admin'" (click)="changeUsersRole('admin')">ADMIN</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'user'" [class.current]="selectedUser?.role === 'user'" (click)="changeUsersRole('user')">USER</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'SYSTEMADMIN'" [class.current]="selectedUser?.role === 'SYSTEMADMIN'" (click)="changeUsersRole('SYSTEMADMIN')">SYSTEMADMIN</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'SUPERUSER'" [class.current]="selectedUser?.role === 'SUPERUSER'" (click)="changeUsersRole('SUPERUSER')">SUPERUSER</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'MODERATOR'" [class.current]="selectedUser?.role === 'MODERATOR'" (click)="changeUsersRole('MODERATOR')">MODERATOR</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'CREATOR'" [class.current]="selectedUser?.role === 'CREATOR'" (click)="changeUsersRole('CREATOR')">CREATOR</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'AFFILIATE'" [class.current]="selectedUser?.role === 'AFFILIATE'" (click)="changeUsersRole('AFFILIATE')">AFFILIATE</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'USER'" [class.current]="selectedUser?.role === 'USER'" (click)="changeUsersRole('USER')">USER</div>
+            <div class="privilege-item" [class.selected]="selectedRole === 'GUEST'" [class.current]="selectedUser?.role === 'GUEST'" (click)="changeUsersRole('GUEST')">GUEST</div>
           </div>
         </div>
         <div class="modal-footer">

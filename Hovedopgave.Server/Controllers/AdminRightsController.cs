@@ -83,8 +83,8 @@ namespace Hovedopgave.Server.Controllers
         }
 
 
-        [HttpPut("update-role/{role}/user/{displayName}")]
-        public async Task<IActionResult> UpdateUsersRole(string displayName, Roles.RoleDB role)
+        [HttpPut("update-role/{role}/name/{displayName}")]
+        public async Task<IActionResult> UpdateUsersRole(string displayName, Roles.Role role)
         {
             try
             {

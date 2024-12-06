@@ -56,7 +56,7 @@ namespace Tests
             // Arrange
             AdminRightsServices service = new AdminRightsServices();
             string testUserName = "TestUser";
-            Roles.RoleDB newRole = Roles.RoleDB.SYSTEMADMIN;
+            Roles.Role newRole = Roles.Role.SYSTEMADMIN;
 
 
             // Step 1: Insert the test user into the database
