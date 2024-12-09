@@ -61,11 +61,11 @@ namespace Hovedopgave.Server.Controllers
         }
 
         [HttpPut("soft-delete/{displayName}")]
-        public async Task<IActionResult> SoftDeleteUser(string displayName) 
+        public async Task<IActionResult> SoftDeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser) 
         {
             try
             {
-                bool success = await adminRightsServices.SoftDeleteUser(displayName);
+                bool success = await adminRightsServices.SoftDeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
 
                 if (success)
                 {
@@ -84,19 +84,20 @@ namespace Hovedopgave.Server.Controllers
 
 
         [HttpPut("update-role/{role}/name/{displayName}")]
-        public async Task<IActionResult> UpdateUsersRole(string displayName, Roles.Role role)
+        public async Task<IActionResult> UpdateUsersRole(string displayName, Roles.Role role, [FromBody] LoggedInUser loggedInUser)
         {
             try
             {
-                bool success = await adminRightsServices.UpdateUsersRole(displayName, role);
-
+                bool success = await adminRightsServices.UpdateUsersRole(loggedInUser.LoggedInUserDisplayName, displayName, role);
+                Console.WriteLine("Logged in User: " + loggedInUser.LoggedInUserDisplayName);
+                
                 if (success)
                 {
                     return Ok(new { message = $"'{displayName}'s role was successfully changed to '{role}'." });
                 }
                 else
                 {
-                    return NotFound(new { message = $"User with display name '{displayName}' not found or already deleted." });
+                    return NotFound(new { message = $"Not enough privileges to change '{displayName}'s role" });
                 }
             }
             catch (Exception ex)
@@ -107,11 +108,11 @@ namespace Hovedopgave.Server.Controllers
 
 
         [HttpPut("update-name/{newDisplayName}/user/{displayName}")]
-        public async Task<IActionResult> UpdateUsersDisplayName(string displayName, string newDisplayName)
+        public async Task<IActionResult> UpdateUsersDisplayName(string displayName, string newDisplayName, [FromBody] LoggedInUser loggedInUser)
         {
             try
             {
-                bool success = await adminRightsServices.UpdateUsersDisplayName(displayName, newDisplayName);
+                bool success = await adminRightsServices.UpdateUsersDisplayName(loggedInUser.LoggedInUserDisplayName, displayName, newDisplayName);
 
                 if (success)
                 {

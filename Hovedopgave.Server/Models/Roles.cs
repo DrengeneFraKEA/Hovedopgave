@@ -27,5 +27,10 @@
                 _ => Role.GUEST, // Default case
             };
         }
+
+        public static bool CanChangeRole(Role currentUserRole, Role targetUserRole)
+        {
+            return currentUserRole >= targetUserRole;
+        }
     }
 }

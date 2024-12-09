@@ -29,6 +29,7 @@
     <div class="admin-list">
       <div class="user" *ngFor="let admin of admins; let i = index">
         <span>{{ admin.displayName }}</span>
+        <span class="user-role">{{ admin.role }}</span>
         <button (click)="openEditModal(admin)">Edit</button>
       </div>
     </div>
@@ -62,6 +63,7 @@
           </div>
           <p *ngIf="displayNameError" class="error-message">{{ displayNameError }}</p>
           <p *ngIf="passwordResetMessage" class="password-reset-message">{{ passwordResetMessage }}</p>
+          <p *ngIf="updateRoleError" class="error-message">{{ updateRoleError }}</p>
         </div>
       </div>
       <div class="modal-actions">
