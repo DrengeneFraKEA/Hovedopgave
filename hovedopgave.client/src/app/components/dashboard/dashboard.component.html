@@ -1,5 +1,5 @@
 <div class="dashboard-container">
-  <app-sidebar (navigate)="navigateTo($event)"></app-sidebar>
+  <app-sidebar (navigate)="updateView($event)"></app-sidebar>
 
   <div class="main-content">
     <div class="top-bar">
@@ -19,24 +19,49 @@
       <button>Export CSV</button>
     </div>
 
-    <div class="dashboard-stats">
+    <!-- Dashboard stats -->
+    <div *ngIf="selectedView === 'overview'" class="dashboard-stats">
+      <!-- Stat box for user signups -->
       <div class="stat-box">
         <h3>Total User Signups</h3>
-        <p>{{ stats.userSignups }}</p>
+        <p>{{ totalUserSignups }}</p>
       </div>
+
+      <!-- Stat box for team signups -->
       <div class="stat-box">
         <h3>Total Team Signups</h3>
-        <p>{{ stats.teamSignups }}</p>
+        <p>{{ totalTeamSignups }}</p>
       </div>
+
+      <!-- Stat box for organization signups -->
       <div class="stat-box">
         <h3>Total Organization Signups</h3>
-        <p>{{ stats.organizationSignups }}</p>
+        <p>{{ totalOrganizationSignups }}</p>
       </div>
-    </div>
 
-    <div class="graphs">
-      <p>Sorted by {{ selectedFilter }} </p>
-      <p>Graph for {{ selectedView }}</p>
+      <!-- Stat box for organization signups -->
+      <div class="stat-box">
+        <h3>Total Valorant Signups</h3>
+        <p>{{ totalValorantProfiles }}</p>
+      </div>
+
+      <!-- Stat box for organization signups -->
+      <div class="stat-box">
+        <h3>Total League of Legends Signups</h3>
+        <p>{{ totalLeagueProfiles }}</p>
+      </div>
+
+      <!-- Stat box for organization signups -->
+      <div class="stat-box">
+        <h3>Total UserProfiles Signups</h3>
+        <p>{{ totalUserGameProfiles }}</p>
+      </div>
+
+      <!-- Stat box for organization signups -->
+      <div class="stat-box">
+        <h3>Total Competitions</h3>
+        <p>{{ totalCompetitions }}</p>
+      </div>
     </div>
   </div>
 </div>

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsService, SignupStats } from '../../services/Statistics.service';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,11 +18,18 @@ export class DashboardComponent implements OnInit {
     weeklySignups: 0,
     monthlySignups: 0
   }; 
+  totalUserSignups: number = 0;
+  totalTeamSignups: number = 0;
+  totalOrganizationSignups: number = 0;
+  totalValorantProfiles: number = 0;
+  totalUserGameProfiles: number = 0;
+  totalLeagueProfiles: number = 0;
+  totalCompetitions: number = 0;
 
-  selectedFilter: string = 'daily'; // Indicates the active filter (daily, weekly, monthly)
-  selectedView: string = 'users';  
-  fromDate: string | null = null; 
-  toDate: string | null = null;   
+  selectedFilter: string = 'weekly';
+  selectedView: string = 'overview';
+  fromDate: string | null = null;
+  toDate: string | null = null;
 
   //Til dato periode 
   filter = {
@@ -31,25 +37,41 @@ export class DashboardComponent implements OnInit {
     toDate: ''
   };
 
+  cache: { [key: string]: number } = {}; // Cache for fetched totals
   constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService) { }
 
   ngOnInit() {
-    var token = localStorage.getItem("token");
-    if (token === null || token === "") this.route.navigate(['login']);
+    const token = localStorage.getItem('token');
+    if (!token) this.route.navigate(['login']);
+    this.updateView('overview'); // Default view
     this.fetchStats();
   }
 
-  setFilter(filter: string) {
-    this.selectedFilter = filter;
-    this.fromDate = null;
-    this.toDate = null;
-    this.fetchStats();
-  }
-
-  navigateTo(view: string) {
+  updateView(view: string) {
     this.selectedView = view;
-    this.fetchStats();
+
+    if (view === 'overview') {
+      this.fetchOverviewTotals();
+    } else {
+      this.fetchStats();
+    }
   }
+
+  fetchOverviewTotals() {
+    this.statisticsService.getOverviewTotals().subscribe({
+      next: (data) => {
+        this.totalUserSignups = data.totalUsers;
+        this.totalTeamSignups = data.totalTeams;
+        this.totalOrganizationSignups = data.totalOrganizations;
+        this.totalValorantProfiles = data.totalValorantProfiles;
+        this.totalUserGameProfiles = data.totalUserGameProfiles;
+        this.totalLeagueProfiles = data.totalLeagueProfiles;
+        this.totalCompetitions = data.totalCompetitions;
+      },
+      error: (error) => console.error('Error fetching overview totals:', error)
+    });
+  }
+
 
   // Fetches the current filter, selected view, or custom date range
   fetchStats() {
@@ -92,8 +114,17 @@ export class DashboardComponent implements OnInit {
   applyDateRange(from: string, to: string) {
     this.fromDate = from;
     this.toDate = to;
-    this.selectedFilter = ''; 
+    this.selectedFilter = '';
     this.fetchStats();
   }
 
+
+ 
+  setFilter(filter: string) {
+    this.selectedFilter = filter;
+    this.fromDate = null;
+    this.toDate = null;
+    this.fetchStats();
+  }
+  
 }

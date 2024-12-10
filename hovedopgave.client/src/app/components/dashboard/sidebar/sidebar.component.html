@@ -3,8 +3,13 @@
     &#9776; <!-- Burger menu icon -->
   </div>
   <ul *ngIf="!collapsed">
-    <li><a (click)="navigateTo('users')">Users</a></li>
-    <li><a (click)="navigateTo('teams')">Teams</a></li>
-    <li><a (click)="navigateTo('orginizations')">Orginizations</a></li>
+    <li><a (click)="updateView('overview')">Dashboard Overview</a></li>
+    <li><a (click)="updateView('users')">Users</a></li>
+    <li><a (click)="updateView('teams')">Teams</a></li>
+    <li><a (click)="updateView('orginizations')">Orginizations</a></li>
+    <li><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
+    <li><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
+    <li><a (click)="updateView('league_profiles')">League Profiles</a></li>
+    <li><a (click)="updateView('competitions')">Competitions</a></li>
   </ul>
 </div>

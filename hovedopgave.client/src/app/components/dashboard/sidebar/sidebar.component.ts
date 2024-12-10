@@ -10,7 +10,7 @@ export class SidebarComponent {
 
   @Output() navigate = new EventEmitter<string>();
 
-  navigateTo(view: string) {
+  updateView(view: string) {
     this.navigate.emit(view); 
   }
   toggleSidebar() {
