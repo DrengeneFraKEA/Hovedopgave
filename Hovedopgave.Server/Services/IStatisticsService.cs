@@ -10,5 +10,9 @@ namespace Hovedopgave.Server.Services
         Task<int> GetTotalUsers();
         Task<int> GetTotalTeams();
         Task<int> GetTotalOrganizations();
+        Task<int> GetTotalValorantProfiles();
+        Task<int> GetTotalUserGameProfiles();
+        Task<int> GetTotalLeagueProfiles();
+        Task<int> GetTotalCompetitions();
     }
 }

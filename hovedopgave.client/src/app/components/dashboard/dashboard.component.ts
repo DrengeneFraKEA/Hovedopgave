@@ -21,6 +21,10 @@ export class DashboardComponent implements OnInit {
   totalUserSignups: number = 0;
   totalTeamSignups: number = 0;
   totalOrganizationSignups: number = 0;
+  totalValorantProfiles: number = 0;
+  totalUserGameProfiles: number = 0;
+  totalLeagueProfiles: number = 0;
+  totalCompetitions: number = 0;
 
   selectedFilter: string = 'weekly';
   selectedView: string = 'overview';
@@ -47,45 +51,27 @@ export class DashboardComponent implements OnInit {
     this.selectedView = view;
 
     if (view === 'overview') {
-      this.fetchTotals();
+      this.fetchOverviewTotals();
     } else {
       this.fetchStats();
     }
   }
 
-  fetchTotals() {
-    // Use cached data if available
-    if (this.cache['users'] !== undefined) {
-      this.totalUserSignups = this.cache['users'];
-      this.totalTeamSignups = this.cache['teams'];
-      this.totalOrganizationSignups = this.cache['organizations'];
-      return;
-    }
-
-    this.statisticsService.getTotalUsers().subscribe({
-      next: (totalUsers) => {
-        this.totalUserSignups = totalUsers;
-        this.cache['users'] = totalUsers;
+  fetchOverviewTotals() {
+    this.statisticsService.getOverviewTotals().subscribe({
+      next: (data) => {
+        this.totalUserSignups = data.totalUsers;
+        this.totalTeamSignups = data.totalTeams;
+        this.totalOrganizationSignups = data.totalOrganizations;
+        this.totalValorantProfiles = data.totalValorantProfiles;
+        this.totalUserGameProfiles = data.totalUserGameProfiles;
+        this.totalLeagueProfiles = data.totalLeagueProfiles;
+        this.totalCompetitions = data.totalCompetitions;
       },
-      error: (error) => console.error('Error fetching total users:', error)
-    });
-
-    this.statisticsService.getTotalTeams().subscribe({
-      next: (totalTeams) => {
-        this.totalTeamSignups = totalTeams;
-        this.cache['teams'] = totalTeams;
-      },
-      error: (error) => console.error('Error fetching total teams:', error)
-    });
-
-    this.statisticsService.getTotalOrganizations().subscribe({
-      next: (totalOrganizations) => {
-        this.totalOrganizationSignups = totalOrganizations;
-        this.cache['organizations'] = totalOrganizations;
-      },
-      error: (error) => console.error('Error fetching total organizations:', error)
+      error: (error) => console.error('Error fetching overview totals:', error)
     });
   }
+
 
   // Fetches the current filter, selected view, or custom date range
   fetchStats() {

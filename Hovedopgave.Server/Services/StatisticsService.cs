@@ -71,20 +71,19 @@ namespace Hovedopgave.Server.Services
                 MonthlySignups = monthlyUsers + monthlyTeams + monthlyOrganizations
             };
         }
-    
-        public async Task<int> GetTotalUsers()
-        {
-            return await _context.Users.CountAsync();
-        }
 
-        public async Task<int> GetTotalTeams()
-        {
-            return await _context.Teams.CountAsync();
-        }
+        public async Task<int> GetTotalUsers() => await _context.Users.CountAsync();
 
-        public async Task<int> GetTotalOrganizations()
-        {
-            return await _context.Organizations.CountAsync();
-        }
+        public async Task<int> GetTotalTeams() => await _context.Teams.CountAsync();
+
+        public async Task<int> GetTotalOrganizations() => await _context.Organizations.CountAsync();
+
+        public async Task<int> GetTotalValorantProfiles() => await _context.Valorant_Profiles.CountAsync();
+
+        public async Task<int> GetTotalUserGameProfiles() => await _context.User_Game_Profiles.CountAsync();
+
+        public async Task<int> GetTotalLeagueProfiles() => await _context.League_of_Legends_Profiles.CountAsync();
+
+        public async Task<int> GetTotalCompetitions() => await _context.Competitions.CountAsync();
     }
 }

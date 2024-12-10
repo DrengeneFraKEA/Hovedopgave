@@ -12,6 +12,16 @@ export interface SignupStats {
   monthlySignups: number;
 }
 
+export interface TotalCounts {
+  totalUsers: number;
+  totalTeams: number;
+  totalOrganizations: number;
+  totalValorantProfiles: number;
+  totalUserGameProfiles: number;
+  totalLeagueProfiles: number;
+  totalCompetitions: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,5 +73,25 @@ export class StatisticsService {
 
   getTotalOrganizations(): Observable<number> {
     return this.http.get<number>(`${this.apiUrl}/totals/organizations`);
+  }
+
+  getTotalValorantProfiles(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/totals/valorant_profiles`);
+  }
+
+  getTotalUserGameProfiles(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/totals/user_game_profiles`);
+  }
+
+  getTotalLeagueProfiles(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/totals/league_profiles`);
+  }
+
+  getTotalCompetitions(): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/totals/competitions`);
+  }
+
+  getOverviewTotals(): Observable<TotalCounts> {
+    return this.http.get<TotalCounts>(`${this.apiUrl}/totals/overview`);
   }
 }
