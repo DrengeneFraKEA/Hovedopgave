@@ -3,6 +3,7 @@
     &#9776; <!-- Burger menu icon -->
   </div>
   <ul *ngIf="!collapsed">
+    <li><a (click)="navigateTo('overview')">Dashboard Overview</a></li>
     <li><a (click)="navigateTo('users')">Users</a></li>
     <li><a (click)="navigateTo('teams')">Teams</a></li>
     <li><a (click)="navigateTo('orginizations')">Orginizations</a></li>
