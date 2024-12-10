@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { StatisticsService } from '../../services/Statistics.service';
+import { StatisticsService, SignupStats } from '../../services/Statistics.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,22 +9,38 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  stats: SignupStats = {  //Default values, for at undgå fejl ved 0 data
+    totalSignups: 0,
+    userSignups: 0,
+    teamSignups: 0,
+    organizationSignups: 0,
+    dailySignups: 0,
+    weeklySignups: 0,
+    monthlySignups: 0
+  }; 
   totalUserSignups: number = 0;
   totalTeamSignups: number = 0;
   totalOrganizationSignups: number = 0;
 
+  selectedFilter: string = 'weekly';
+  selectedView: string = 'overview';
   fromDate: string | null = null;
   toDate: string | null = null;
-  //selectedFilter: string = 'weekly';
-  selectedView: string = 'overview';
+
+  //Til dato periode 
+  filter = {
+    fromDate: '',
+    toDate: ''
+  };
 
   cache: { [key: string]: number } = {}; // Cache for fetched totals
-  constructor(private statisticsService: StatisticsService, private route: Router) { }
+  constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService) { }
 
   ngOnInit() {
     const token = localStorage.getItem('token');
     if (!token) this.route.navigate(['login']);
     this.updateView('overview'); // Default view
+    this.fetchStats();
   }
 
   updateView(view: string) {
@@ -31,6 +48,8 @@ export class DashboardComponent implements OnInit {
 
     if (view === 'overview') {
       this.fetchTotals();
+    } else {
+      this.fetchStats();
     }
   }
 
@@ -68,66 +87,58 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  /*
+  // Fetches the current filter, selected view, or custom date range
   fetchStats() {
-    const fromDate = this.fromDate || undefined;
-    const toDate = this.toDate || undefined;
-
-    this.statisticsService.getStats(this.selectedView, fromDate, toDate).subscribe({
-      next: (data) => {
-        this.currentStats = data;
-      },
-      error: (error) => {
-        console.error('Error fetching stats:', error);
+    if (this.fromDate && this.toDate) {
+      this.statisticsService.getSignupStats(this.fromDate, this.toDate).subscribe({
+        next: (data) => {
+          this.stats = data;
+        },
+        error: (error) => {
+          console.error('Error fetching stats:', error);
+        }
+      });
+    } else {
+      //Stat filters
+      const now = new Date();
+      switch (this.selectedFilter) {
+        case 'daily':
+          this.fromDate = this.toDate = now.toISOString().split('T')[0];
+          break;
+        case 'weekly':
+          this.fromDate = new Date(now.setDate(now.getDate() - 7)).toISOString().split('T')[0];
+          this.toDate = new Date().toISOString().split('T')[0];
+          break;
+        case 'monthly':
+          this.fromDate = new Date(now.setMonth(now.getMonth() - 1)).toISOString().split('T')[0];
+          this.toDate = new Date().toISOString().split('T')[0];
+          break;
       }
-    });
-  }
-
-  calculateTotal(stats: { [key: string]: number }): number {
-    return Object.values(stats).reduce((total, count) => total + count, 0);
-  }
-
-  onDateChange(event: Event, field: 'fromDate' | 'toDate') {
-    const input = event.target as HTMLInputElement;
-    if (field === 'fromDate') {
-      this.fromDate = input.value || null;
-    } else if (field === 'toDate') {
-      this.toDate = input.value || null;
+      this.statisticsService.getSignupStats(this.fromDate, this.toDate).subscribe({
+        next: (data) => {
+          this.stats = data;
+        },
+        error: (error) => {
+          console.error('Error fetching stats:', error);
+        }
+      });
     }
+  }
+
+  applyDateRange(from: string, to: string) {
+    this.fromDate = from;
+    this.toDate = to;
+    this.selectedFilter = '';
     this.fetchStats();
   }
-  */
 
- /*
+
+ 
   setFilter(filter: string) {
     this.selectedFilter = filter;
-
-    const now = new Date();
-    switch (filter) {
-      case 'daily':
-        this.fromDate = now.toISOString().split('T')[0];
-        this.toDate = now.toISOString().split('T')[0];
-        break;
-      case 'weekly':
-        this.fromDate = new Date(now.setDate(now.getDate() - 7)).toISOString().split('T')[0];
-        this.toDate = new Date().toISOString().split('T')[0];
-        break;
-      case 'monthly':
-        this.fromDate = new Date(now.setMonth(now.getMonth() - 1)).toISOString().split('T')[0];
-        this.toDate = new Date().toISOString().split('T')[0];
-        break;
-    }
-
+    this.fromDate = null;
+    this.toDate = null;
     this.fetchStats();
   }
-
-  setView(view: string) {
-    this.selectedView = view;
-    this.fetchStats();
-  }
-
-  getCurrentStatsKeys(): string[] {
-    return Object.keys(this.currentStats || {});
-  }
-  */
+  
 }

@@ -5,7 +5,6 @@ using Hovedopgave.Server.Database;
 using Hovedopgave.Server.Services;
 using Hovedopgave.Server.DTO;
 using Microsoft.AspNetCore.Cors;
-using Hovedopgave.Server.Models;
 
 [ApiController]
 [EnableCors("FrontEndUI")]
@@ -17,6 +16,22 @@ public class StatisticsController : ControllerBase
     public StatisticsController(IStatisticsService statisticsService)
     {
         _statisticsService = statisticsService;
+    }
+
+
+
+    [HttpGet("signups")]
+    public async Task<IActionResult> GetSignupStats([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
+    {
+        try
+        {
+            var stats = await _statisticsService.GetSignupStats(fromDate, toDate);
+            return Ok(stats);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
     }
 
     [HttpGet("totals/users")]

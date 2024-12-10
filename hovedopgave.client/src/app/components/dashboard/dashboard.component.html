@@ -6,24 +6,17 @@
       <div class="date-range-filter">
         <div>
           <label for="fromDate">From:</label>
-          <input id="fromDate"
-                 type="date"
-                 (change)="onDateChange($event, 'fromDate')" />
+          <input id="fromDate" type="date" [(ngModel)]="filter.fromDate" (change)="applyDateRange(filter.fromDate, filter.toDate)" />
         </div>
         <div>
           <label for="toDate">To:</label>
-          <input id="toDate"
-                 type="date"
-                 (change)="onDateChange($event, 'toDate')" />
-        </div>
-
-        <!-- Buttons for sorting -->
-        <div class="time-period-buttons">
-          <button (click)="setFilter('daily')">Daily</button>
-          <button (click)="setFilter('weekly')">Weekly</button>
-          <button (click)="setFilter('monthly')">Monthly</button>
+          <input id="toDate" type="date" [(ngModel)]="filter.toDate" (change)="applyDateRange(filter.fromDate, filter.toDate)" />
         </div>
       </div>
+      <button (click)="setFilter('daily')">Daily</button>
+      <button (click)="setFilter('weekly')">Weekly</button>
+      <button (click)="setFilter('monthly')">Monthly</button>
+      <button>Export CSV</button>
     </div>
 
     <!-- Dashboard stats -->
