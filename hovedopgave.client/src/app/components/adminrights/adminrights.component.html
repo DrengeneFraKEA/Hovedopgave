@@ -1,76 +1,76 @@
-<h1>{{ title }}</h1>
-
-<div class="main-container">
-  <!-- Search Users Section -->
-  <div class="section-container">
-    <h2>Search users</h2>
-    <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" />
-    <div class="user-list">
-      <div *ngIf="searchQuery.trim() !== ''">
-        <div class="user" *ngFor="let user of searchResult; let i = index">
-          <span class="user-display-name">{{ user.displayName }}</span>
-          <span class="user-role">{{ user.role }}</span>
-          <button (click)="openEditModal(user)">Edit</button>
-        </div>
-        <div *ngIf="!searchResult.length">
-          <span>No user found with display name "{{ searchQuery }}"</span>
-        </div>
-        <div class="pagination-controls">
-          <button (click)="previousPage()" [disabled]="currentPage === 1">←</button>
-          <button (click)="nextPage()">→</button>
-        </div>  
-      </div>
-    </div>
-  </div>
-
-  <!-- List of Current Admins Section -->
-  <div class="section-container">
-    <h2>List of current admins</h2>
-    <div class="admin-list">
-      <div class="user" *ngFor="let admin of admins; let i = index">
-        <span>{{ admin.displayName }}</span>
-        <span class="user-role">{{ admin.role }}</span>
-        <button (click)="openEditModal(admin)">Edit</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Section -->
-  <div class="modal" [class.active]="isModalOpen">
-    <div class="modal-content">
-      <button class="close-modal" (click)="closeModal()">×</button>
-      <div class="modal-header">
-        Editing {{ selectedUser?.displayName }}
-      </div>
-      <div class="modal-body-footer-container">
-        <div class="modal-body">
-          <p>Privileges</p>
-          <div class="privileges">
-            <div class="privilege-item" [class.selected]="selectedRole === 'SYSTEMADMIN'" [class.current]="selectedUser?.role === 'SYSTEMADMIN'" (click)="changeUsersRole('SYSTEMADMIN')">SYSTEMADMIN</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'SUPERUSER'" [class.current]="selectedUser?.role === 'SUPERUSER'" (click)="changeUsersRole('SUPERUSER')">SUPERUSER</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'MODERATOR'" [class.current]="selectedUser?.role === 'MODERATOR'" (click)="changeUsersRole('MODERATOR')">MODERATOR</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'CREATOR'" [class.current]="selectedUser?.role === 'CREATOR'" (click)="changeUsersRole('CREATOR')">CREATOR</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'AFFILIATE'" [class.current]="selectedUser?.role === 'AFFILIATE'" (click)="changeUsersRole('AFFILIATE')">AFFILIATE</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'USER'" [class.current]="selectedUser?.role === 'USER'" (click)="changeUsersRole('USER')">USER</div>
-            <div class="privilege-item" [class.selected]="selectedRole === 'GUEST'" [class.current]="selectedUser?.role === 'GUEST'" (click)="changeUsersRole('GUEST')">GUEST</div>
+<div class="container">
+  <app-sidebar (navigate)="navigateTo($event)"></app-sidebar>
+  <div class="main-container">
+    <!-- Search Users Section -->
+    <div class="section-container">
+      <h2>Search users</h2>
+      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" />
+      <div class="user-list">
+        <div *ngIf="searchQuery.trim() !== ''">
+          <div class="user" *ngFor="let user of searchResult; let i = index">
+            <span class="user-display-name">{{ user.displayName }}</span>
+            <span class="user-role">{{ user.role }}</span>
+            <button (click)="openEditModal(user)">Edit</button>
+          </div>
+          <div *ngIf="!searchResult.length">
+            <span>No user found with display name "{{ searchQuery }}"</span>
+          </div>
+          <div class="pagination-controls">
+            <button (click)="previousPage()" [disabled]="currentPage === 1">←</button>
+            <button (click)="nextPage()">→</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <p>Change Display Name</p>
-          <div class="display-name-container">
-            <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" />
-            <button class="update-display-name" (click)="changeUsersDisplayName()">Update</button>
-          </div>
-          <p *ngIf="displayNameError" class="error-message">{{ displayNameError }}</p>
-          <p *ngIf="passwordResetMessage" class="password-reset-message">{{ passwordResetMessage }}</p>
-          <p *ngIf="updateRoleError" class="error-message">{{ updateRoleError }}</p>
+      </div>
+    </div>
+
+    <!-- List of Current Admins Section -->
+    <div class="section-container">
+      <h2>List of current admins</h2>
+      <div class="admin-list">
+        <div class="user" *ngFor="let admin of admins; let i = index">
+          <span>{{ admin.displayName }}</span>
+          <span class="user-role">{{ admin.role }}</span>
+          <button (click)="openEditModal(admin)">Edit</button>
         </div>
       </div>
-      <div class="modal-actions">
-        <button class="delete-user" (click)="deleteUser()">Delete User</button>
-        <button class="send-password" (click)="sendNewPassword()">Reset password</button>
+    </div>
+
+    <!-- Modal Section -->
+    <div class="modal" [class.active]="isModalOpen">
+      <div class="modal-content">
+        <button class="close-modal" (click)="closeModal()">×</button>
+        <div class="modal-header">
+          Editing {{ selectedUser?.displayName }}
+        </div>
+        <div class="modal-body-footer-container">
+          <div class="modal-body">
+            <p>Privileges</p>
+            <div class="privileges">
+              <div class="privilege-item" [class.selected]="selectedRole === 'SYSTEMADMIN'" [class.current]="selectedUser?.role === 'SYSTEMADMIN'" (click)="changeUsersRole('SYSTEMADMIN')">SYSTEMADMIN</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'SUPERUSER'" [class.current]="selectedUser?.role === 'SUPERUSER'" (click)="changeUsersRole('SUPERUSER')">SUPERUSER</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'MODERATOR'" [class.current]="selectedUser?.role === 'MODERATOR'" (click)="changeUsersRole('MODERATOR')">MODERATOR</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'CREATOR'" [class.current]="selectedUser?.role === 'CREATOR'" (click)="changeUsersRole('CREATOR')">CREATOR</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'AFFILIATE'" [class.current]="selectedUser?.role === 'AFFILIATE'" (click)="changeUsersRole('AFFILIATE')">AFFILIATE</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'USER'" [class.current]="selectedUser?.role === 'USER'" (click)="changeUsersRole('USER')">USER</div>
+              <div class="privilege-item" [class.selected]="selectedRole === 'GUEST'" [class.current]="selectedUser?.role === 'GUEST'" (click)="changeUsersRole('GUEST')">GUEST</div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <p>Change Display Name</p>
+            <div class="display-name-container">
+              <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" />
+              <button class="update-display-name" (click)="changeUsersDisplayName()">Update</button>
+            </div>
+            <p *ngIf="displayNameError" class="error-message">{{ displayNameError }}</p>
+            <p *ngIf="passwordResetMessage" class="password-reset-message">{{ passwordResetMessage }}</p>
+            <p *ngIf="updateRoleError" class="error-message">{{ updateRoleError }}</p>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="delete-user" (click)="deleteUser()">Delete User</button>
+          <button class="send-password" (click)="sendNewPassword()">Reset password</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
-

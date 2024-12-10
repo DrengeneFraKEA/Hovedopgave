@@ -24,6 +24,7 @@ export class AdminrightsComponent implements OnInit {
   pageSize: number = 5;
   loggedinUserDisplayName = localStorage.getItem("username");
   updateRoleError: string | null = null;
+  selectedView: string = 'users';  
   constructor(private http: HttpClient, private route: Router, private adminrightsService: AdminrightsService) { }
 
   ngOnInit() {
@@ -145,5 +146,9 @@ export class AdminrightsComponent implements OnInit {
         }
         );
     }
+  }
+
+  navigateTo(view: string) {
+    this.selectedView = view;
   }
 }
