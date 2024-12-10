@@ -692,7 +692,7 @@ namespace Hovedopgave.Server.Utils
                 string id = Guid.NewGuid().ToString("n").Substring(0, 30);
                 string name = $"{Names.ElementAt(rndNameIndex)} {Names.ElementAt(rndNameIndex2)}";
                 string display_name = $"{Adjectives.ElementAt(rndAdjectiveIndex)}{Objects.ElementAt(rndObjectIndex)}{rndNumber}";
-                string role = "user";
+                string role = "GUEST";
                 string gender = $"{Gender.ElementAt(rndGenderIndex)}";
                 string email = $"{display_name.ToLower()}@leagues.gg";
                 int phoneExt = rndCountryCode;
@@ -718,7 +718,7 @@ namespace Hovedopgave.Server.Utils
                 PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-                using var command = conn.CreateCommand($"INSERT INTO users (id, full_name, display_name, role, gender, email, password_salt, password, phone_ext, phone, country, discord_id, birthday, created_at, updated_at)" +
+                using var command = conn.CreateCommand($"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password, phone_ext, phone, country, discord_id, birthday, created_at, updated_at)" +
                     $"VALUES ('{id}', '{name}', '{display_name}', '{role}', '{gender}', '{email}', '{salt}', '{hashedPw}', '{phoneExt}', '{phone}', '{country}', '{discordId}', '{birthday}', '{createdAt}', '{updatedAt}')");
                 try
                 {
@@ -765,7 +765,7 @@ namespace Hovedopgave.Server.Utils
                 PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-                using var command = conn.CreateCommand($"INSERT INTO organizations (id, name, region, country, summary, description, created_at, updated_at)" +
+                using var command = conn.CreateCommand($"INSERT INTO public.organizations (id, name, region, country, summary, description, created_at, updated_at)" +
                 $"VALUES ('{id}', '{orgName}', '{region}', '{country}', '{summary}', '{description}', '{createdAt}', '{updatedAt}')");
                 try
                 {
@@ -810,7 +810,7 @@ namespace Hovedopgave.Server.Utils
                 PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-                using var command = conn.CreateCommand($"INSERT INTO teams (id, name, initials, game, country, created_at, updated_at)" +
+                using var command = conn.CreateCommand($"INSERT INTO public.teams (id, name, initials, game, country, created_at, updated_at)" +
                 $"VALUES ('{id}', '{teamName}', '{initials}', '{game}', '{country}', '{createdAt}', '{updatedAt}')");
                 try
                 {

@@ -15,7 +15,7 @@ namespace Hovedopgave.Server.Services
             List<UserDTO> admins = new List<UserDTO>();
 
             // Query to fetch only the display_name and role columns
-            await using var command = conn.CreateCommand("SELECT display_name, role FROM public.users where deleted_at is null AND role = 'admin'");
+            await using var command = conn.CreateCommand("SELECT display_name, role FROM public.users where deleted_at is null AND role in ('SYSTEMADMIN', 'SUPERUSER')");
             await using var reader = await command.ExecuteReaderAsync();
 
             // Iterate through the results and populate the list
@@ -64,13 +64,40 @@ namespace Hovedopgave.Server.Services
             return users;
         }
 
+        private async Task<Roles.Role> GetUserRoleByDisplayName(string displayName, NpgsqlDataSource conn)
+        {
+            await using var command = conn.CreateCommand(
+                "SELECT role FROM public.users WHERE display_name = @displayName AND deleted_at IS NULL"
+            );
+            command.Parameters.AddWithValue("displayName", displayName);
 
-        public async Task<bool> SoftDeleteUser(string displayName)
+            await using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return Roles.GetRoleByName(reader.GetString(0));
+            }
+
+            return Roles.Role.GUEST;
+        }
+
+        public async Task<bool> SoftDeleteUser(string loggedInUserDisplayName, string displayName)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             DateTime timestamp = DateTime.UtcNow;
+
+            // Get logged in users role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Get target user's role
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
+
+            // Check if logged in user can change the target users role
+            if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
+            {
+                return false; // Not high enough privileges/access level
+            }
 
             // Query to update deleted_at 
             await using var command = conn.CreateCommand(
@@ -86,10 +113,28 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersRole(string displayName, Roles.RoleDB role)
+        public async Task<bool> UpdateUsersRole(string loggedInUserDisplayName, string displayName, Roles.Role role)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in users role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Get target users role
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
+
+            // Check if logged in user can change the target users role
+            if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
+            {
+                return false; // Not high enough privileges/access level
+            }
+
+            // Check if logged in user can change to this role
+            if (!Roles.CanChangeRole(loggedInUserRole, role))
+            {
+                return false; // Not high enough privileges/access level
+            }
 
             // Query to update role
             await using var command = conn.CreateCommand(
@@ -105,10 +150,22 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersDisplayName(string displayName, string newDisplayName)
+        public async Task<bool> UpdateUsersDisplayName(string loggedInUserDisplayName, string displayName, string newDisplayName)
         {
             PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in users role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Get target users role
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
+
+            // Check if logged in user can change the target users role
+            if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
+            {
+                return false; // Not high enough privileges/access level
+            }
 
             // Checks if the new displa name already exists
             await using var checkCommand = conn.CreateCommand("SELECT COUNT(*) FROM public.users WHERE display_name = @newDisplayName");

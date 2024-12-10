@@ -22,17 +22,17 @@ export class AdminrightsService {
     return this.http.get<User[]>(this.apiURL + '/display-name/' + displayName + '?page=' + page + '&pageSize=' + pageSize)
   }
 
-  softDeleteUser(displayName: string): Observable<any>
+  softDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any>
   {
-    return this.http.put(this.apiURL + '/soft-delete/' + displayName, {});
+    return this.http.put(this.apiURL + '/soft-delete/' + displayName, { loggedInUserDisplayName });
   }
 
-  updateUsersRole(role: string, displayName: string): Observable<any> 
+  updateUsersRole(loggedInUserDisplayName: string, role: string, displayName: string): Observable<any> 
   {
-    return this.http.put(this.apiURL + '/update-role/' + role + '/user/' + displayName, {});
+    return this.http.put(this.apiURL + '/update-role/' + role + '/name/' + displayName, { loggedInUserDisplayName });
   }
 
-  updateUsersDisplayName(newDisplayName: string, displayName: string): Observable<any> {
-    return this.http.put(this.apiURL + '/update-name/' + newDisplayName + '/user/' + displayName, {});
+  updateUsersDisplayName(loggedInUserDisplayName: string, newDisplayName: string, displayName: string): Observable<any> {
+    return this.http.put(this.apiURL + '/update-name/' + newDisplayName + '/user/' + displayName, { loggedInUserDisplayName });
   }
 }
