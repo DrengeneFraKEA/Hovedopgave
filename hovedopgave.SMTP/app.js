@@ -42,7 +42,7 @@ app.post("/send-email", async (req, res) => {
         res.status(500).send({ message: "Error sending email", error });
     }
 });
-
-app.listen(3000, () => {
-    console.log("SMTP server listening on port 3000");
+const PORT = 8080;
+app.listen(PORT, () => {
+    console.log("SMTP server listening on port 8080");
 });

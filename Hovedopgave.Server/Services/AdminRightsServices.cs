@@ -249,7 +249,7 @@ namespace Hovedopgave.Server.Services
                     text = $"Your new password is: {newPassword}"
                 }), Encoding.UTF8, "application/json");
 
-                await client.PostAsync("http://localhost:3000/send-email", content);
+                await client.PostAsync("http://localhost:8080/send-email", content);
             }
         }
 
