@@ -692,7 +692,7 @@ namespace Hovedopgave.Server.Utils
                 string id = Guid.NewGuid().ToString("n").Substring(0, 30);
                 string name = $"{Names.ElementAt(rndNameIndex)} {Names.ElementAt(rndNameIndex2)}";
                 string display_name = $"{Adjectives.ElementAt(rndAdjectiveIndex)}{Objects.ElementAt(rndObjectIndex)}{rndNumber}";
-                string role = "user";
+                string role = "GUEST";
                 string gender = $"{Gender.ElementAt(rndGenderIndex)}";
                 string email = $"{display_name.ToLower()}@leagues.gg";
                 int phoneExt = rndCountryCode;

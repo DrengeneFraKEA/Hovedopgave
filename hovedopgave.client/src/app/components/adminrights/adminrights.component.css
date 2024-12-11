@@ -14,11 +14,15 @@ h1 {
   margin-top: 20px;
 }
 
+.container {
+  display: flex;
+}
+
 .main-container {
   display: flex;
   justify-content: space-around;
   gap: 20px;
-  max-width: 1280px;
+  flex: 1;
   margin: 50px auto;
   padding: 10px;
 }
@@ -77,6 +81,16 @@ input {
   border-radius: 4px;
   background-color: #fafafa;
   align-items: center;
+  position: relative;
+}
+.user-display-name {
+  flex: 1;
+}
+
+.user-role {
+  color: gray;
+  position: absolute;
+  right: 100px;
 }
 
   .user:hover {

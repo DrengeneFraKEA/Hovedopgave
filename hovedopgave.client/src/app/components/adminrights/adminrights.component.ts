@@ -17,11 +17,14 @@ export class AdminrightsComponent implements OnInit {
   admins: User[] = [];
   searchResult: User[] = [];
   searchQuery: string = '';
-  selectedRole: string | null = null;
+  selectedRole: string = '';
   newDisplayName: string = '';
   displayNameError: string | null = null
   currentPage: number = 1;
   pageSize: number = 5;
+  loggedinUserDisplayName = localStorage.getItem("username");
+  updateRoleError: string | null = null;
+  selectedView: string = 'users';  
   constructor(private http: HttpClient, private route: Router, private adminrightsService: AdminrightsService) { }
 
   ngOnInit() {
@@ -84,51 +87,52 @@ export class AdminrightsComponent implements OnInit {
   closeModal() {
     this.isModalOpen = false;
     this.selectedUser = null;
-    this.selectedRole = null;
+    this.selectedRole = '';
     this.newDisplayName = '';
     this.passwordResetMessage = null;
     this.displayNameError = null;
+    this.updateRoleError = null;
   }
 
 
   sendNewPassword() {
     // Logic
     this.passwordResetMessage = 'New password sent via email.';
-
-  }
+    }
 
   deleteUser() {
-    if (this.selectedUser) {
-      this.adminrightsService.softDeleteUser(this.selectedUser.displayName).subscribe(
+    if (this.selectedUser && this.loggedinUserDisplayName) {
+      this.adminrightsService.softDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins(); // Refreshing after the user is deleted
           this.closeModal();
         },
         (error) => {
-          console.error('Error deleting user: ', error);
+          this.updateRoleError = 'Not enough privileges to delete user';
         }
       );
     }
   }
+  
 
   changeUsersRole(role: string) {
-    if (this.selectedUser && this.selectedRole !== role) {
+    if (this.selectedUser && this.selectedRole !== role && this.loggedinUserDisplayName) {
       this.selectedRole = role;
-      this.adminrightsService.updateUsersRole(this.selectedRole, this.selectedUser.displayName).subscribe(
+      this.adminrightsService.updateUsersRole(this.loggedinUserDisplayName, this.selectedRole, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins(); // Refreshing after the role is updated
           this.closeModal();
         },
         (error) => {
-          console.log('Error updating users role: ', error);
+          this.updateRoleError = 'Not enough privileges to change role';
         }
       );
     }
   }
 
   changeUsersDisplayName() {
-    if (this.selectedUser && this.newDisplayName.trim() !== '') {
-      this.adminrightsService.updateUsersDisplayName(this.newDisplayName, this.selectedUser.displayName).subscribe(
+    if (this.selectedUser && this.newDisplayName.trim() !== '' && this.loggedinUserDisplayName) {
+      this.adminrightsService.updateUsersDisplayName(this.loggedinUserDisplayName, this.newDisplayName, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins(); // Refreshing after the display name is upddated
           this.closeModal();
@@ -137,12 +141,14 @@ export class AdminrightsComponent implements OnInit {
           if (error.status === 404) {
             this.displayNameError = error.error.message;
           } else {
-            console.log('Error changing display name: ', error);
+            this.updateRoleError = 'Not enough privileges to change name';
           }
         }
-      );
+        );
     }
   }
 
-
+  navigateTo(view: string) {
+    this.selectedView = view;
+  }
 }

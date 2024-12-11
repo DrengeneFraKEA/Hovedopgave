@@ -18,7 +18,7 @@ namespace Hovedopgave.Server.Controllers
         [HttpPost]
         public async Task<string> Login(LoginAttemptDTO credentials)
         {
-            DatabaseSeeder ds = new DatabaseSeeder();
+            //DatabaseSeeder ds = new DatabaseSeeder();
             //ds.SeedUsers(1000);
             //ds.SeedOrganizations(10);
             //ds.SeedTeams(10);

@@ -2,6 +2,7 @@
 using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Utils;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Hovedopgave.Server.Services
 {
@@ -19,13 +20,13 @@ namespace Hovedopgave.Server.Services
             var now = DateTime.UtcNow;
 
             // Default to a very early date if fromDate is not provided
-            fromDate ??= DateTime.MinValue.ToUniversalTime(); 
+            fromDate ??= DateTime.MinValue.ToUniversalTime();
 
             // Default to current UTC time if toDate is not provided
-            toDate ??= DateTime.UtcNow; 
+            toDate ??= DateTime.UtcNow;
 
             // Calculate start and end of the date ranges for comparison
-            var startOfDay = fromDate.Value.Date; 
+            var startOfDay = fromDate.Value.Date;
             var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1); // end of the day (one tick before the next day) nanosecond ticks:)
 
             // filtering date range 
@@ -70,5 +71,19 @@ namespace Hovedopgave.Server.Services
                 MonthlySignups = monthlyUsers + monthlyTeams + monthlyOrganizations
             };
         }
+
+        public async Task<int> GetTotalUsers() => await _context.Users.CountAsync();
+
+        public async Task<int> GetTotalTeams() => await _context.Teams.CountAsync();
+
+        public async Task<int> GetTotalOrganizations() => await _context.Organizations.CountAsync();
+
+        public async Task<int> GetTotalValorantProfiles() => await _context.Valorant_Profiles.CountAsync();
+
+        public async Task<int> GetTotalUserGameProfiles() => await _context.User_Game_Profiles.CountAsync();
+
+        public async Task<int> GetTotalLeagueProfiles() => await _context.League_of_Legends_Profiles.CountAsync();
+
+        public async Task<int> GetTotalCompetitions() => await _context.Competitions.CountAsync();
     }
 }
