@@ -6,7 +6,6 @@ namespace Hovedopgave.Server.Services
     public interface IStatisticsService
     {
         Task<SignupStatsDTO> GetSignupStats(DateTime? fromDate, DateTime? toDate);
-
         Task<int> GetTotalUsers();
         Task<int> GetTotalTeams();
         Task<int> GetTotalOrganizations();
@@ -14,5 +13,6 @@ namespace Hovedopgave.Server.Services
         Task<int> GetTotalUserGameProfiles();
         Task<int> GetTotalLeagueProfiles();
         Task<int> GetTotalCompetitions();
+
     }
 }
