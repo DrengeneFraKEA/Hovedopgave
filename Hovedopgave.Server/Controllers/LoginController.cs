@@ -15,12 +15,6 @@ namespace Hovedopgave.Server.Controllers
     [Route("[controller]")]
     public class LoginController : ControllerBase
     {
-        // DELETE THIS
-        public Dictionary<string, string> tempAccounts = new Dictionary<string, string>() 
-        {
-            {"john", "1234" },
-        };
-
         [HttpPost]
         public async Task<string> Login(LoginAttemptDTO credentials)
         {

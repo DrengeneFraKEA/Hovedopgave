@@ -25,6 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+builder.Services.AddScoped<IGraphService, GraphService>();
 
 var app = builder.Build();
 
