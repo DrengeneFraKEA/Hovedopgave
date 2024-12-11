@@ -9,6 +9,8 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "hovedopgave.client", "hoved
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "hovedopgave.SMTP", "hovedopgave.SMTP\hovedopgave.SMTP.njsproj", "{2DE2B8A6-12A6-45F3-98C8-0223132097CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD04A6C9-5755-4A7D-8E0A-923BB510DB04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DE2B8A6-12A6-45F3-98C8-0223132097CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DE2B8A6-12A6-45F3-98C8-0223132097CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DE2B8A6-12A6-45F3-98C8-0223132097CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DE2B8A6-12A6-45F3-98C8-0223132097CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

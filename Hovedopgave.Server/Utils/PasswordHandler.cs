@@ -30,5 +30,24 @@ namespace Hovedopgave.Server.Utils
             rng.GetBytes(bytes);
             return Convert.ToBase64String(bytes);
         }
+
+        public static string GenerateRandomPassword(int length = 12)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder result = new StringBuilder();
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+
+                while (length-- > 0)
+                {
+                    rng.GetBytes(uintBuffer);
+                    uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                    result.Append(validChars[(int)(num % (uint)validChars.Length)]);
+                }
+            }
+            return result.ToString();
+        }
+
     }
 }
