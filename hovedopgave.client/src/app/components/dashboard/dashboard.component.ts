@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { StatisticsService, SignupStats } from '../../services/Statistics.service';
+import { graphData, GraphService } from '../../services/graph.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import Chart from 'chart.js/auto'
 
 
 @Component({
@@ -10,6 +12,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
+
+  constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService, private graphService: GraphService) { }
+
   stats: SignupStats = {  //Default values, for at undgå fejl ved 0 data
     totalSignups: 0,
     userSignups: 0,
@@ -31,12 +37,13 @@ export class DashboardComponent implements OnInit {
     toDate: ''
   };
 
-  constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService) { }
+  data: graphData[] = [];
 
   ngOnInit() {
     var token = localStorage.getItem("token");
     if (token === null || token === "") this.route.navigate(['login']);
     this.fetchStats();
+    // this.DrawLineChart();
   }
 
   setFilter(filter: string) {
@@ -44,6 +51,7 @@ export class DashboardComponent implements OnInit {
     this.fromDate = null;
     this.toDate = null;
     this.fetchStats();
+    this.RefreshGraphData();
   }
 
   navigateTo(view: string) {
@@ -96,4 +104,72 @@ export class DashboardComponent implements OnInit {
     this.fetchStats();
   }
 
+  RefreshGraphData()
+  {
+    this.http.get<graphData[]>(`https://localhost:7213/graph/${this.selectedFilter}/${this.selectedView}`).subscribe((data) =>
+    {
+      this.data = data
+      this.DrawLineChart();
+    });
+  }
+
+
+  DrawLineChart()
+  {
+    // Prepare the chart data
+    const labels = this.data.map(item => item.date);
+    const values = this.data.map(item => item.value);
+
+
+    if (Chart.getChart("chart-container")) {
+      Chart.getChart("chart-container")?.destroy()
+    }
+
+    // Create the chart
+    const ctx = document.getElementById('chart-container') as HTMLCanvasElement; // Get the canvas element by ID
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: `${this.selectedFilter} registered ${this.selectedView}`,
+          data: values,
+          borderColor: 'rgba(55, 44, 200, 1)', // Line color
+          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
+          borderWidth: 3,
+          tension: 0 // For smooth lines
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function (tooltipItem) {
+                return tooltipItem.raw + " registrations"; // Custom tooltip label
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Date'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Registrations'
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
 }

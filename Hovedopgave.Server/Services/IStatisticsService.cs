@@ -5,6 +5,5 @@ namespace Hovedopgave.Server.Services
     public interface IStatisticsService
     {
         Task<SignupStatsDTO> GetSignupStats(DateTime? fromDate, DateTime? toDate);
-
     }
 }

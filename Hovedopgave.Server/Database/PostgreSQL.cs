@@ -19,13 +19,17 @@ namespace Hovedopgave.Server.Database
             {
                 // Connect to local DB
                 this.username = "postgres"; // ignore for now
-                this.password = "password"; // ignore for now
+                this.password = "1234"; // ignore for now
 
                 this.connectionstring = $"Host=localhost;Username={this.username};Password={this.password};Database=postgres";
             }
             else 
             {
                 // Connect to azure
+                this.username = "leagues_admin";
+                this.password = "InternsRule#1";
+
+                this.connectionstring = $"Host=lgg-dev-gwc-interns-pgsql.postgres.database.azure.com;Username={this.username};Password={this.password};Database=leagues_data";
             }
         }
     }
