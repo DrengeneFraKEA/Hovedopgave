@@ -12,7 +12,7 @@ namespace Hovedopgave.Server.Services
         {
             if (string.IsNullOrEmpty(credentials.username) || string.IsNullOrEmpty(credentials.password)) return null;
 
-            PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE display_name='{credentials.username}'");

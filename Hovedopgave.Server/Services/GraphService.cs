@@ -16,9 +16,9 @@ namespace Hovedopgave.Server.Services
 
             for (int i = 0; i < daysInThePast; i++) gdto[i] = new GraphDTO() {date = DateTime.Now.AddDays(-(daysInThePast - i)).Date.ToString("dd/MM/yyyy"), value = 0 };
 
-            string desiredDate = DateTime.Now.AddDays(-daysInThePast).Date.ToString("dd/MM/yyyy");
+            string desiredDate = DateTime.Now.AddDays(-daysInThePast).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE created_at > '{desiredDate}'");
@@ -50,9 +50,9 @@ namespace Hovedopgave.Server.Services
                 } 
             }
 
-            string desiredDate = DateTime.Now.AddDays(-weeksInThePast * 7).Date.ToString("dd/MM/yyyy");
+            string desiredDate = DateTime.Now.AddDays(-weeksInThePast * 7).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE created_at > '{desiredDate}'");
@@ -93,9 +93,9 @@ namespace Hovedopgave.Server.Services
                 }
             }
 
-            string desiredDate = gdto.Last().date;
+            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01";
 
-            PostgreSQL psql = new PostgreSQL(true); // change to false once azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE created_at > '{desiredDate}'");

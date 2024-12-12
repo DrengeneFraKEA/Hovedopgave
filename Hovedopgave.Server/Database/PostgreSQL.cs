@@ -6,30 +6,34 @@ namespace Hovedopgave.Server.Database
         private bool uselocaldb { get; set; }
         private string username { get; set; }
         private string password { get; set; }
-        private string port { get; set; } = "5432";
         public string connectionstring {get; set; }
+        public string host { get; set; }
+        public string database { get; set; }
 
         public PostgreSQL(bool uselocaldb) 
         {
             this.uselocaldb = uselocaldb;
-
             
             // Setup connection
             if (this.uselocaldb) 
             {
                 // Connect to local DB
-                this.username = "postgres"; // ignore for now
-                this.password = "1234"; // ignore for now
+                this.username = DotNetEnv.Env.GetString("LOCAL_DB_USERNAME");
+                this.password = DotNetEnv.Env.GetString("LOCAL_DB_PASSWORD");
+                this.host = DotNetEnv.Env.GetString("LOCAL_DB_HOST");
+                this.database = DotNetEnv.Env.GetString("LOCAL_DB_DATABASE");
 
-                this.connectionstring = $"Host=localhost;Username={this.username};Password={this.password};Database=postgres";
+                this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database}";
             }
             else 
             {
                 // Connect to azure
-                this.username = "leagues_admin";
-                this.password = "InternsRule#1";
+                this.username = DotNetEnv.Env.GetString("AZURE_DB_USERNAME");
+                this.password = DotNetEnv.Env.GetString("AZURE_DB_PASSWORD");
+                this.host = DotNetEnv.Env.GetString("AZURE_DB_HOST");
+                this.database = DotNetEnv.Env.GetString("AZURE_DB_DATABASE");
 
-                this.connectionstring = $"Host=lgg-dev-gwc-interns-pgsql.postgres.database.azure.com;Username={this.username};Password={this.password};Database=leagues_data";
+                this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database}";
             }
         }
     }
