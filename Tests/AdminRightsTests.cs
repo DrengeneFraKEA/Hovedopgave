@@ -7,8 +7,7 @@ namespace Tests
 {
     public class AdminRightsTests
     {
-        PostgreSQL psql = new PostgreSQL(true);
-
+        PostgreSQL psql = new PostgreSQL(false);
 
         [Fact]
         public async Task GetAllUsers()

@@ -1,3 +1,5 @@
+using DotNetEnv;
+using DotNetEnv.Configuration;
 using Hovedopgave.Server.Database;
 using Hovedopgave.Server.Services;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,8 @@ builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =
 builder.Services.AddControllers();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 builder.Services.AddScoped<IGraphService, GraphService>();
+
+var config = new ConfigurationBuilder().AddDotNetEnv("env.env", LoadOptions.TraversePath()).Build();
 
 var app = builder.Build();
 

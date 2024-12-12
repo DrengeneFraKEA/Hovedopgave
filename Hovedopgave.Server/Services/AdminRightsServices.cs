@@ -9,7 +9,7 @@ namespace Hovedopgave.Server.Services
     {
         public async Task<List<UserDTO>> GetAllAdmins()
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> admins = new List<UserDTO>();
@@ -34,7 +34,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName, int page, int pageSize)
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
@@ -82,7 +82,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<bool> SoftDeleteUser(string loggedInUserDisplayName, string displayName)
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             DateTime timestamp = DateTime.UtcNow;
@@ -115,7 +115,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<bool> UpdateUsersRole(string loggedInUserDisplayName, string displayName, Roles.Role role)
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
@@ -152,7 +152,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<bool> UpdateUsersDisplayName(string loggedInUserDisplayName, string displayName, string newDisplayName)
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role

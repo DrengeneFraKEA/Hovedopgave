@@ -3,8 +3,7 @@ import { StatisticsService, SignupStats } from '../../services/Statistics.servic
 import { graphData, GraphService } from '../../services/graph.service';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import Chart from 'chart.js/auto'
-
+import Chart from 'chart.js/auto';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,10 +12,9 @@ import Chart from 'chart.js/auto'
 })
 export class DashboardComponent implements OnInit {
 
-
   constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService, private graphService: GraphService) { }
 
-  stats: SignupStats = {  //Default values, for at undgå fejl ved 0 data
+  stats: SignupStats = {
     totalSignups: 0,
     userSignups: 0,
     teamSignups: 0,
@@ -24,7 +22,7 @@ export class DashboardComponent implements OnInit {
     dailySignups: 0,
     weeklySignups: 0,
     monthlySignups: 0
-  }; 
+  };
   totalUserSignups: number = 0;
   totalTeamSignups: number = 0;
   totalOrganizationSignups: number = 0;
@@ -38,31 +36,29 @@ export class DashboardComponent implements OnInit {
   fromDate: string | null = null;
   toDate: string | null = null;
 
-  //Til dato periode 
   filter = {
     fromDate: '',
     toDate: ''
   };
 
   data: graphData[] = [];
-  cache: { [key: string]: number } = {}; // Cache for fetched totals
-  constructor(private http: HttpClient, private route: Router, private statisticsService: StatisticsService) { }
-
+  cache: { [key: string]: number } = {};
 
   ngOnInit() {
     const token = localStorage.getItem('token');
     if (!token) this.route.navigate(['login']);
     this.updateView('overview'); // Default view
     this.fetchStats();
-    // this.DrawLineChart();
   }
 
   setFilter(filter: string) {
     this.selectedFilter = filter;
     this.fromDate = null;
     this.toDate = null;
-    this.fetchStats();
+    //this.fetchStats();
     this.RefreshGraphData();
+  }
+
   updateView(view: string) {
     this.selectedView = view;
 
@@ -88,8 +84,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
-  // Fetches the current filter, selected view, or custom date range
   fetchStats() {
     if (this.fromDate && this.toDate) {
       this.statisticsService.getSignupStats(this.fromDate, this.toDate).subscribe({
@@ -101,7 +95,6 @@ export class DashboardComponent implements OnInit {
         }
       });
     } else {
-      //Stat filters
       const now = new Date();
       switch (this.selectedFilter) {
         case 'daily':
@@ -134,29 +127,22 @@ export class DashboardComponent implements OnInit {
     this.fetchStats();
   }
 
-  RefreshGraphData()
-  {
-    this.http.get<graphData[]>(`https://localhost:7213/graph/${this.selectedFilter}/${this.selectedView}`).subscribe((data) =>
-    {
-      this.data = data
+  RefreshGraphData() {
+    this.http.get<graphData[]>(`https://localhost:7213/graph/${this.selectedFilter}/${this.selectedView}`).subscribe((data) => {
+      this.data = data;
       this.DrawLineChart();
     });
   }
 
-
-  DrawLineChart()
-  {
-    // Prepare the chart data
+  DrawLineChart() {
     const labels = this.data.map(item => item.date);
     const values = this.data.map(item => item.value);
 
-
     if (Chart.getChart("chart-container")) {
-      Chart.getChart("chart-container")?.destroy()
+      Chart.getChart("chart-container")?.destroy();
     }
 
-    // Create the chart
-    const ctx = document.getElementById('chart-container') as HTMLCanvasElement; // Get the canvas element by ID
+    const ctx = document.getElementById('chart-container') as HTMLCanvasElement;
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -164,10 +150,10 @@ export class DashboardComponent implements OnInit {
         datasets: [{
           label: `${this.selectedFilter} registered ${this.selectedView}`,
           data: values,
-          borderColor: 'rgba(55, 44, 200, 1)', // Line color
-          backgroundColor: 'rgba(75, 192, 192, 0.2)', // Fill color
+          borderColor: 'rgba(55, 44, 200, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderWidth: 3,
-          tension: 0 // For smooth lines
+          tension: 0
         }]
       },
       options: {
@@ -179,7 +165,7 @@ export class DashboardComponent implements OnInit {
           tooltip: {
             callbacks: {
               label: function (tooltipItem) {
-                return tooltipItem.raw + " registrations"; // Custom tooltip label
+                return tooltipItem.raw + " registrations";
               }
             }
           }
@@ -201,12 +187,5 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
-  }
- 
-  setFilter(filter: string) {
-    this.selectedFilter = filter;
-    this.fromDate = null;
-    this.toDate = null;
-    this.fetchStats();
   }
 }
