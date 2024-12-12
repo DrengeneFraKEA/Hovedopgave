@@ -33,7 +33,7 @@ namespace Hovedopgave.Server.Database
                 this.host = DotNetEnv.Env.GetString("AZURE_DB_HOST");
                 this.database = DotNetEnv.Env.GetString("AZURE_DB_DATABASE");
 
-                this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database};SslMode=Require";
+                this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database};SslMode=Prefer";
             }
         }
     }
