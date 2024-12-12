@@ -7,7 +7,32 @@ namespace Tests
 {
     public class AdminRightsTests
     {
-        PostgreSQL psql = new PostgreSQL(false);
+        private const string ENV_FILE = "env.env";
+        PostgreSQL psql;
+
+        public AdminRightsTests()
+        {
+            Setup();
+        }
+
+        public void Setup()
+        {
+            if (File.Exists(ENV_FILE))
+            {
+                DotNetEnv.Env.Load(ENV_FILE);
+            }
+            psql = new PostgreSQL(false);
+        }
+
+        [Fact]
+        public async Task LoadEnvFile()
+        {
+            // Arrange
+            string expected = "postgres";
+            string actual = DotNetEnv.Env.GetString("LOCAL_DB_USERNAME");
+            // Assert
+            Assert.Equal(expected, actual);
+        }
 
         [Fact]
         public async Task GetAllUsers()
@@ -74,32 +99,32 @@ namespace Tests
             }
 
             // Act 1: Verify that the user can be updated (change role)
-            var updateRoleResult = await service.UpdateUsersRole("BigSky1", testUserName, newRole);
+            var updateRoleResult = await service.UpdateUsersRole("Faker", testUserName, newRole);
 
             // Assert 1: Assert that the user role was updated successfully
             Assert.True(updateRoleResult);
 
             // Act 2: Verify that the user can be updated (change display name)
-            var updateDisplayNameResult = await service.UpdateUsersDisplayName("BigSky1", testUserName, "TestUserChangedName");
+            var updateDisplayNameResult = await service.UpdateUsersDisplayName("Faker", testUserName, "TestUserChangedName");
 
             // Assert 2: Assert that the user display name was updated successfully
             Assert.True(updateDisplayNameResult);
             testUserName = "TestUserChangedName";
 
             // Act 3: Verify that the user CAN NOT be updated with an existing display name 
-            var updateWithAnExistingOneResult= await service.UpdateUsersDisplayName("BigSky1", testUserName, "Quad");
+            var updateWithAnExistingOneResult= await service.UpdateUsersDisplayName("Faker", testUserName, "Quad");
 
             // Assert 3: Assert that the user display name was not updated successfully
             Assert.False(updateWithAnExistingOneResult);
 
             // Act 4: Soft delete the user
-            var softDeleteResult = await service.SoftDeleteUser("BigSky1", testUserName);
+            var softDeleteResult = await service.SoftDeleteUser("Faker", testUserName);
 
             // Assert 4: Assert that the user was soft deleted successfully
             Assert.True(softDeleteResult);
 
             // Act 5: Try to soft delete the same user again (should return false)
-            var softDeleteAgainResult = await service.SoftDeleteUser("BigSky1", testUserName);
+            var softDeleteAgainResult = await service.SoftDeleteUser("Faker", testUserName);
 
             // Assert 5: Assert that trying to delete an already deleted user returns false
             Assert.False(softDeleteAgainResult);
