@@ -29,7 +29,7 @@ namespace Tests
         {
             // Arrange
             string expected = "leagues_data";
-            string actual = DotNetEnv.Env.GetString("LOCAL_DB_DATABASE");
+            string actual = DotNetEnv.Env.GetString("AZURE_DB_DATABASE");
             // Assert
             Assert.Equal(expected, actual);
         }
@@ -112,7 +112,7 @@ namespace Tests
         //    testUserName = "TestUserChangedName";
 
         //    // Act 3: Verify that the user CAN NOT be updated with an existing display name 
-        //    var updateWithAnExistingOneResult= await service.UpdateUsersDisplayName("Faker", testUserName, "Quad");
+        //    var updateWithAnExistingOneResult = await service.UpdateUsersDisplayName("Faker", testUserName, "Quad");
 
         //    // Assert 3: Assert that the user display name was not updated successfully
         //    Assert.False(updateWithAnExistingOneResult);
