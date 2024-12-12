@@ -96,9 +96,18 @@ export class AdminrightsComponent implements OnInit {
 
 
   sendNewPassword() {
-    // Logic
-    this.passwordResetMessage = 'New password sent via email.';
+    if (this.selectedUser) {
+      this.adminrightsService.resetUserPassword(this.selectedUser.displayName).subscribe(
+        () => {
+          this.passwordResetMessage = 'New password sent via email.';
+        },
+        (error) => {
+          console.error('Error resetting password: ', error);
+          this.passwordResetMessage = 'Failed to reset password.';
+        }
+      );
     }
+  }
 
   deleteUser() {
     if (this.selectedUser && this.loggedinUserDisplayName) {
