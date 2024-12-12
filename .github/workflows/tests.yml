@@ -14,12 +14,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Environment variables
         run: |
-          echo "AZURE_DB_USERNAME="${{ secrets.AZURE_DB_USERNAME }}"" >> ./Hovedopgave.Server/env.env
-          echo "AUZRE_DB_PASSWORD="${{ secrets.AZURE_DB_PASSWORD }}"" >> ./Hovedopgave.Server/env.env
-          echo "AZURE_DB_HOST="${{ secrets.AZURE_DB_HOST }}"" >> ./Hovedopgave.Server/env.env
-          echo "AZURE_DB_DATABASE="${{ secrets.AZURE_DB_DATABASE }}"" >> ./Hovedopgave.Server/env.env
-          echo "PASSWORD_HASH="${{ secrets.PASSWORD_HASH }}"" >> ./Hovedopgave.Server/env.env
-          echo "JWT_TOKEN="${{ secrets.JWT_TOKEN }}"" >> ./Hovedopgave.Server/env.env
+          echo "AZURE_DB_USERNAME="${{ secrets.AZURE_DB_USERNAME }}"" >> env.env
+          echo "AUZRE_DB_PASSWORD="${{ secrets.AZURE_DB_PASSWORD }}"" >> env.env
+          echo "AZURE_DB_HOST="${{ secrets.AZURE_DB_HOST }}"" >> env.env
+          echo "AZURE_DB_DATABASE="${{ secrets.AZURE_DB_DATABASE }}"" >> env.env
+          echo "PASSWORD_HASH="${{ secrets.PASSWORD_HASH }}"" >> env.env
+          echo "JWT_TOKEN="${{ secrets.JWT_TOKEN }}"" >> env.env
 
       - name: Debug environment files
         run: ls -R .
