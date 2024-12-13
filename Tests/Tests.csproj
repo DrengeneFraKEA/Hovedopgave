@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\hovedopgave.client\hovedopgave.client.esproj" />
     <ProjectReference Include="..\Hovedopgave.Server\Hovedopgave.Server.csproj" />
   </ItemGroup>
 
