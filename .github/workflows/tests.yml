@@ -14,6 +14,10 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
+      - name: Restore dependencies
+        run: dotnet restore
+        continue-on-error: true
+
       - name: Environment variables
         run: |
           echo "AZURE_DB_USERNAME="${{ secrets.AZURE_DB_USERNAME }}"" >> ./Hovedopgave.Server/env.env
