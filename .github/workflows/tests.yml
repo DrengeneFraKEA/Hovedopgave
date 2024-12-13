@@ -14,9 +14,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-      - name: Restore dependencies
-        run: dotnet restore
-        continue-on-error: true
 
       - name: Environment variables
         run: |
@@ -29,3 +26,4 @@ jobs:
 
       - name: Test
         run: dotnet test
+        continue-on-error: true
