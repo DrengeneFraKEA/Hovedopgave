@@ -33,7 +33,7 @@ namespace Hovedopgave.Server.Database
                 this.host = DotNetEnv.Env.GetString("AZURE_DB_HOST");
                 this.database = DotNetEnv.Env.GetString("AZURE_DB_DATABASE");
 
-                this.connectionstring = $"Host=lgg-dev-gwc-interns-pgsql.postgres.database.azure.com;Username=leagues_admin;Password=InternsRule#1;Database=leagues_data";
+                this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database}";
             }
         }
     }
