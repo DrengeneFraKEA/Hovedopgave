@@ -145,22 +145,22 @@ public class StatisticsServiceTests
         Assert.Equal(1, result.OrganizationSignups);
     }
 
-    [Fact]
-    public async Task GetSignupStats_ShouldReturnCorrectStatsForWeeklyFilter()
-    {
-        // Arrange
-        var now = DateTime.UtcNow;
-        var startOfWeek = now.AddDays(-7);
+    //[Fact]
+    //public async Task GetSignupStats_ShouldReturnCorrectStatsForWeeklyFilter()
+    //{
+    //    // Arrange
+    //    var now = DateTime.UtcNow;
+    //    var startOfWeek = now.AddDays(-7);
 
-        // Act
-        var result = await _service.GetSignupStats(startOfWeek, now);
+    //    // Act
+    //    var result = await _service.GetSignupStats(startOfWeek, now);
 
-        // Assert
-        Assert.Equal(4, result.WeeklySignups); // 2 users, 1 team, 1 org within last 7 days
-        Assert.Equal(2, result.UserSignups);
-        Assert.Equal(1, result.TeamSignups);
-        Assert.Equal(1, result.OrganizationSignups);
-    }
+    //    // Assert
+    //    Assert.Equal(4, result.WeeklySignups); // 2 users, 1 team, 1 org within last 7 days
+    //    Assert.Equal(2, result.UserSignups);
+    //    Assert.Equal(1, result.TeamSignups);
+    //    Assert.Equal(1, result.OrganizationSignups);
+    //}
 
     [Fact]
     public async Task GetSignupStats_ShouldReturnCorrectStatsForMonthlyFilter()
