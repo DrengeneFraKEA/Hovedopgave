@@ -36,5 +36,10 @@ namespace Hovedopgave.Server.Database
                 this.connectionstring = $"Host={this.host};Username={this.username};Password={this.password};Database={this.database}";
             }
         }
+
+        public static string GetConnectionString(bool localDb) 
+        {
+            return new PostgreSQL(localDb).connectionstring;
+        }
     }
 }
