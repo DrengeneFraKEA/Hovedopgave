@@ -17,6 +17,11 @@ namespace Hovedopgave.Server.Services
 
         public async Task<SignupStatsDTO> GetSignupStats(DateTime? fromDate, DateTime? toDate)
         {
+            if (fromDate.HasValue && toDate.HasValue && fromDate > toDate)
+            {
+                throw new ArgumentException("fromDate cannot be greater than toDate.");
+            }
+
             var now = DateTime.UtcNow;
 
             // Default to a very early date if fromDate is not provided
@@ -27,7 +32,7 @@ namespace Hovedopgave.Server.Services
 
             // Calculate start and end of the date ranges for comparison
             var startOfDay = fromDate.Value.Date;
-            var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1); // end of the day (one tick before the next day) nanosecond ticks:)
+            var endOfDay = toDate.Value.Date.AddDays(1).AddTicks(-1); // end of the day
 
             // filtering date range 
             var userSignups = StatisticsFilter.ApplyDateRangeFilter(_context.Users, u => u.created_at, startOfDay, endOfDay);
@@ -41,7 +46,7 @@ namespace Hovedopgave.Server.Services
 
             // Daily signups: filter within today's date range
             var dailyStart = now.Date; // today at midnight
-            var dailyEnd = dailyStart.AddDays(1).AddTicks(-1); // end of today (one tick before the next day)
+            var dailyEnd = dailyStart.AddDays(1).AddTicks(-1); // end of today
 
             var dailyUsers = await userSignups.CountAsync(u => u.created_at >= dailyStart && u.created_at <= dailyEnd);
             var dailyTeams = await teamSignups.CountAsync(t => t.created_at >= dailyStart && t.created_at <= dailyEnd);
@@ -71,6 +76,7 @@ namespace Hovedopgave.Server.Services
                 MonthlySignups = monthlyUsers + monthlyTeams + monthlyOrganizations
             };
         }
+
 
         public async Task<int> GetTotalUsers() => await _context.Users.CountAsync();
 
