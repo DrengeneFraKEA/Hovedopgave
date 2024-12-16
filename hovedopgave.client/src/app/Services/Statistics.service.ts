@@ -63,34 +63,6 @@ export class StatisticsService {
     );
   }
 
-  getTotalUsers(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/users`);
-  }
-
-  getTotalTeams(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/teams`);
-  }
-
-  getTotalOrganizations(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/organizations`);
-  }
-
-  getTotalValorantProfiles(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/valorant_profiles`);
-  }
-
-  getTotalUserGameProfiles(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/user_game_profiles`);
-  }
-
-  getTotalLeagueProfiles(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/league_profiles`);
-  }
-
-  getTotalCompetitions(): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/totals/competitions`);
-  }
-
   getOverviewTotals(): Observable<TotalCounts> {
     return this.http.get<TotalCounts>(`${this.apiUrl}/totals/overview`);
   }

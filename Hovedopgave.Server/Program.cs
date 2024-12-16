@@ -22,7 +22,7 @@ builder.Services.AddSingleton(sp => new PostgreSQL(uselocaldb: true)); // False 
 builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 {
     var postgreSql = serviceProvider.GetRequiredService<PostgreSQL>();
-    options.UseNpgsql(postgreSql.connectionstring);
+    options.UseNpgsql(PostgreSQL.GetConnectionString(false));
 });
 
 builder.Services.AddControllers();

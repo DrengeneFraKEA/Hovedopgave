@@ -31,6 +31,7 @@ export class LoginComponent {
           // Check if anything is missing.
           if (loginDto.user_id === null || loginDto.user_id === "" || loginDto.username === null || loginDto.username === "" || loginDto.token === null || loginDto.token === "") return;
 
+          // Setup login cache
           localStorage.setItem("user_id", loginDto.user_id);
           localStorage.setItem("username", loginDto.username);
           localStorage.setItem("token", loginDto.token);
