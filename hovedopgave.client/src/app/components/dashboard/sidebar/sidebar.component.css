@@ -1,31 +1,34 @@
 .sidebar {
-  background-color: #f4f4f4;
+  background-color: #f3f3f3;
   transition: width 0.3s ease;
   overflow: hidden;
   white-space: nowrap;
-}
-
-  .sidebar.collapsed {
-    width: 60px; /* Minimal width when collapsed */
-  }
-
-.sidebar {
-  width: 200px; /* Full width when expanded */
+  width: 60px; /* Minimal width when collapsed */
   height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 20px;
 }
+
+  .sidebar:hover {
+    width: 200px; /* Full width when expanded */
+  }
 
 .burger-menu {
   padding: 10px;
   cursor: pointer;
-  background-color: #ddd;
-  text-align: center;
+  background-color: #f3f3f3;
 }
 
   .burger-menu:hover {
-    background-color: #ccc;
+    background-color: #f3f3f3;
   }
+
+.menu-icon {
+  width: 40px;
+  height: auto;
+}
 
 ul {
   list-style: none;
@@ -40,10 +43,31 @@ li {
 
   li a {
     text-decoration: none;
-    color: #333;
+    color: #030303;
     cursor: pointer;
   }
 
   li:hover {
-    background-color: #e0e0e0;
+    background-color: #f3f3f3;
   }
+
+    li:hover a {
+      color: #898789;
+    }
+.grayed-out a {
+  color: #a0a0a0; 
+}
+
+.grayed-out:hover a {
+  color: #898789; 
+}
+
+/* Hide the list items when the sidebar is collapsed */
+.sidebar-menu li {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar:hover .sidebar-menu li {
+  opacity: 1;
+}
