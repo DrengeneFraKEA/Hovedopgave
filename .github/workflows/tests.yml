@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - dev
-env:
-  ACTIONS_STEP_DEBUG: true
-  ACTIONS_RUNNER_DEBUG: true
+      - master
 jobs:
   build:
     runs-on: ubuntu-latest
