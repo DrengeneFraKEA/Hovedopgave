@@ -129,6 +129,28 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [HttpPut("reset-password/{displayName}")]
+        public async Task<IActionResult> ResetUserPassword(string displayName)
+        {
+            try
+            {
+                bool success = await adminRightsServices.ResetUserPassword(displayName);
+
+                if (success)
+                {
+                    return Ok(new { message = $"Password for user '{displayName}' has been reset and sent via email." });
+                }
+                else
+                {
+                    return NotFound(new { message = $"User with display name '{displayName}' not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while resetting the password.", details = ex.Message });
+            }
+        }
+
 
     }
 }

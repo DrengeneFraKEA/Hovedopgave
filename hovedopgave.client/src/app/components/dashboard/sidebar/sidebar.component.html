@@ -1,8 +1,8 @@
-<div class="sidebar" [class.collapsed]="collapsed">
-  <div class="burger-menu" (click)="toggleSidebar()">
-    &#9776; <!-- Burger menu icon -->
+<div class="sidebar">
+  <div class="burger-menu">
+    <img src="/leagues_icon_white.jpg" alt="Menu Icon" class="menu-icon" />
   </div>
-  <ul *ngIf="!collapsed">
+  <ul class="sidebar-menu">
     <li><a (click)="updateView('overview')">Dashboard Overview</a></li>
     <li><a (click)="updateView('users')">Users</a></li>
     <li><a (click)="updateView('teams')">Teams</a></li>
@@ -11,5 +11,9 @@
     <li><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
     <li><a (click)="updateView('league_profiles')">League Profiles</a></li>
     <li><a (click)="updateView('competitions')">Competitions</a></li>
+    <li class="grayed-out"><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
+    <li class="grayed-out"><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
+    <li class="grayed-out"><a (click)="updateView('league_profiles')">League Profiles</a></li>
+    <li class="grayed-out"><a (click)="updateView('competitions')">Competitions</a></li>
   </ul>
 </div>

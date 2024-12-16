@@ -2,6 +2,9 @@
 using Npgsql;
 using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Models;
+using Hovedopgave.Server.Utils;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Hovedopgave.Server.Services
 {
@@ -189,6 +192,65 @@ namespace Hovedopgave.Server.Services
             int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
             return rowsAffected > 0; // Return true if a row was updated
 
+        }
+
+        public async Task<bool> ResetUserPassword(string displayName)
+        {
+            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get user's email
+            await using var command = conn.CreateCommand(
+                "SELECT email FROM public.users WHERE display_name = @displayName AND deleted_at IS NULL"
+            );
+            command.Parameters.AddWithValue("displayName", displayName);
+
+            await using var reader = await command.ExecuteReaderAsync();
+            if (!await reader.ReadAsync())
+            {
+                return false; // User not found
+            }
+
+            string email = reader.GetString(0);
+
+            // Generate new password
+            string newPassword = PasswordHandler.GenerateRandomPassword();
+            string salt = PasswordHandler.GenerateSalt();
+            string hashedPassword = PasswordHandler.GetHashedPassword(newPassword, salt);
+
+            // Update users password in the database
+            await using var updateCommand = conn.CreateCommand(
+                "UPDATE public.users SET password = @hashedPassword, password_salt = @salt WHERE display_name = @displayName AND deleted_at IS NULL"
+            );
+            updateCommand.Parameters.AddWithValue("hashedPassword", hashedPassword);
+            updateCommand.Parameters.AddWithValue("salt", salt);
+            updateCommand.Parameters.AddWithValue("displayName", displayName);
+
+            int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
+            if (rowsAffected == 0)
+            {
+                return false; // Failed to update password
+            }
+
+            // Send email with new password
+            await SendPasswordResetEmail(email, newPassword);
+
+            return true;
+        }
+
+        private async Task SendPasswordResetEmail(string email, string newPassword)
+        {
+            using (var client = new HttpClient())
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    to = email,
+                    subject = "Password Reset",
+                    text = $"Your new password is: {newPassword}"
+                }), Encoding.UTF8, "application/json");
+
+                await client.PostAsync("http://localhost:8080/send-email", content);
+            }
         }
 
     }
