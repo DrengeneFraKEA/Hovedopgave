@@ -3,17 +3,22 @@
     <img src="/leagues_icon_white.jpg" alt="Menu Icon" class="menu-icon" />
   </div>
   <ul class="sidebar-menu">
+    <!-- General -->
     <li><a (click)="updateView('overview')">Dashboard Overview</a></li>
+
+    <!-- Statistics Section -->
+    <li class="menu-section-title">Statistics</li>
     <li><a (click)="updateView('users')">Users</a></li>
     <li><a (click)="updateView('teams')">Teams</a></li>
-    <li><a (click)="updateView('organisations')">Organizations</a></li>
-    <li><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
-    <li><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
-    <li><a (click)="updateView('league_profiles')">League Profiles</a></li>
-    <li><a (click)="updateView('competitions')">Competitions</a></li>
+    <li><a (click)="updateView('orginizations')">Organizations</a></li>
     <li class="grayed-out"><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
     <li class="grayed-out"><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
     <li class="grayed-out"><a (click)="updateView('league_profiles')">League Profiles</a></li>
     <li class="grayed-out"><a (click)="updateView('competitions')">Competitions</a></li>
+
+    <li class="menu-section-title">Placeholder</li>
+    <li><a (click)="updateView('adminrights')">Admin Rights</a></li>
   </ul>
+
+
 </div>
