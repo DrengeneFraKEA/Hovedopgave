@@ -4,6 +4,10 @@
 
 .sidebar {
   @apply bg-base-200 transition-all overflow-hidden whitespace-nowrap w-16 hover:w-52 h-screen flex flex-col rounded-2xl;
+  position: sticky; /* Make the sidebar fixed on the screen */
+  top: 0; /* Align to the top of the viewport */
+  left: 0; /* Align to the left of the viewport */
+  z-index: 1000; /* Ensure it stays above other content */
 }
 .burger-menu {
   @apply p-2 cursor-pointer;
@@ -21,8 +25,25 @@
   @apply flex flex-col;
 }
 
+  .sidebar-menu .menu-section-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #4b1717;
+    font-size: 0.9rem;
+    padding-left: 10px;
+  }
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 li {
-  @apply py-4 text-left;
+  padding: 15px;
+  text-align: left;
 }
 
   li a {
