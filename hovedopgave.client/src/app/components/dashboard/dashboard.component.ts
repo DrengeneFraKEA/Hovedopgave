@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit {
   totalLeagueProfiles: number = 0;
   totalCompetitions: number = 0;
 
-  selectedFilter: string = 'weekly';
+  selectedFilter: string = '';
   selectedView: string = 'overview';
   fromDate: string | null = null;
   toDate: string | null = null;
@@ -63,6 +63,8 @@ export class DashboardComponent implements OnInit {
 
   updateView(view: string) {
     this.selectedView = view;
+    this.selectedFilter = '';
+    this.clearGraph();
   }
 
   applyDateRangeChange(from: string, to: string) {
@@ -74,7 +76,7 @@ export class DashboardComponent implements OnInit {
   CustomRefreshGraphData()
   {
     const params = new HttpParams().append('fromDate', `${this.fromDate}`).append('toDate', `${this.toDate}`);
-
+    this.selectedFilter = 'custom';
     this.http.get<graphData[]>(`https://localhost:7213/graph/custom/${this.selectedView}`, { params }).subscribe((data) => {
       this.data = data;
       this.DrawLineChart();
@@ -143,5 +145,12 @@ export class DashboardComponent implements OnInit {
         }
       }
     });
+  }
+
+  clearGraph() {
+    this.data = [];
+    if (Chart.getChart("chart-container")) {
+      Chart.getChart("chart-container")?.destroy();
+    }
   }
 }
