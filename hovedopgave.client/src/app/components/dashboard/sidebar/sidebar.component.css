@@ -5,7 +5,6 @@
 .sidebar {
   @apply bg-base-200 transition-all overflow-hidden whitespace-nowrap w-16 hover:w-52 h-screen flex flex-col rounded-2xl;
 }
-
 .burger-menu {
   @apply p-2 cursor-pointer;
 }

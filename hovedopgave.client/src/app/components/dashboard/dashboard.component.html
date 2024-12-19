@@ -1,7 +1,8 @@
 <div class="dashboard-container">
   <app-sidebar (navigate)="updateView($event)"></app-sidebar>
-
   <div class="main-content flex-grow p-4 transition-all duration-300">
+   <!-- Non-adminrights views -->
+    <div *ngIf="selectedView !== 'adminrights'">
     <div class="top-bar flex justify-between items-center mb-4">
       <div class="date-range-filter flex gap-4 items-center">
         <div>
@@ -63,9 +64,14 @@
         <div class="stat-title">Total Competitions</div>
         <div class="stat-value">{{ totalCompetitions }}</div>
       </div>
+
+      <canvas id="chart-container"></canvas>
     </div>
 
-    <canvas id="chart-container"></canvas>
+    <!-- Admin Rights View -->
+    <div *ngIf="selectedView === 'adminrights'">
+      <app-adminrights></app-adminrights>
+    </div>
   </div>
 </div>
 
