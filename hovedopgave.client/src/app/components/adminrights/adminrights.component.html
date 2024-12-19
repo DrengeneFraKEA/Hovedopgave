@@ -3,7 +3,7 @@
     <!-- Search Users Section -->
     <div class="section-container bg-white p-4 rounded-lg shadow-md w-full md:w-1/2">
       <h2 class="text-xl font-semibold mb-4">Search users</h2>
-      <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" class="input input-bordered w-full mb-4" />
+      <input id="search-users-input" type="text" placeholder="Search users..." [(ngModel)]="searchQuery" (input)="searchUser()" class="input input-bordered w-full mb-4" />
       <div class="user-list">
         <div *ngIf="searchQuery.trim() !== ''">
           <div class="user flex justify-between items-center p-2 border rounded mb-2" *ngFor="let user of searchResult; let i = index">
@@ -16,8 +16,8 @@
           </div>
           <div class="pagination-controls flex justify-center mt-4">
             <div class="join grid grid-cols-2 gap-4">
-              <button class="join-item btn btn-outline" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-              <button class="join-item btn btn-outline" (click)="nextPage()">Next</button>
+              <button id="previous-page" class="join-item btn btn-outline" (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+              <button id="next-page" class="join-item btn btn-outline" (click)="nextPage()">Next</button>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Modal Section -->
-    <div class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" [class.active]="isModalOpen">
+    <div id="admin-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" [class.active]="isModalOpen">
       <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <button class="close-modal absolute top-2 right-2 text-xl" (click)="closeModal()">×</button>
         <div class="modal-header text-center text-xl font-semibold mb-4">
@@ -59,8 +59,8 @@
           <div class="modal-footer flex-1">
             <p class="font-semibold mb-2">Change Display Name</p>
             <div class="display-name-container flex gap-2">
-              <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" class="input input-bordered w-full" />
-              <button class="update-display-name btn btn-success" (click)="changeUsersDisplayName()">Update</button>
+              <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" class="input input-bordered w-full" id="update-display-name-input"/>
+              <button class="update-display-name btn btn-success" (click)="changeUsersDisplayName()" id="update-display-name-button">Update</button>
             </div>
             <p *ngIf="displayNameError" class="error-message text-red-500 mt-2">{{ displayNameError }}</p>
             <p *ngIf="passwordResetMessage" class="password-reset-message text-green-500 mt-2">{{ passwordResetMessage }}</p>
@@ -68,7 +68,7 @@
           </div>
         </div>
         <div class="modal-actions flex justify-between mt-4">
-          <button class="delete-user btn btn-error" (click)="deleteUser()">Delete User</button>
+          <button id="delete-user-button" class="delete-user btn btn-error" (click)="deleteUser()">Delete User</button>
           <button class="send-password btn btn-primary" (click)="sendNewPassword()">Reset password</button>
         </div>
       </div>
