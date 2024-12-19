@@ -1,24 +1,55 @@
 <div class="sidebar">
   <div class="burger-menu">
-    <img src="/leagues_icon_white.jpg" alt="Menu Icon" class="menu-icon" />
+    <img src="/transparent_league_icon.png" alt="Preload Light Icon" class="hidden" />
+    <img src="/transparent_league_icon_darktheme.png" alt="Preload Dark Icon" class="hidden" />
+
+    <!-- Light Theme Icon -->
+    <img *ngIf="currentTheme === 'light'" src="/transparent_league_icon.png" alt="Menu Icon Light" class="menu-icon" />
+    <!-- Dark Theme Icon -->
+    <img *ngIf="currentTheme === 'dark'" src="/transparent_league_icon_darktheme.png" alt="Menu Icon Dark" class="menu-icon" />
   </div>
   <ul class="sidebar-menu">
-    <!-- General -->
-    <li><a (click)="updateView('overview')">Dashboard Overview</a></li>
-
-    <!-- Statistics Section -->
+    <li [ngClass]="{'active': activeView === 'overview'}"><a (click)="updateView('overview')">Dashboard Overview</a></li>
+  
+     <!-- Statistics Section -->
     <li class="menu-section-title">Statistics</li>
-    <li><a (click)="updateView('users')">Users</a></li>
-    <li><a (click)="updateView('teams')">Teams</a></li>
-    <li><a (click)="updateView('orginizations')">Organizations</a></li>
-    <li class="grayed-out"><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
-    <li class="grayed-out"><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
-    <li class="grayed-out"><a (click)="updateView('league_profiles')">League Profiles</a></li>
-    <li class="grayed-out"><a (click)="updateView('competitions')">Competitions</a></li>
-
+    <li [ngClass]="{'active': activeView === 'users'}"><a (click)="updateView('users')">Users</a></li>
+    <li [ngClass]="{'active': activeView === 'teams'}"><a (click)="updateView('teams')">Teams</a></li>
+    <li [ngClass]="{'active': activeView === 'organisations'}"><a (click)="updateView('organisations')">Organizations</a></li>
+    <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'valorant_profiles'}"><a (click)="updateView('valorant_profiles')">Valorant Profiles</a></li>
+    <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'user_game_profiles'}"><a (click)="updateView('user_game_profiles')">User Game Profiles</a></li>
+    <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'league_profiles'}"><a (click)="updateView('league_profiles')">League Profiles</a></li>
+    <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'competitions'}"><a (click)="updateView('competitions')">Competitions</a></li>
+    
     <li class="menu-section-title">Placeholder</li>
     <li><a (click)="updateView('adminrights')">Admin Rights</a></li>
   </ul>
+  <div class="theme-controller-container mt-auto p-4">
+    <label class="swap swap-rotate">
+      <!-- Hidden checkbox to control the swap -->
+      <input type="checkbox" (change)="toggleTheme($event)" />
 
+      <!-- Sun Icon -->
+      <svg class="swap-on fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5"></circle>
+        <g stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </g>
+      </svg>
 
+      <!-- Moon Icon -->
+      <svg class="swap-off fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+      </svg>
+    </label>
+  </div>
 </div>

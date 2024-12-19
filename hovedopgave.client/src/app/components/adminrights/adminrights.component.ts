@@ -24,7 +24,17 @@ export class AdminrightsComponent implements OnInit {
   pageSize: number = 5;
   loggedinUserDisplayName = localStorage.getItem("username");
   updateRoleError: string | null = null;
-  selectedView: string = 'users';  
+  selectedView: string = 'users';
+
+  roles: string[] = [
+    'SYSTEMADMIN',
+    'SUPERUSER',
+    'MODERATOR',
+    'CREATOR',
+    'AFFILIATE',
+    'USER',
+    'GUEST'
+  ];
   constructor(private http: HttpClient, private route: Router, private adminrightsService: AdminrightsService) { }
 
   ngOnInit() {
