@@ -1,28 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .sidebar {
-  background-color: #f3f3f3;
-  transition: width 0.3s ease;
-  overflow: hidden;
-  white-space: nowrap;
-  width: 60px; /* Minimal width when collapsed */
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  border-radius: 20px;
+  @apply bg-base-200 transition-all overflow-hidden whitespace-nowrap w-16 hover:w-52 h-screen flex flex-col rounded-2xl;
   position: sticky; /* Make the sidebar fixed on the screen */
   top: 0; /* Align to the top of the viewport */
   left: 0; /* Align to the left of the viewport */
   z-index: 1000; /* Ensure it stays above other content */
 }
+.burger-menu {
+  @apply p-2 cursor-pointer;
+}
 
-  .sidebar:hover {
-    width: 200px; /* Full width when expanded */
-  }
+.menu-icon {
+  @apply w-10 h-auto;
+}
+
+.hidden {
+  display: none;
+}
 
 .sidebar-menu {
-  flex: 1; /* Ensures this section grows to fill the available space */
-  display: flex;
-  flex-direction: column;
+  @apply flex flex-col;
 }
 
   .sidebar-menu .menu-section-title {
@@ -34,21 +34,6 @@
     font-size: 0.9rem;
     padding-left: 10px;
   }
-
-.burger-menu {
-  padding: 10px;
-  cursor: pointer;
-  background-color: #f3f3f3;
-}
-
-  .burger-menu:hover {
-    background-color: #f3f3f3;
-  }
-
-.menu-icon {
-  width: 40px;
-  height: auto;
-}
 
 ul {
   list-style: none;
@@ -62,32 +47,54 @@ li {
 }
 
   li a {
-    text-decoration: none;
-    color: #030303;
-    cursor: pointer;
+    @apply no-underline text-base-content cursor-pointer;
   }
 
   li:hover {
-    background-color: #f3f3f3;
+    @apply bg-base-100;
   }
 
     li:hover a {
-      color: #898789;
+      @apply text-secondary;
     }
-.grayed-out a {
-  color: #a0a0a0; 
+
+.grayed-out-light a {
+  @apply text-gray-400;
 }
 
-.grayed-out:hover a {
-  color: #898789; 
+.grayed-out-light:hover a {
+  @apply text-gray-500;
 }
+
+.grayed-out-dark a {
+  @apply text-gray-600;
+}
+
+.grayed-out-dark:hover a {
+  @apply text-gray-700;
+}
+
+.active {
+  @apply transform translate-x-5; /* Shift the active view slightly to the right */
+}
+
+  .active a {
+    @apply font-bold;
+  }
 
 /* Hide the list items when the sidebar is collapsed */
 .sidebar-menu li {
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  @apply opacity-0 transition-opacity duration-300;
 }
 
 .sidebar:hover .sidebar-menu li {
-  opacity: 1;
+  @apply opacity-100;
+}
+
+.theme-controller-container {
+  @apply mt-auto p-4 opacity-0 transition-opacity duration-300 flex justify-center;
+}
+
+.sidebar:hover .theme-controller-container {
+  @apply opacity-100;
 }

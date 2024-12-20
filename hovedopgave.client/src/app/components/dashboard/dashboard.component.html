@@ -2,78 +2,78 @@
   <app-sidebar id="sidebar" (navigate)="updateView($event)"></app-sidebar>
 
   <div class="main-content">
+
     <!-- Non-adminrights views -->
     <div *ngIf="selectedView !== 'adminrights'">
-      <div class="top-bar">
-        <div class="date-range-filter">
+      <div class="top-bar flex justify-between items-center mb-4">
+        <div class="date-range-filter flex gap-4 items-center">
           <div>
-            <label for="fromDate">From:</label>
-            <input id="fromDate" type="date" [(ngModel)]="filter.fromDate" (change)="applyDateRangeChange(filter.fromDate, filter.toDate)" />
+            <label for="fromDate" class="font-bold">From: </label>
+            <input id="fromDate" type="date" [(ngModel)]="filter.fromDate" (change)="applyDateRangeChange(filter.fromDate, filter.toDate)" class="input input-bordered" />
           </div>
           <div>
-            <label for="toDate">To:</label>
-            <input id="toDate" type="date" [(ngModel)]="filter.toDate" (change)="applyDateRangeChange(filter.fromDate, filter.toDate)" />
+            <label for="toDate" class="font-bold">To: </label>
+            <input id="toDate" type="date" [(ngModel)]="filter.toDate" (change)="applyDateRangeChange(filter.fromDate, filter.toDate)" class="input input-bordered" />
           </div>
+          <button (click)="CustomRefreshGraphData()" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'custom'}">Custom</button>
+          <button (click)="setFilter('daily')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'daily'}">Daily</button>
+          <button (click)="setFilter('weekly')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'weekly'}">Weekly</button>
+          <button (click)="setFilter('monthly')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'monthly'}">Monthly</button>
+          <img src="save-icon.png" alt="Export CSV" class="export-icon" />
         </div>
-        <button (click)="CustomRefreshGraphData()">Custom</button>
-        <br />
-        <button (click)="setFilter('daily')">Daily</button>
-        <button (click)="setFilter('weekly')">Weekly</button>
-        <button (click)="setFilter('monthly')">Monthly</button>
-        <button>Export CSV</button>
       </div>
 
       <!-- Dashboard stats -->
-      <div *ngIf="selectedView === 'overview'" class="dashboard-stats">
+      <div *ngIf="selectedView === 'overview'" class="stats shadow">
         <!-- Stat box for user signups -->
-        <div class="stat-box">
-          <h3>Total Users</h3>
-          <p>{{ totalUserSignups }}</p>
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total Users</div>
+          <div class="stat-value">{{ totalUserSignups }}</div>
         </div>
 
         <!-- Stat box for team signups -->
-        <div class="stat-box">
-          <h3>Total Teams</h3>
-          <p>{{ totalTeamSignups }}</p>
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total Teams</div>
+          <div class="stat-value">{{ totalTeamSignups }}</div>
         </div>
 
         <!-- Stat box for organization signups -->
-        <div class="stat-box">
-          <h3>Total Organizations</h3>
-          <p>{{ totalOrganizationSignups }}</p>
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total Organizations</div>
+          <div class="stat-value">{{ totalOrganizationSignups }}</div>
         </div>
 
-        <!-- Stat box for organization signups -->
-        <div class="stat-box">
-          <h3>Total Valorant Users</h3>
-          <p>{{ totalValorantProfiles }}</p>
+        <!-- Stat box for Valorant users -->
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total Valorant Users</div>
+          <div class="stat-value">{{ totalValorantProfiles }}</div>
         </div>
 
-        <!-- Stat box for organization signups -->
-        <div class="stat-box">
-          <h3>Total League of Legends Users</h3>
-          <p>{{ totalLeagueProfiles }}</p>
+        <!-- Stat box for League of Legends users -->
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total League of Legends Users</div>
+          <div class="stat-value">{{ totalLeagueProfiles }}</div>
         </div>
 
-        <!-- Stat box for organization signups -->
-        <div class="stat-box">
-          <h3>Total UserProfiles</h3>
-          <p>{{ totalUserGameProfiles }}</p>
+        <!-- Stat box for user game profiles -->
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total UserProfiles</div>
+          <div class="stat-value">{{ totalUserGameProfiles }}</div>
         </div>
 
-        <!-- Stat box for organization signups -->
-        <div class="stat-box">
-          <h3>Total Competitions</h3>
-          <p>{{ totalCompetitions }}</p>
+        <!-- Stat box for competitions -->
+        <div class="stat-box place-items-center">
+          <div class="stat-title">Total Competitions</div>
+          <div class="stat-value">{{ totalCompetitions }}</div>
         </div>
       </div>
-
       <canvas id="chart-container"></canvas>
     </div>
-
     <!-- Admin Rights View -->
     <div *ngIf="selectedView === 'adminrights'">
       <app-adminrights></app-adminrights>
     </div>
   </div>
 </div>
+
+

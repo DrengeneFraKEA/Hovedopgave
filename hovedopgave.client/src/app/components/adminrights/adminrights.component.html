@@ -22,19 +22,22 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- List of Current Admins Section -->
-    <div class="section-container bg-white p-4 rounded-lg shadow-md w-full md:w-1/2">
-      <h2 class="text-xl font-semibold mb-4">List of current admins</h2>
-      <div class="admin-list">
-        <div class="user flex justify-between items-center p-2 border rounded mb-2" *ngFor="let admin of admins; let i = index">
-          <span>{{ admin.displayName }}</span>
-          <span class="user-role text-gray-500">{{ admin.role }}</span>
-          <button (click)="openEditModal(admin)" class="btn btn-primary">Edit</button>
+      <!-- List of Current Admins Section -->
+      <div class="bg-base-100 p-4 rounded-lg shadow-md w-full md:w-1/2">
+        <h2 class="text-xl font-semibold mb-4 text-center">List of Current Admins</h2>
+        <div class="flex flex-col gap-2 border border-base-300 p-2 bg-base-100">
+          <div class="flex items-center p-2 border rounded mb-2"
+               *ngFor="let admin of admins">
+            <span class="flex-1">{{ admin.displayName }}</span>
+            <span class="w-32 text-gray-500 text-right">{{ admin.role }}</span>
+            <button (click)="openEditModal(admin)"
+                    class="btn btn-custom text-neutral-content ml-2">
+              Edit
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
     <!-- Modal Section -->
     <div id="admin-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" [class.active]="isModalOpen">
@@ -62,9 +65,6 @@
               <input type="text" [(ngModel)]="newDisplayName" placeholder="New display name" class="input input-bordered w-full" id="update-display-name-input"/>
               <button class="update-display-name btn btn-success" (click)="changeUsersDisplayName()" id="update-display-name-button">Update</button>
             </div>
-            <p *ngIf="displayNameError" class="error-message text-red-500 mt-2">{{ displayNameError }}</p>
-            <p *ngIf="passwordResetMessage" class="password-reset-message text-green-500 mt-2">{{ passwordResetMessage }}</p>
-            <p *ngIf="updateRoleError" class="error-message text-red-500 mt-2">{{ updateRoleError }}</p>
           </div>
         </div>
         <div class="modal-actions flex justify-between mt-4">
@@ -75,4 +75,3 @@
     </div>
   </div>
 </div>
-
