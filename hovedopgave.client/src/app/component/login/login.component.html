@@ -4,7 +4,7 @@
   <h2>Login</h2>
 
   <!-- Display error message if errorMessage is not null -->
-  <div *ngIf="errorMessage" class="error-message">
+  <div id="error-message" *ngIf="errorMessage" class="error-message">
     {{ errorMessage }}
   </div>
 
@@ -35,6 +35,6 @@
       </div>
     </div>
 
-    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    <button type="submit" id="loginbutton" [disabled]="loginForm.invalid">Login</button>
   </form>
 </div>
