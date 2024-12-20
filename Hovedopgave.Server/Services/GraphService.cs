@@ -7,10 +7,12 @@ namespace Hovedopgave.Server.Services
 {
     public class GraphService : IGraphService
     {
-        public async Task<GraphDTO[]> GetCustomUsers(string fromDate, string toDate)
+        public async Task<GraphDTO[]> GetCustomGraphData(string fromDate, string toDate, string type)
         {
             DateTime from = DateTime.Parse(fromDate);
             DateTime to = DateTime.Parse(toDate);
+            string table = type == "organisations" ? "organizations" : type;
+
 
             if (from > to || from == to) return new GraphDTO[] { }; // Jump out
 
@@ -112,7 +114,7 @@ namespace Hovedopgave.Server.Services
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-            await using var command = conn.CreateCommand($"SELECT created_at FROM public.users WHERE created_at BETWEEN '{desiredFromDate}' AND '{desiredToDate}'");
+            await using var command = conn.CreateCommand($"SELECT created_at FROM public.{table} WHERE created_at BETWEEN '{desiredFromDate}' AND '{desiredToDate}'");
             await using var reader = await command.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
@@ -135,16 +137,6 @@ namespace Hovedopgave.Server.Services
 
             
             return gdto;
-        }
-
-        public async Task<GraphDTO[]> GetCustomTeams(string fromDate, string toDate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<GraphDTO[]> GetCustomOrganisations(string fromDate, string toDate)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<GraphDTO[]> GetDailyUsers(int daysInThePast)
