@@ -1,5 +1,16 @@
 /// <reference types="cypress" />
 
+/* e2e tests covered here:
+should display total statistics in the dashboard overviewpassed
+should navigate to the Users statistics viewpassed
+should navigate to the Teams statistics viewpassed
+should navigate to the Organizations statistics viewpassed
+should filter by daily, weekly, and monthly viewspassed
+should navigate to the Admin Rights view and search for a userpassed
+should open the edit modal for a user in Admin Rights viewpassed
+should apply a custom date range filter
+*/
+
 describe('Dashboard and Sidebar Functionality', () => {
   beforeEach(() => {
     // Visit the login page and log in
@@ -17,14 +28,9 @@ describe('Dashboard and Sidebar Functionality', () => {
     cy.get('input[id="username"]').type(username);
     cy.get('input[id="password"]').type(password);
     cy.get('button[id="loginbutton"]').click();
+  })
 
-    // Visit the dashboard after login
-    cy.visit('https://localhost:4200/dashboard');
-
-    // Ensure sidebar is present
-    cy.get('app-sidebar', { timeout: 10000 }).should('exist');
-    cy.get('.sidebar', { timeout: 5000 }).trigger('mouseover');
-  });
+  
 
   it('should display total statistics in the dashboard overview', () => {
     cy.get('.sidebar').trigger('mouseover'); // Ensure sidebar is hovered
@@ -75,8 +81,8 @@ describe('Dashboard and Sidebar Functionality', () => {
     cy.get('#nav-adminrights').click({ force: true }); // Navigate to Admin Rights
 
     // Search for a user
-    cy.get('input#search-users-input').type('TestUser'); // Enter a search query
-    cy.get('.user-display-name').contains('TestUser').should('exist'); // Assert user is found
+    cy.get('input#search-users-input').type('Faker'); // Enter a search query
+    cy.get('.user-display-name').contains('Faker').should('exist'); // Assert user is found
   });
 
   it('should open the edit modal for a user in Admin Rights view', () => {
@@ -88,6 +94,8 @@ describe('Dashboard and Sidebar Functionality', () => {
     cy.get('button').contains('Edit').click(); // Click the Edit button
     cy.get('#admin-modal').should('have.class', 'active'); // Assert modal is active
   });
+
+
 
   it('should apply a custom date range filter', () => {
     cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
