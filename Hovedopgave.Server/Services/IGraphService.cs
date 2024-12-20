@@ -5,10 +5,7 @@ namespace Hovedopgave.Server.Services
 {
     public interface IGraphService
     {
-        Task<GraphDTO[]> GetCustomUsers(string fromDate, string toDate);
-        Task<GraphDTO[]> GetCustomTeams(string fromDate, string toDate);
-        Task<GraphDTO[]> GetCustomOrganisations(string fromDate, string toDate);
-
+        Task<GraphDTO[]> GetCustomGraphData(string fromDate, string toDate, string type);
         Task<GraphDTO[]> GetDailyUsers(int daysInThePast);
         Task<GraphDTO[]> GetWeeklyUsers(int weeksInThePast);
         Task<GraphDTO[]> GetMonthlyUsers(int monthsInThePast);

@@ -497,6 +497,27 @@ namespace Hovedopgave.Server.Utils
             "Whimsical",
             "Offbeat",
             "Twisted",
+            "Cloudy",
+            "Foggy",
+            "Little",
+            "Big",
+            "Hellish",
+            "Blueish",
+            "Redish",
+            "Yellowish",
+            "Greenish",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine",
+            "Ten",
+            "Few",
+            "Many"
         };
 
         private List<string> Objects = new List<string>()
@@ -560,6 +581,8 @@ namespace Hovedopgave.Server.Utils
             "Monkey",
             "Trash",
             "Ape",
+            "Apes",
+            "Gorillas",
             "Gorilla",
             "Zebra",
             "Drum",
@@ -678,7 +701,6 @@ namespace Hovedopgave.Server.Utils
             "Hat",
             "Socks",
             "Glasses",
-            "T-shirt",
             "Jeans",
             "Sweater",
             "Bag",
@@ -749,7 +771,132 @@ namespace Hovedopgave.Server.Utils
             "Tailor",
             "Designer",
             "Psychologist",
-            "Banker"
+            "Banker",
+            "Bankers",
+            "Actors",
+            "Cows",
+            "Apples",
+            "Chairs",
+            "Books",
+            "Tables",
+            "Phones",
+            "Bottles",
+            "Shoes",
+            "Keys",
+            "Glasses",
+            "Cars",
+            "Pens",
+            "Computers",
+            "Shirts",
+            "Socks",
+            "Laptops",
+            "Cups",
+            "Notebooks",
+            "Pencils",
+            "Pictures",
+            "Phones",
+            "Headphones",
+            "Wallets",
+            "Clocks",
+            "Papers",
+            "Sandwiches",
+            "Suitcases",
+            "Trees",
+            "Dogs",
+            "Cats",
+            "Bikes",
+            "Hats",
+            "Games",
+            "Toys",
+            "Fruits",
+            "Gloves",
+            "Bags",
+            "Lights",
+            "Bills",
+            "Mugs",
+            "Sunglasses",
+            "Mirrors",
+            "Coins",
+            "Watches",
+            "Rivers",
+            "Flowers",
+            "Seeds",
+            "Plates",
+            "Beds",
+            "Paintings",
+            "Buckets",
+            "Chairs",
+            "Spoons",
+            "Elephants",
+            "Lions",
+            "Tigers",
+            "Bears",
+            "Giraffes",
+            "Zebras",
+            "Kangaroos",
+            "Pandas",
+            "Koalas",
+            "Rabbits",
+            "Dogs",
+            "Cats",
+            "Cows",
+            "Sheep",
+            "Horses",
+            "Monkeys",
+            "Giraffes",
+            "Snakes",
+            "Frogs",
+            "Frogs",
+            "Whales",
+            "Sharks",
+            "Dolphins",
+            "Octopuses",
+            "Penguins",
+            "Seals",
+            "Owls",
+            "Hawks",
+            "Eagles",
+            "Peacocks",
+            "Parrots",
+            "Crocodiles",
+            "Alligators",
+            "Camels",
+            "Wolves",
+            "Foxes",
+            "Bats",
+            "Bees",
+            "Ants",
+            "Butterflies",
+            "Ladybugs",
+            "Spiders",
+            "Pigeons",
+            "Crows",
+            "Ravens",
+            "Flamingos",
+            "Storks",
+            "Geese",
+            "Turkeys",
+            "Bikes",
+            "Buses",
+            "Trucks",
+            "Motorcycles",
+            "Vans",
+            "Scooters",
+            "Trains",
+            "Airplanes",
+            "Helicopters",
+            "Boats",
+            "Yachts",
+            "Submarines",
+            "Rollerblades",
+            "Skateboards",
+            "Snowmobiles",
+            "Tractors",
+            "Rickshaws",
+            "Segways",
+            "Hovercrafts",
+            "Trolleys",
+            "Ferries",
         };
 
         private List<string> PluralObjects = new List<string>()
@@ -865,6 +1012,7 @@ namespace Hovedopgave.Server.Utils
         {
             Random rnd = new Random();
             HashSet<string> hashset = new HashSet<string>();
+            List<string> batch = new List<string>();
 
             for(int i = 0; i<amount; i++) 
             {
@@ -905,14 +1053,24 @@ namespace Hovedopgave.Server.Utils
 
                 hashset.Add(display_name);
 
+                string command = $"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password, phone_ext, phone, country, discord_id, birthday, created_at, updated_at)" +
+                    $"VALUES ('{id}', '{name}', '{display_name}', '{role}', '{gender}', '{email}', '{salt}', '{hashedPw}', '{phoneExt}', '{phone}', '{country}', '{discordId}', '{birthday}', '{createdAt}', '{updatedAt}');";
+
+                batch.Add(command);
+
+                if (batch.Count < 1000) continue;
+
+                string batchCommand = string.Empty;
+                foreach (var c in batch) batchCommand += c;
+
                 PostgreSQL psql = new PostgreSQL(false); // change to false once azure is up
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
-                using var command = conn.CreateCommand($"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password, phone_ext, phone, country, discord_id, birthday, created_at, updated_at)" +
-                    $"VALUES ('{id}', '{name}', '{display_name}', '{role}', '{gender}', '{email}', '{salt}', '{hashedPw}', '{phoneExt}', '{phone}', '{country}', '{discordId}', '{birthday}', '{createdAt}', '{updatedAt}')");
+                using var exeCommand = conn.CreateCommand(batchCommand);
                 try
                 {
-                    command.ExecuteNonQuery();
+                    exeCommand.ExecuteNonQuery();
+                    batch.Clear();
                 }
                 catch (Exception e)
                 {

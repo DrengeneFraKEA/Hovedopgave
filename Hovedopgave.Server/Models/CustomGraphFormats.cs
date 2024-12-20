@@ -4,10 +4,10 @@
     {
         public enum CustomGraphFormat 
         {
-            Days = 14,
-            Weeks = 98, // 12 weeks
-            Months = 365,
-            Years = 366
+            Days = 30,
+            Weeks = 182, // 26 weeks
+            Months = 21900,
+            Years = 21901
         }
 
         public static CustomGraphFormat GetGraphFormat(int daysInBetween) 
