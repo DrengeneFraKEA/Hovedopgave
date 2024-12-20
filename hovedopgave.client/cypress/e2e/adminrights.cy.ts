@@ -35,10 +35,10 @@ describe('Dashboard and Sidebar Functionality', () => {
   it('should display total statistics in the dashboard overview', () => {
     cy.get('.sidebar').trigger('mouseover'); // Ensure sidebar is hovered
     cy.get('#nav-overview').click({ force: true }); // Force click
-    cy.get('.dashboard-stats').should('exist'); // Check stats section
-    cy.get('.stat-box h3').contains('Total Users').should('exist'); // Assert Total Users stat box
-    cy.get('.stat-box h3').contains('Total Teams').should('exist'); // Assert Total Teams stat box
-    cy.get('.stat-box h3').contains('Total Organizations').should('exist'); // Assert Total Organizations stat box
+    cy.get('.stats').should('exist'); // Check stats section
+    cy.get('.stat-title').contains('Total Users').should('exist'); // Assert Total Users stat box
+    cy.get('.stat-title').contains('Total Teams').should('exist'); // Assert Total Teams stat box
+    cy.get('.stat-title').contains('Total Organizations').should('exist'); // Assert Total Organizations stat box
   });
 
   it('should navigate to the Users statistics view', () => {
