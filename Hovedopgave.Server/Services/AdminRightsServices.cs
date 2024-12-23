@@ -44,7 +44,7 @@ namespace Hovedopgave.Server.Services
 
             // Query to fetch user by display_name with pagination
             await using var command = conn.CreateCommand(
-                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT @pageSize OFFSET @offset"
+                "SELECT display_name, role, full_name, email FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT @pageSize OFFSET @offset"
             );
 
             // Add the displayName parameter
@@ -61,6 +61,8 @@ namespace Hovedopgave.Server.Services
                 {
                     DisplayName = reader.GetString(0),
                     Role = reader.GetString(1),
+                    FullName = reader.GetString(2),
+                    Email = reader.GetString(3)
                 });
             }
 
@@ -153,7 +155,7 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersDisplayName(string loggedInUserDisplayName, string displayName, string newDisplayName)
+        public async Task<bool> UpdateUserDetails(string loggedInUserDisplayName, UserDTO user)
         {
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
@@ -162,32 +164,34 @@ namespace Hovedopgave.Server.Services
             Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
 
             // Get target users role
-            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(user.DisplayName, conn);
 
             // Check if logged in user can change the target users role
             if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
             {
                 return false; // Not high enough privileges/access level
             }
+            if (user.NewDisplayName != user.DisplayName) {
+                // Checks if the new display name already exists
+                await using var checkCommand = conn.CreateCommand("SELECT COUNT(*) FROM public.users WHERE display_name = @newDisplayName");
+                checkCommand.Parameters.AddWithValue("newDisplayName", user.NewDisplayName);
 
-            // Checks if the new displa name already exists
-            await using var checkCommand = conn.CreateCommand("SELECT COUNT(*) FROM public.users WHERE display_name = @newDisplayName");
-            checkCommand.Parameters.AddWithValue("newDisplayName", newDisplayName);
-
-            int count = (int)(long) await checkCommand.ExecuteScalarAsync();
-            if (count > 0)
-            {
-                return false; // Returns false if the new display name already exists
+                int count = (int)(long)await checkCommand.ExecuteScalarAsync();
+                if (count > 0)
+                {
+                    return false; // Returns false if the new display name already exists
+                }
             }
-
-            // Query to update display name
+            // Query to update details
             await using var updateCommand = conn.CreateCommand(
-                "UPDATE public.users SET display_name = @newDisplayName WHERE display_name = @displayName AND deleted_at IS NULL"
+                "UPDATE public.users SET display_name = @newDisplayName, full_name = @fullName, email = @email WHERE display_name = @displayName AND deleted_at IS NULL"
             );
 
             // Add parameters
-            updateCommand.Parameters.AddWithValue("displayName", displayName);
-            updateCommand.Parameters.AddWithValue("newDisplayName", newDisplayName);
+            updateCommand.Parameters.AddWithValue("displayName", user.DisplayName);
+            updateCommand.Parameters.AddWithValue("newDisplayName", user.NewDisplayName);
+            updateCommand.Parameters.AddWithValue("fullName", user.FullName);
+            updateCommand.Parameters.AddWithValue("email", user.Email);
 
             int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
             return rowsAffected > 0; // Return true if a row was updated

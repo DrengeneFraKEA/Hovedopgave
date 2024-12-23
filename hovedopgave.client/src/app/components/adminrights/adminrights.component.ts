@@ -12,7 +12,9 @@ import { User } from '../../interfaces/adminrights/user'
 export class AdminrightsComponent implements OnInit {
   title = 'Admin Rights';
   isModalOpen: boolean = false;
-  selectedUser: { displayName: string, role: string } | null = null;
+  selectedUser: User | null = null;
+  newFullName: string = '';
+  newEmail: string = '';
   passwordResetMessage: string | null = null;
   admins: User[] = [];
   searchResult: User[] = [];
@@ -87,10 +89,12 @@ export class AdminrightsComponent implements OnInit {
     }
   }
 
-  openEditModal(user: { displayName: string, role: string }) {
+  openEditModal(user: User) {
     this.selectedUser = user;
     this.selectedRole = user.role;
     this.newDisplayName = user.displayName;
+    this.newFullName = user.fullName;
+    this.newEmail = user.email;
     this.isModalOpen = true;
   }
 
@@ -149,21 +153,30 @@ export class AdminrightsComponent implements OnInit {
     }
   }
 
-  changeUsersDisplayName() {
-    if (this.selectedUser && this.newDisplayName.trim() !== '' && this.loggedinUserDisplayName) {
-      this.adminrightsService.updateUsersDisplayName(this.loggedinUserDisplayName, this.newDisplayName, this.selectedUser.displayName).subscribe(
+  changeUserDetails() {
+    if (this.selectedUser && this.loggedinUserDisplayName) {
+      const updatedUser: User = {
+        ...this.selectedUser,
+        loggedInUser: this.loggedinUserDisplayName,
+        displayName: this.selectedUser.displayName,
+        newDisplayName: this.newDisplayName,
+        fullName: this.newFullName,
+        email: this.newEmail,
+        role: this.selectedRole
+      };
+      this.adminrightsService.updateUserDetails(updatedUser).subscribe(
         () => {
-          this.fetchAdmins(); // Refreshing after the display name is upddated
+          this.fetchAdmins();
           this.closeModal();
         },
-        (error) => {
+        (error: { status: number; error: { message: string | null; }; }) => {
           if (error.status === 404) {
             this.displayNameError = error.error.message;
           } else {
-            this.updateRoleError = 'Not enough privileges to change name';
+            this.updateRoleError = 'Not enough privileges to change user details';
           }
         }
-        );
+      );
     }
   }
 

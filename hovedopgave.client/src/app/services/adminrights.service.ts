@@ -32,8 +32,8 @@ export class AdminrightsService {
     return this.http.put(this.apiURL + '/update-role/' + role + '/name/' + displayName, { loggedInUserDisplayName });
   }
 
-  updateUsersDisplayName(loggedInUserDisplayName: string, newDisplayName: string, displayName: string): Observable<any> {
-    return this.http.put(this.apiURL + '/update-name/' + newDisplayName + '/user/' + displayName, { loggedInUserDisplayName });
+  updateUserDetails(user: User): Observable<any> {
+    return this.http.put(this.apiURL + '/update-user/' + user.displayName, user );
   }
 
   resetUserPassword(displayName: string): Observable<any> {

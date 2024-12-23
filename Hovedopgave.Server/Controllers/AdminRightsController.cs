@@ -107,25 +107,25 @@ namespace Hovedopgave.Server.Controllers
         }
 
 
-        [HttpPut("update-name/{newDisplayName}/user/{displayName}")]
-        public async Task<IActionResult> UpdateUsersDisplayName(string displayName, string newDisplayName, [FromBody] LoggedInUser loggedInUser)
+        [HttpPut("update-user/{displayName}")]
+        public async Task<IActionResult> UpdateUserDetails(string displayName, [FromBody] UserDTO user)
         {
             try
             {
-                bool success = await adminRightsServices.UpdateUsersDisplayName(loggedInUser.LoggedInUserDisplayName, displayName, newDisplayName);
+                bool success = await adminRightsServices.UpdateUserDetails(user.LoggedInUser, user);
 
                 if (success)
                 {
-                    return Ok(new { message = $"'{displayName}'s display name was successfully changed to '{newDisplayName}'." });
+                    return Ok(new { message = $"User '{displayName}' details were successfully updated." });
                 }
                 else
                 {
-                    return NotFound(new { message = $"Display name '{newDisplayName}' already exists" });
+                    return NotFound(new { message = $"Not enough privileges to update user '{displayName}' details." });
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating users display name.", details = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while updating user details.", details = ex.Message });
             }
         }
 

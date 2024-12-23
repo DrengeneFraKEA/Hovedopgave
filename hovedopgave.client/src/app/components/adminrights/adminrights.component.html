@@ -83,14 +83,22 @@
               </div>
             </div>
             <div class="flex-1">
-              <p class="font-semibold mb-2">Change Display Name</p>
-              <div class="flex gap-2">
+              <p class="font-semibold mb-2">Change User Details</p>
+              <div class="flex flex-col gap-2">
                 <input type="text"
                        [(ngModel)]="newDisplayName"
                        placeholder="New display name"
                        class="input input-bordered w-full" />
+                <input type="text"
+                       [(ngModel)]="newFullName"
+                       placeholder="Full name"
+                       class="input input-bordered w-full" />
+                <input type="email"
+                       [(ngModel)]="newEmail"
+                       placeholder="Email"
+                       class="input input-bordered w-full" />
                 <button class="btn btn-custom text-neutral-content"
-                        (click)="changeUsersDisplayName()">
+                        (click)="changeUserDetails()">
                   Update
                 </button>
               </div>
