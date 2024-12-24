@@ -39,4 +39,8 @@ export class AdminrightsService {
   resetUserPassword(displayName: string): Observable<any> {
     return this.http.put(this.apiURL + '/reset-password/' + displayName, {});
   }
+
+  hardDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any> {
+    return this.http.delete(this.apiURL + '/hard-delete/' + displayName, { body: { loggedInUserDisplayName } });
+  }
 }

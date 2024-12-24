@@ -151,6 +151,28 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [HttpDelete("hard-delete/{displayName}")]
+        public async Task<IActionResult> HardDeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser)
+        {
+            try
+            {
+                bool success = await adminRightsServices.HardDeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+
+                if (success)
+                {
+                    return Ok(new { message = $"User with display name '{displayName}' was hard deleted." });
+                }
+                else
+                {
+                    return NotFound(new { message = "Not enough privileges to hard delete user." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while hard deleting the user.", details = ex.Message });
+            }
+        }
+
 
     }
 }

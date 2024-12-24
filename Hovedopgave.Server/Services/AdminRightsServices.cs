@@ -257,5 +257,31 @@ namespace Hovedopgave.Server.Services
             }
         }
 
+        public async Task<bool> HardDeleteUser(string loggedInUserDisplayName, string targetDisplayName)
+        {
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in users role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Check if the logged in user is SYSTEMADMIN
+            if (loggedInUserRole != Roles.Role.SYSTEMADMIN)
+            {
+                return false; // Not enough privileges
+            }
+
+            // Hard delete user
+            await using var command = conn.CreateCommand(
+                "DELETE FROM public.users WHERE display_name = @displayName"
+            );
+
+            // Add parameters
+            command.Parameters.AddWithValue("displayName", targetDisplayName);
+
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0; // Return true if a row was deleted
+        }
+
     }
 }

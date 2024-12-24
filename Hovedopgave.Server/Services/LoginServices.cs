@@ -38,7 +38,7 @@ namespace Hovedopgave.Server.Services
             {
                 string hashedPasswordAttempt = PasswordHandler.GetHashedPassword(credentials.password, tempUser.password_salt);
 
-                if (hashedPasswordAttempt == tempUser.password && tempUser.role == Roles.Role.SYSTEMADMIN || tempUser.role == Roles.Role.SUPERUSER || tempUser.role == Roles.Role.MODERATOR)
+                if (hashedPasswordAttempt == tempUser.password && (tempUser.role == Roles.Role.SYSTEMADMIN || tempUser.role == Roles.Role.SUPERUSER || tempUser.role == Roles.Role.MODERATOR))
                 {
                     JwtTokenGenerator jwt = new JwtTokenGenerator();
 

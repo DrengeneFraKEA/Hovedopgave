@@ -110,7 +110,13 @@
             </div>
           </div>
           <div class="flex justify-between mt-4">
+            <!-- Soft delete user button -->
             <button class="btn btn-error" (click)="deleteUser()">Delete User</button>
+
+            <!-- Hard delete user button -->
+            <button class="btn btn-error" (click)="hardDeleteUser()">Hard Delete User</button>
+
+            <!-- Reset password button -->
             <button class="btn btn-custom text-neutral-content"
                     (click)="sendNewPassword()">
               Reset Password

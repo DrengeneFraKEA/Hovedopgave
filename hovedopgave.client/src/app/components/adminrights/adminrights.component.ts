@@ -183,4 +183,19 @@ export class AdminrightsComponent implements OnInit {
   navigateTo(view: string) {
     this.selectedView = view;
   }
+
+  hardDeleteUser() {
+    if (this.selectedUser && this.loggedinUserDisplayName) {
+      this.adminrightsService.hardDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
+        () => {
+          this.fetchAdmins();
+          this.closeModal();
+        },
+        (error) => {
+          this.updateRoleError = 'Not enough privileges to hard delete user';
+        }
+      );
+    }
+  }
+
 }
