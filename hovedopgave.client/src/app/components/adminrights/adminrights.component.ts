@@ -27,6 +27,7 @@ export class AdminrightsComponent implements OnInit {
   loggedinUserDisplayName = localStorage.getItem("username");
   updateRoleError: string | null = null;
   selectedView: string = 'users';
+  searchDeleted: boolean = false;
 
   roles: string[] = [
     'SYSTEMADMIN',
@@ -62,10 +63,22 @@ export class AdminrightsComponent implements OnInit {
   }
 
   searchUser() {
-    if (this.searchQuery.trim() !== '') {
-      this.adminrightsService.getUserByDisplayName(this.searchQuery, this.currentPage, this.pageSize).subscribe(
+    const query = this.searchQuery.trim();
+
+    if (this.searchDeleted) {
+      this.adminrightsService.searchDeletedUsers(query, this.currentPage, this.pageSize).subscribe(
         (data) => {
-            this.searchResult = data;
+          this.searchResult = data;
+        },
+        (error) => {
+          console.error('Error fetching deleted user: ', error);
+          this.searchResult = [];
+        }
+      );
+    } else if (query !== '') {
+      this.adminrightsService.searchActiveUsers(query, this.currentPage, this.pageSize).subscribe(
+        (data) => {
+          this.searchResult = data;
         },
         (error) => {
           console.error('Error fetching user: ', error);
@@ -75,6 +88,7 @@ export class AdminrightsComponent implements OnInit {
     } else {
       this.searchResult = [];
     }
+      
   }
 
   nextPage() {
@@ -125,15 +139,18 @@ export class AdminrightsComponent implements OnInit {
 
   deleteUser() {
     if (this.selectedUser && this.loggedinUserDisplayName) {
-      this.adminrightsService.softDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
-        () => {
-          this.fetchAdmins(); // Refreshing after the user is deleted
-          this.closeModal();
-        },
-        (error) => {
-          this.updateRoleError = 'Not enough privileges to delete user';
-        }
-      );
+      const confirmDelete = window.confirm(`Are you sure you want to soft delete user ${this.selectedUser.displayName}?`);
+      if (confirmDelete) {
+        this.adminrightsService.softDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
+          () => {
+            this.fetchAdmins(); // Refreshing after the user is deleted
+            this.closeModal();
+          },
+          (error) => {
+            this.updateRoleError = 'Not enough privileges to delete user';
+          }
+        );
+      }
     }
   }
   
@@ -186,6 +203,8 @@ export class AdminrightsComponent implements OnInit {
 
   hardDeleteUser() {
     if (this.selectedUser && this.loggedinUserDisplayName) {
+      const confirmDelete = window.confirm(`Are you sure you want to hard delete user ${this.selectedUser.displayName}? This action cannot be undone.`);
+      if (confirmDelete) {
       this.adminrightsService.hardDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins();
@@ -195,7 +214,36 @@ export class AdminrightsComponent implements OnInit {
           this.updateRoleError = 'Not enough privileges to hard delete user';
         }
       );
+      }
     }
   }
+
+
+  toggleSearchDeleted() {
+    this.currentPage = 1;
+    this.searchUser();
+  }
+
+  undeleteUser(user: User) {
+    if (this.loggedinUserDisplayName) {
+      const confirmUndelete = window.confirm(
+        `Are you sure you want to restore user ${user.displayName}?`
+      );
+      if (confirmUndelete) {
+        this.adminrightsService
+          .undeleteUser(this.loggedinUserDisplayName, user.displayName)
+          .subscribe(
+            () => {
+              this.searchUser(); // Refresh the list after undeleting
+            },
+            (error) => {
+              console.error('Error undeleting user:', error);
+              this.updateRoleError = 'Not enough privileges to undelete user';
+            }
+          );
+      }
+    }
+  }
+
 
 }

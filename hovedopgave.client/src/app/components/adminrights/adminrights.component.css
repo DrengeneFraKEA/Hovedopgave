@@ -22,3 +22,21 @@
   height: auto;
   max-height: 90vh;
 }
+
+.btn-error.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.btn-custom.ml-auto {
+  margin-left: auto;
+}
+
+.btn-success {
+  background-color: green;
+  color: white;
+}
+
+  .btn-success:hover {
+    background-color: darkgreen;
+    color: white;
+  }

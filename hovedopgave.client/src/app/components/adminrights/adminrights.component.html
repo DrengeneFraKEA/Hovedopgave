@@ -5,25 +5,47 @@
       <!-- Search Users Section -->
       <div class="bg-base-100 p-4 rounded-lg shadow-md w-full md:w-1/2">
         <h2 class="text-xl font-semibold mb-4 text-center">Search Users</h2>
+        <div class="flex items-center mb-4">
+          <input type="checkbox"
+                 id="searchDeleted"
+                 [(ngModel)]="searchDeleted"
+                 (change)="toggleSearchDeleted()"
+                 class="mr-2" />
+          <label for="searchDeleted">
+            Show Deleted Users
+          </label>
+        </div>
         <input type="text"
                placeholder="Search users..."
                [(ngModel)]="searchQuery"
                (input)="searchUser()"
                class="input input-bordered w-full mb-4" />
+
         <div class="flex flex-col gap-2 border border-base-300 p-2 bg-base-100">
-          <div *ngIf="searchQuery.trim() !== ''">
+          <div *ngIf="searchQuery.trim() !== '' || searchDeleted">
+
             <div class="flex items-center p-2 border rounded mb-2"
                  *ngFor="let user of searchResult">
               <span class="flex-1">{{ user.displayName }}</span>
               <span class="w-32 text-gray-500 text-right">{{ user.role }}</span>
-              <button (click)="openEditModal(user)"
+
+              <button *ngIf="!searchDeleted"
+                      (click)="openEditModal(user)"
                       class="btn btn-custom ml-2">
                 Edit
               </button>
+
+              <button *ngIf="searchDeleted"
+                      (click)="undeleteUser(user)"
+                      class="btn btn-success ml-2">
+                Undelete
+              </button>
+
             </div>
             <div *ngIf="!searchResult.length">
-              <span>No user found with display name "{{ searchQuery }}"</span>
+              <span>No users found"</span>
             </div>
+            <!-- Pagination controls -->
             <div class="flex justify-center mt-4">
               <div class="join">
                 <button class="join-item btn btn-custom text-neutral-content"
@@ -111,13 +133,13 @@
           </div>
           <div class="flex justify-between mt-4">
             <!-- Soft delete user button -->
-            <button class="btn btn-error" (click)="deleteUser()">Delete User</button>
+            <button class="btn btn-error" (click)="deleteUser()">Soft Delete</button>
 
             <!-- Hard delete user button -->
-            <button class="btn btn-error" (click)="hardDeleteUser()">Hard Delete User</button>
+            <button class="btn btn-error ml-2" (click)="hardDeleteUser()">Hard Delete</button>
 
             <!-- Reset password button -->
-            <button class="btn btn-custom text-neutral-content"
+            <button class="btn btn-custom text-neutral-content ml-auto"
                     (click)="sendNewPassword()">
               Reset Password
             </button>

@@ -35,26 +35,27 @@ namespace Hovedopgave.Server.Services
         }
 
 
-        public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName, int page, int pageSize)
+        public async Task<List<UserDTO>> SearchActiveUsers(string displayName, int page, int pageSize)
         {
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
 
-            // Query to fetch user by display_name with pagination
-            await using var command = conn.CreateCommand(
-                "SELECT display_name, role, full_name, email FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT @pageSize OFFSET @offset"
-            );
+            string query = @"
+            SELECT display_name, role, full_name, email
+            FROM public.users
+            WHERE deleted_at IS NULL AND display_name ILIKE @displayName
+            LIMIT @pageSize OFFSET @offset";
 
-            // Add the displayName parameter
+            await using var command = conn.CreateCommand(query);
+
             command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
             command.Parameters.AddWithValue("pageSize", pageSize);
             command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            // Iterate through the results and populate the list 
             while (await reader.ReadAsync())
             {
                 users.Add(new UserDTO
@@ -69,11 +70,62 @@ namespace Hovedopgave.Server.Services
             return users;
         }
 
-        private async Task<Roles.Role> GetUserRoleByDisplayName(string displayName, NpgsqlDataSource conn)
+        public async Task<List<UserDTO>> SearchDeletedUsers(string displayName, int page, int pageSize)
         {
-            await using var command = conn.CreateCommand(
-                "SELECT role FROM public.users WHERE display_name = @displayName AND deleted_at IS NULL"
-            );
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            List<UserDTO> users = new List<UserDTO>();
+
+            string query = @"
+            SELECT display_name, role, full_name, email
+            FROM public.users
+            WHERE deleted_at IS NOT NULL";
+
+            if (!string.IsNullOrEmpty(displayName))
+            {
+                query += " AND display_name ILIKE @displayName";
+            }
+
+            query += " LIMIT @pageSize OFFSET @offset";
+
+            await using var command = conn.CreateCommand(query);
+
+            if (!string.IsNullOrEmpty(displayName))
+            { 
+                command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
+            }
+            
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                users.Add(new UserDTO
+                {
+                    DisplayName = reader.GetString(0),
+                    Role = reader.GetString(1),
+                    FullName = reader.GetString(2),
+                    Email = reader.GetString(3)
+                });
+            }
+
+            return users;
+        }
+
+        private async Task<Roles.Role> GetUserRoleByDisplayName(string displayName, NpgsqlDataSource conn, bool includeDeleted = false)
+        {
+            
+            string query = "SELECT role FROM public.users WHERE display_name = @displayName";
+            
+            if (!includeDeleted)
+            {
+                query += " AND deleted_at IS NULL";
+            }
+
+            await using var command = conn.CreateCommand(query);
             command.Parameters.AddWithValue("displayName", displayName);
 
             await using var reader = await command.ExecuteReaderAsync();
@@ -282,6 +334,34 @@ namespace Hovedopgave.Server.Services
             int rowsAffected = await command.ExecuteNonQueryAsync();
             return rowsAffected > 0; // Return true if a row was deleted
         }
+
+        public async Task<bool> UndeleteUser(string loggedInUserDisplayName, string displayName)
+        {
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in user's role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Get target user's role
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn, includeDeleted: true);
+
+            // Check if logged in user can change the target user's role
+            if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
+            {
+                return false; // Not enough privileges
+            }
+
+            // Update deleted_at to NULL
+            await using var command = conn.CreateCommand(
+                "UPDATE public.users SET deleted_at = NULL WHERE display_name = @displayName AND deleted_at IS NOT NULL"
+            );
+            command.Parameters.AddWithValue("displayName", displayName);
+
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0; // Return true if a row was updated
+        }
+
 
     }
 }

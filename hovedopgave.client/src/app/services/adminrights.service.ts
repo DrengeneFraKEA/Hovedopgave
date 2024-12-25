@@ -17,9 +17,23 @@ export class AdminrightsService {
     return this.http.get<User[]>(this.apiURL + '/admins/')
   }
 
-  getUserByDisplayName(displayName: string, page: number, pageSize: number): Observable<User[]>
+  searchActiveUsers(displayName: string, page: number, pageSize: number): Observable<User[]>
   {
-    return this.http.get<User[]>(this.apiURL + '/display-name/' + displayName + '?page=' + page + '&pageSize=' + pageSize)
+    const params = {
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    };
+    return this.http.get<User[]>(this.apiURL + '/search-users/' + displayName, { params });
+  }
+
+  searchDeletedUsers(displayName: string, page: number, pageSize: number): Observable<User[]>
+  {
+    const params = {
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+    };
+    const url = displayName ? `${this.apiURL}/search-deleted-users?displayName=${displayName}` : `${this.apiURL}/search-deleted-users`;
+    return this.http.get<User[]>(url, { params });
   }
 
   softDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any>
@@ -42,5 +56,9 @@ export class AdminrightsService {
 
   hardDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any> {
     return this.http.delete(this.apiURL + '/hard-delete/' + displayName, { body: { loggedInUserDisplayName } });
+  }
+
+  undeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any> {
+    return this.http.put(this.apiURL + '/undelete-user/' + displayName, { loggedInUserDisplayName });
   }
 }
