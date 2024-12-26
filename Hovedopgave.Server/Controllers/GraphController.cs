@@ -14,42 +14,12 @@ public class GraphController : ControllerBase
         _graphService = graphService;
     }
 
-    [HttpGet("custom/users")]
-    public async Task<GraphDTO[]> GetCustomUsers(string fromDate, string toDate)
+    [HttpGet("custom")]
+    public async Task<GraphDTO[]> GetCustomUsers(string fromDate, string toDate, string type)
     {
         try
         {
-            return await _graphService.GetCustomUsers(fromDate, toDate);
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return null;
-    }
-
-    [HttpGet("custom/teams")]
-    public async Task<GraphDTO[]> GetCustomTeams(string fromDate, string toDate)
-    {
-        try
-        {
-            return await _graphService.GetCustomTeams(fromDate, toDate);
-        }
-        catch (Exception e)
-        {
-
-        }
-
-        return null;
-    }
-
-    [HttpGet("custom/organisations")]
-    public async Task<GraphDTO[]> GetCustomOrganisations(string fromDate, string toDate)
-    {
-        try
-        {
-            return await _graphService.GetCustomOrganisations(fromDate, toDate);
+            return await _graphService.GetCustomGraphData(fromDate, toDate, type);
         }
         catch (Exception e)
         {
@@ -65,7 +35,7 @@ public class GraphController : ControllerBase
     {
         try 
         {
-            return await _graphService.GetDailyUsers(14);
+            return await _graphService.GetDailyUsers(30);
         }
         catch(Exception e) 
         {
@@ -80,7 +50,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetWeeklyUsers(12);
+            return await _graphService.GetWeeklyUsers(26);
         }
         catch (Exception e)
         {
@@ -95,7 +65,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetMonthlyUsers(12);
+            return await _graphService.GetMonthlyUsers(60);
         }
         catch (Exception e)
         {
@@ -110,7 +80,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetDailyTeams(14);
+            return await _graphService.GetDailyTeams(30);
         }
         catch (Exception e)
         {
@@ -125,7 +95,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetWeeklyTeams(12);
+            return await _graphService.GetWeeklyTeams(26);
         }
         catch (Exception e)
         {
@@ -140,7 +110,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetMonthlyTeams(12);
+            return await _graphService.GetMonthlyTeams(60);
         }
         catch (Exception e)
         {
@@ -155,7 +125,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetDailyOrganisations(14);
+            return await _graphService.GetDailyOrganisations(30);
         }
         catch (Exception e)
         {
@@ -170,7 +140,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetWeeklyOrganisations(12);
+            return await _graphService.GetWeeklyOrganisations(26);
         }
         catch (Exception e)
         {
@@ -185,7 +155,7 @@ public class GraphController : ControllerBase
     {
         try
         {
-            return await _graphService.GetMonthlyOrganisations(12);
+            return await _graphService.GetMonthlyOrganisations(60);
         }
         catch (Exception e)
         {

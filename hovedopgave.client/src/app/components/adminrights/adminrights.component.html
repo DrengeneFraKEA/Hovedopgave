@@ -15,7 +15,7 @@
             Show Deleted Users
           </label>
         </div>
-        <input type="text"
+        <input type="text" id="search-users-input"
                placeholder="Search users..."
                [(ngModel)]="searchQuery"
                (input)="searchUser()"
@@ -50,11 +50,11 @@
               <div class="join">
                 <button class="join-item btn btn-custom text-neutral-content"
                         (click)="previousPage()"
-                        [disabled]="currentPage === 1">
+                        [disabled]="currentPage === 1" id="previous-page">
                   «
                 </button>
                 <button class="join-item btn btn-custom">Page {{ currentPage }}</button>
-                <button class="join-item btn btn-custom text-neutral-content"
+                <button class="join-item btn btn-custom text-neutral-content" id="next-page"
                         (click)="nextPage()">
                   »
                 </button>
@@ -63,7 +63,6 @@
           </div>
         </div>
       </div>
-
       <!-- List of Current Admins Section -->
       <div class="bg-base-100 p-4 rounded-lg shadow-md w-full md:w-1/2">
         <h2 class="text-xl font-semibold mb-4 text-center">List of Current Admins</h2>
@@ -79,9 +78,8 @@
           </div>
         </div>
       </div>
-
       <!-- Modal Section -->
-      <div *ngIf="isModalOpen" class="modal modal-open">
+      <div *ngIf="isModalOpen" class="modal modal-open" id="admin-modal">
         <div class="modal-box w-full max-w-4xl">
           <button class="btn btn-sm btn-circle absolute right-2 top-2 btn-custom text-neutral-content"
                   (click)="closeModal()">
@@ -148,4 +146,3 @@
       </div>
     </div>
   </div>
-</div>

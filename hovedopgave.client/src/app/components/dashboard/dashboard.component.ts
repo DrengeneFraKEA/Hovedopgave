@@ -75,9 +75,9 @@ export class DashboardComponent implements OnInit {
 
   CustomRefreshGraphData()
   {
-    const params = new HttpParams().append('fromDate', `${this.fromDate}`).append('toDate', `${this.toDate}`);
+    const params = new HttpParams().append('fromDate', `${this.fromDate}`).append('toDate', `${this.toDate}`).append('type', `${this.selectedView}`);
     this.selectedFilter = 'custom';
-    this.http.get<graphData[]>(`https://localhost:7213/graph/custom/${this.selectedView}`, { params }).subscribe((data) => {
+    this.http.get<graphData[]>(`https://localhost:7213/graph/custom`, { params }).subscribe((data) => {
       this.data = data;
       this.DrawLineChart();
     });
@@ -100,6 +100,22 @@ export class DashboardComponent implements OnInit {
       Chart.getChart("chart-container")?.destroy();
     }
 
+    const canvas = document.getElementById('chart-container') as HTMLCanvasElement;
+
+    // Get device pixel ratio
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const width = 1700;
+    const height = 1000;
+
+    // Set the display size of the canvas
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    // Adjust the canvas internal resolution for higher DPI screens
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+
+
     const ctx = document.getElementById('chart-container') as HTMLCanvasElement;
     new Chart(ctx, {
       type: 'line',
@@ -115,7 +131,8 @@ export class DashboardComponent implements OnInit {
         }]
       },
       options: {
-        responsive: true,
+        responsive: false,
+        maintainAspectRatio: false,
         plugins: {
           legend: {
             position: 'top',
