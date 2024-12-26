@@ -40,23 +40,43 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
-        [HttpGet("display-name/{displayName}")]
-        public async Task<IActionResult> GetUserByDisplayName(string displayName, [FromQuery] int page, [FromQuery] int pageSize)
+        [HttpGet("search-users/{displayName}")]
+        public async Task<IActionResult> SearchActiveUsers(string displayName, [FromQuery] int page, [FromQuery] int pageSize)
         {
             try
             {
-                List<UserDTO> users = await adminRightsServices.GetUserByDisplayName(displayName, page, pageSize);
+                List<UserDTO> users = await adminRightsServices.SearchActiveUsers(displayName, page, pageSize);
 
                 if (users == null || users.Count == 0)
                 {
-                    return NotFound(new { message = $"User with display name '{displayName}' not found." });
+                    return NotFound(new { message = $"No active users found with display name '{displayName}'." });
                 }
 
                 return Ok(users);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while retrieving the user.", details = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while retrieving active users.", details = ex.Message });
+            }
+        }
+
+        [HttpGet("search-deleted-users")]
+        public async Task<IActionResult> GetDeletedUsers([FromQuery] string? displayName, [FromQuery] int page, [FromQuery] int pageSize)
+        {
+            try
+            {
+                List<UserDTO> users = await adminRightsServices.SearchDeletedUsers(displayName, page, pageSize);
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound(new { message = $"No deleted users found with display name '{displayName}'." });
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving deleted users.", details = ex.Message });
             }
         }
 
@@ -107,25 +127,25 @@ namespace Hovedopgave.Server.Controllers
         }
 
 
-        [HttpPut("update-name/{newDisplayName}/user/{displayName}")]
-        public async Task<IActionResult> UpdateUsersDisplayName(string displayName, string newDisplayName, [FromBody] LoggedInUser loggedInUser)
+        [HttpPut("update-user/{displayName}")]
+        public async Task<IActionResult> UpdateUserDetails(string displayName, [FromBody] UserDTO user)
         {
             try
             {
-                bool success = await adminRightsServices.UpdateUsersDisplayName(loggedInUser.LoggedInUserDisplayName, displayName, newDisplayName);
+                bool success = await adminRightsServices.UpdateUserDetails(user.LoggedInUser, user);
 
                 if (success)
                 {
-                    return Ok(new { message = $"'{displayName}'s display name was successfully changed to '{newDisplayName}'." });
+                    return Ok(new { message = $"User '{displayName}' details were successfully updated." });
                 }
                 else
                 {
-                    return NotFound(new { message = $"Display name '{newDisplayName}' already exists" });
+                    return NotFound(new { message = $"Not enough privileges to update user '{displayName}' details." });
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "An error occurred while updating users display name.", details = ex.Message });
+                return StatusCode(500, new { message = "An error occurred while updating user details.", details = ex.Message });
             }
         }
 
@@ -148,6 +168,50 @@ namespace Hovedopgave.Server.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "An error occurred while resetting the password.", details = ex.Message });
+            }
+        }
+
+        [HttpDelete("hard-delete/{displayName}")]
+        public async Task<IActionResult> HardDeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser)
+        {
+            try
+            {
+                bool success = await adminRightsServices.HardDeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+
+                if (success)
+                {
+                    return Ok(new { message = $"User with display name '{displayName}' was hard deleted." });
+                }
+                else
+                {
+                    return NotFound(new { message = "Not enough privileges to hard delete user." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while hard deleting the user.", details = ex.Message });
+            }
+        }
+
+        [HttpPut("undelete-user/{displayName}")]
+        public async Task<IActionResult> UndeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser)
+        {
+            try
+            {
+                bool success = await adminRightsServices.UndeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+
+                if (success)
+                {
+                    return Ok(new { message = $"User with display name '{displayName}' was successfully restored." });
+                }
+                else
+                {
+                    return NotFound(new { message = $"Not enough privileges to undelete user '{displayName}' or user not found." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while undeleting the user.", details = ex.Message });
             }
         }
 

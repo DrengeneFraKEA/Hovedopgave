@@ -35,43 +35,97 @@ namespace Hovedopgave.Server.Services
         }
 
 
-        public async Task<List<UserDTO?>> GetUserByDisplayName(string displayName, int page, int pageSize)
+        public async Task<List<UserDTO>> SearchActiveUsers(string displayName, int page, int pageSize)
         {
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
 
-            // Query to fetch user by display_name with pagination
-            await using var command = conn.CreateCommand(
-                "SELECT display_name, role FROM public.users WHERE deleted_at IS NULL AND display_name ILIKE @displayName LIMIT @pageSize OFFSET @offset"
-            );
+            string query = @"
+            SELECT display_name, role, full_name, email
+            FROM public.users
+            WHERE deleted_at IS NULL AND display_name ILIKE @displayName
+            LIMIT @pageSize OFFSET @offset";
 
-            // Add the displayName parameter
+            await using var command = conn.CreateCommand(query);
+
             command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
             command.Parameters.AddWithValue("pageSize", pageSize);
             command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
 
             await using var reader = await command.ExecuteReaderAsync();
 
-            // Iterate through the results and populate the list 
             while (await reader.ReadAsync())
             {
                 users.Add(new UserDTO
                 {
                     DisplayName = reader.GetString(0),
                     Role = reader.GetString(1),
+                    FullName = reader.GetString(2),
+                    Email = reader.GetString(3)
                 });
             }
 
             return users;
         }
 
-        private async Task<Roles.Role> GetUserRoleByDisplayName(string displayName, NpgsqlDataSource conn)
+        public async Task<List<UserDTO>> SearchDeletedUsers(string displayName, int page, int pageSize)
         {
-            await using var command = conn.CreateCommand(
-                "SELECT role FROM public.users WHERE display_name = @displayName AND deleted_at IS NULL"
-            );
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            List<UserDTO> users = new List<UserDTO>();
+
+            string query = @"
+            SELECT display_name, role, full_name, email
+            FROM public.users
+            WHERE deleted_at IS NOT NULL";
+
+            if (!string.IsNullOrEmpty(displayName))
+            {
+                query += " AND display_name ILIKE @displayName";
+            }
+
+            query += " LIMIT @pageSize OFFSET @offset";
+
+            await using var command = conn.CreateCommand(query);
+
+            if (!string.IsNullOrEmpty(displayName))
+            { 
+                command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
+            }
+            
+            command.Parameters.AddWithValue("pageSize", pageSize);
+            command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                users.Add(new UserDTO
+                {
+                    DisplayName = reader.GetString(0),
+                    Role = reader.GetString(1),
+                    FullName = reader.GetString(2),
+                    Email = reader.GetString(3)
+                });
+            }
+
+            return users;
+        }
+
+        private async Task<Roles.Role> GetUserRoleByDisplayName(string displayName, NpgsqlDataSource conn, bool includeDeleted = false)
+        {
+            
+            string query = "SELECT role FROM public.users WHERE display_name = @displayName";
+            
+            if (!includeDeleted)
+            {
+                query += " AND deleted_at IS NULL";
+            }
+
+            await using var command = conn.CreateCommand(query);
             command.Parameters.AddWithValue("displayName", displayName);
 
             await using var reader = await command.ExecuteReaderAsync();
@@ -153,7 +207,7 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersDisplayName(string loggedInUserDisplayName, string displayName, string newDisplayName)
+        public async Task<bool> UpdateUserDetails(string loggedInUserDisplayName, UserDTO user)
         {
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
@@ -162,32 +216,34 @@ namespace Hovedopgave.Server.Services
             Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
 
             // Get target users role
-            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(user.DisplayName, conn);
 
             // Check if logged in user can change the target users role
             if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
             {
                 return false; // Not high enough privileges/access level
             }
+            if (user.NewDisplayName != user.DisplayName) {
+                // Checks if the new display name already exists
+                await using var checkCommand = conn.CreateCommand("SELECT COUNT(*) FROM public.users WHERE display_name = @newDisplayName");
+                checkCommand.Parameters.AddWithValue("newDisplayName", user.NewDisplayName);
 
-            // Checks if the new displa name already exists
-            await using var checkCommand = conn.CreateCommand("SELECT COUNT(*) FROM public.users WHERE display_name = @newDisplayName");
-            checkCommand.Parameters.AddWithValue("newDisplayName", newDisplayName);
-
-            int count = (int)(long) await checkCommand.ExecuteScalarAsync();
-            if (count > 0)
-            {
-                return false; // Returns false if the new display name already exists
+                int count = (int)(long)await checkCommand.ExecuteScalarAsync();
+                if (count > 0)
+                {
+                    return false; // Returns false if the new display name already exists
+                }
             }
-
-            // Query to update display name
+            // Query to update details
             await using var updateCommand = conn.CreateCommand(
-                "UPDATE public.users SET display_name = @newDisplayName WHERE display_name = @displayName AND deleted_at IS NULL"
+                "UPDATE public.users SET display_name = @newDisplayName, full_name = @fullName, email = @email WHERE display_name = @displayName AND deleted_at IS NULL"
             );
 
             // Add parameters
-            updateCommand.Parameters.AddWithValue("displayName", displayName);
-            updateCommand.Parameters.AddWithValue("newDisplayName", newDisplayName);
+            updateCommand.Parameters.AddWithValue("displayName", user.DisplayName);
+            updateCommand.Parameters.AddWithValue("newDisplayName", user.NewDisplayName);
+            updateCommand.Parameters.AddWithValue("fullName", user.FullName);
+            updateCommand.Parameters.AddWithValue("email", user.Email);
 
             int rowsAffected = await updateCommand.ExecuteNonQueryAsync();
             return rowsAffected > 0; // Return true if a row was updated
@@ -252,6 +308,60 @@ namespace Hovedopgave.Server.Services
                 await client.PostAsync("http://localhost:8080/send-email", content);
             }
         }
+
+        public async Task<bool> HardDeleteUser(string loggedInUserDisplayName, string targetDisplayName)
+        {
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in users role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Check if the logged in user is SYSTEMADMIN
+            if (loggedInUserRole != Roles.Role.SYSTEMADMIN)
+            {
+                return false; // Not enough privileges
+            }
+
+            // Hard delete user
+            await using var command = conn.CreateCommand(
+                "DELETE FROM public.users WHERE display_name = @displayName"
+            );
+
+            // Add parameters
+            command.Parameters.AddWithValue("displayName", targetDisplayName);
+
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0; // Return true if a row was deleted
+        }
+
+        public async Task<bool> UndeleteUser(string loggedInUserDisplayName, string displayName)
+        {
+            PostgreSQL psql = new PostgreSQL(false);
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+
+            // Get logged in user's role
+            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+
+            // Get target user's role
+            Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn, includeDeleted: true);
+
+            // Check if logged in user can change the target user's role
+            if (!Roles.CanChangeRole(loggedInUserRole, targetUserRole))
+            {
+                return false; // Not enough privileges
+            }
+
+            // Update deleted_at to NULL
+            await using var command = conn.CreateCommand(
+                "UPDATE public.users SET deleted_at = NULL WHERE display_name = @displayName AND deleted_at IS NOT NULL"
+            );
+            command.Parameters.AddWithValue("displayName", displayName);
+
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0; // Return true if a row was updated
+        }
+
 
     }
 }
