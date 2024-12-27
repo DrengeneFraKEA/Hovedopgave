@@ -46,6 +46,7 @@ namespace Hovedopgave.Server.Services
             SELECT display_name, role, full_name, email
             FROM public.users
             WHERE deleted_at IS NULL AND display_name ILIKE @displayName
+            order by display_name asc
             LIMIT @pageSize OFFSET @offset";
 
             await using var command = conn.CreateCommand(query);
@@ -77,27 +78,9 @@ namespace Hovedopgave.Server.Services
 
             List<UserDTO> users = new List<UserDTO>();
 
-            string query = @"
-            SELECT display_name, role, full_name, email
-            FROM public.users
-            WHERE deleted_at IS NOT NULL";
-
-            if (!string.IsNullOrEmpty(displayName))
-            {
-                query += " AND display_name ILIKE @displayName";
-            }
-
-            query += " LIMIT @pageSize OFFSET @offset";
+            string query = $"SELECT display_name, role, full_name, email FROM public.users WHERE deleted_at IS NOT NULL AND display_name ILIKE '%{displayName}%' order by display_name asc LIMIT '{page}' OFFSET '{(page - 1) * pageSize}'";
 
             await using var command = conn.CreateCommand(query);
-
-            if (!string.IsNullOrEmpty(displayName))
-            { 
-                command.Parameters.AddWithValue("displayName", "%" + displayName + "%");
-            }
-            
-            command.Parameters.AddWithValue("pageSize", pageSize);
-            command.Parameters.AddWithValue("offset", (page - 1) * pageSize);
 
             await using var reader = await command.ExecuteReaderAsync();
 

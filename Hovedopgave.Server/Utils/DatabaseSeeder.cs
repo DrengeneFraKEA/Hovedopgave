@@ -1038,7 +1038,7 @@ namespace Hovedopgave.Server.Utils
                 string country = $"{Country.ElementAt(rndCountryIndex)}";
                 string discordId = $"{rndDiscordId}";
                 string birthday = RandomDate(1985, 2010);
-                string createdAt = RandomDate(2022, 2024);
+                string createdAt = RandomDate(2020, 2025);
                 string updatedAt = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss").Replace('.', ':');
 
                 string salt;
@@ -1097,7 +1097,7 @@ namespace Hovedopgave.Server.Utils
                 string country = $"{Country.ElementAt(rndCountryIndex)}";
                 string summary = $"{orgName} is a company out of {country} that has been active at the Esports scene for years!";
                 string description = $"{orgName} is a company out of {country} that has been active at the Esports scene for years!";
-                string createdAt = RandomDate(2022, 2024);
+                string createdAt = RandomDate(2020, 2025);
                 string updatedAt = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss").Replace('.', ':');
 
 
@@ -1142,7 +1142,7 @@ namespace Hovedopgave.Server.Utils
                 string country = $"{Country.ElementAt(rndCountryIndex)}";
                 string initials = $"{Adjectives.ElementAt(rndAdjectiveIndex).Substring(0,1)}{PluralObjects.ElementAt(rndPluralObjectIndex).Substring(0,1)}";
                 string game = "league-of-legends";
-                string createdAt = RandomDate(2022, 2024);
+                string createdAt = RandomDate(2020, 2025);
                 string updatedAt = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss").Replace('.', ':');
 
 
