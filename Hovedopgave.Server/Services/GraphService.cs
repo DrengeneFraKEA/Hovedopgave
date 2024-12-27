@@ -218,7 +218,7 @@ namespace Hovedopgave.Server.Services
                 }
             }
 
-            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01";
+            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-','/');
 
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
@@ -318,7 +318,7 @@ namespace Hovedopgave.Server.Services
                 }
             }
 
-            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01";
+            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-', '/');
 
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
@@ -418,7 +418,7 @@ namespace Hovedopgave.Server.Services
                 }
             }
 
-            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01";
+            string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-', '/');
 
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
