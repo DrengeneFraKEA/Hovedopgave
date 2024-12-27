@@ -18,7 +18,7 @@ namespace Hovedopgave.Server.Services
             List<UserDTO> admins = new List<UserDTO>();
 
             // Query to fetch only the display_name and role columns
-            await using var command = conn.CreateCommand("SELECT display_name, role FROM public.users where deleted_at is null AND role in ('SYSTEMADMIN', 'SUPERUSER')");
+            await using var command = conn.CreateCommand("SELECT display_name, role, full_name, email FROM public.users where deleted_at is null AND role in ('SYSTEMADMIN', 'SUPERUSER')");
             await using var reader = await command.ExecuteReaderAsync();
 
             // Iterate through the results and populate the list
@@ -28,6 +28,8 @@ namespace Hovedopgave.Server.Services
                 {
                     DisplayName = reader.GetString(0),
                     Role = reader.GetString(1),
+                    FullName = reader.GetString(2),
+                    Email = reader.GetString(3)
                 });
             }
 
