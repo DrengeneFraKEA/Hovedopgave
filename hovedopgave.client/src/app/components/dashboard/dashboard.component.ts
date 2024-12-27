@@ -170,4 +170,31 @@ export class DashboardComponent implements OnInit {
       Chart.getChart("chart-container")?.destroy();
     }
   }
+
+  exportToCSV() {
+    if (!this.data || this.data.length === 0) {
+      alert("No data available to export!");
+      return;
+    }
+
+    const csvHeader = "Date,Count\n"; 
+    const csvRows = this.data.map(row => `${row.date},${row.value}`).join("\n"); // Convert data rows to CSV format
+    const csvContent = csvHeader + csvRows;
+
+    // Create a Blob with the CSV data
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+    // Create a download link
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${this.selectedView}_${this.selectedFilter || 'custom'}.csv`);
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
 }

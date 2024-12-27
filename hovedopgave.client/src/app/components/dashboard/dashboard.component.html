@@ -19,7 +19,7 @@
           <button (click)="setFilter('daily')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'daily'}">Daily</button>
           <button (click)="setFilter('weekly')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'weekly'}">Weekly</button>
           <button (click)="setFilter('monthly')" class="btn btn-custom" [ngClass]="{'active': selectedFilter === 'monthly'}">Monthly</button>
-          <img src="save-icon.png" alt="Export CSV" class="export-icon" />
+          <img (click)="exportToCSV()" src="save-icon.png" alt="Export CSV" class="export-icon" />
         </div>
       </div>
 
