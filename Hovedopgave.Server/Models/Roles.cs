@@ -30,7 +30,7 @@
 
         public static bool CanChangeRole(Role currentUserRole, Role targetUserRole)
         {
-            return currentUserRole >= targetUserRole;
+            return currentUserRole > targetUserRole;
         }
     }
 }

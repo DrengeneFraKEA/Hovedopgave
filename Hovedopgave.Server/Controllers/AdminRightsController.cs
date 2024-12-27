@@ -85,7 +85,7 @@ namespace Hovedopgave.Server.Controllers
         {
             try
             {
-                bool success = await adminRightsServices.SoftDeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+                bool success = await adminRightsServices.SoftDeleteUser(loggedInUser.LoggedInUserID, displayName);
 
                 if (success)
                 {
@@ -108,8 +108,8 @@ namespace Hovedopgave.Server.Controllers
         {
             try
             {
-                bool success = await adminRightsServices.UpdateUsersRole(loggedInUser.LoggedInUserDisplayName, displayName, role);
-                Console.WriteLine("Logged in User: " + loggedInUser.LoggedInUserDisplayName);
+                bool success = await adminRightsServices.UpdateUsersRole(loggedInUser.LoggedInUserID, displayName, role);
+                Console.WriteLine("Logged in User: " + loggedInUser.LoggedInUserID);
                 
                 if (success)
                 {
@@ -176,7 +176,7 @@ namespace Hovedopgave.Server.Controllers
         {
             try
             {
-                bool success = await adminRightsServices.HardDeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+                bool success = await adminRightsServices.HardDeleteUser(loggedInUser.LoggedInUserID, displayName);
 
                 if (success)
                 {
@@ -198,7 +198,7 @@ namespace Hovedopgave.Server.Controllers
         {
             try
             {
-                bool success = await adminRightsServices.UndeleteUser(loggedInUser.LoggedInUserDisplayName, displayName);
+                bool success = await adminRightsServices.UndeleteUser(loggedInUser.LoggedInUserID, displayName);
 
                 if (success)
                 {

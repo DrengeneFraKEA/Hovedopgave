@@ -122,7 +122,24 @@ namespace Hovedopgave.Server.Services
             return Roles.Role.GUEST;
         }
 
-        public async Task<bool> SoftDeleteUser(string loggedInUserDisplayName, string displayName)
+        private async Task<Roles.Role> GetUserRoleByID(string id, NpgsqlDataSource conn)
+        { 
+
+            string query = "SELECT role FROM public.users WHERE id = @id";
+
+            await using var command = conn.CreateCommand(query);
+            command.Parameters.AddWithValue("id", id);
+
+            await using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return Roles.GetRoleByName(reader.GetString(0));
+            }
+
+            return Roles.Role.GUEST;
+        }
+
+        public async Task<bool> SoftDeleteUser(string loggedInUserID, string displayName)
         {
             PostgreSQL psql = new PostgreSQL(false);
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
@@ -130,7 +147,7 @@ namespace Hovedopgave.Server.Services
             DateTime timestamp = DateTime.UtcNow;
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserID, conn);
 
             // Get target user's role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
@@ -161,7 +178,7 @@ namespace Hovedopgave.Server.Services
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
 
             // Get target users role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
@@ -198,7 +215,7 @@ namespace Hovedopgave.Server.Services
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
 
             // Get target users role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(user.DisplayName, conn);
@@ -300,7 +317,7 @@ namespace Hovedopgave.Server.Services
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
 
             // Check if the logged in user is SYSTEMADMIN
             if (loggedInUserRole != Roles.Role.SYSTEMADMIN)
@@ -326,7 +343,7 @@ namespace Hovedopgave.Server.Services
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in user's role
-            Roles.Role loggedInUserRole = await GetUserRoleByDisplayName(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
 
             // Get target user's role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn, includeDeleted: true);

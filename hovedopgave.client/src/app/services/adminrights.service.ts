@@ -36,14 +36,14 @@ export class AdminrightsService {
     return this.http.get<User[]>(url, { params });
   }
 
-  softDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any>
+  softDeleteUser(loggedInUserID: string, displayName: string): Observable<any>
   {
-    return this.http.put(this.apiURL + '/soft-delete/' + displayName, { loggedInUserDisplayName });
+    return this.http.put(this.apiURL + '/soft-delete/' + displayName, { loggedInUserID });
   }
 
-  updateUsersRole(loggedInUserDisplayName: string, role: string, displayName: string): Observable<any> 
+  updateUsersRole(loggedInUserID: string, role: string, displayName: string): Observable<any> 
   {
-    return this.http.put(this.apiURL + '/update-role/' + role + '/name/' + displayName, { loggedInUserDisplayName });
+    return this.http.put(this.apiURL + '/update-role/' + role + '/name/' + displayName, { loggedInUserID });
   }
 
   updateUserDetails(user: User): Observable<any> {
@@ -54,11 +54,11 @@ export class AdminrightsService {
     return this.http.put(this.apiURL + '/reset-password/' + displayName, {});
   }
 
-  hardDeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any> {
-    return this.http.delete(this.apiURL + '/hard-delete/' + displayName, { body: { loggedInUserDisplayName } });
+  hardDeleteUser(loggedInUserID: string, displayName: string): Observable<any> {
+    return this.http.delete(this.apiURL + '/hard-delete/' + displayName, { body: { loggedInUserID } });
   }
 
-  undeleteUser(loggedInUserDisplayName: string, displayName: string): Observable<any> {
-    return this.http.put(this.apiURL + '/undelete-user/' + displayName, { loggedInUserDisplayName });
+  undeleteUser(loggedInUserID: string, displayName: string): Observable<any> {
+    return this.http.put(this.apiURL + '/undelete-user/' + displayName, { loggedInUserID });
   }
 }

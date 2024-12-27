@@ -24,7 +24,7 @@ export class AdminrightsComponent implements OnInit {
   displayNameError: string | null = null
   currentPage: number = 1;
   pageSize: number = 5;
-  loggedinUserDisplayName = localStorage.getItem("username");
+  loggedinUserID = localStorage.getItem("user_id");
   updateRoleError: string | null = null;
   selectedView: string = 'users';
   searchDeleted: boolean = false;
@@ -138,10 +138,10 @@ export class AdminrightsComponent implements OnInit {
   }
 
   deleteUser() {
-    if (this.selectedUser && this.loggedinUserDisplayName) {
+    if (this.selectedUser && this.loggedinUserID) {
       const confirmDelete = window.confirm(`Are you sure you want to soft delete user ${this.selectedUser.displayName}?`);
       if (confirmDelete) {
-        this.adminrightsService.softDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
+        this.adminrightsService.softDeleteUser(this.loggedinUserID, this.selectedUser.displayName).subscribe(
           () => {
             this.fetchAdmins(); // Refreshing after the user is deleted
             this.closeModal();
@@ -156,9 +156,9 @@ export class AdminrightsComponent implements OnInit {
   
 
   changeUsersRole(role: string) {
-    if (this.selectedUser && this.selectedRole !== role && this.loggedinUserDisplayName) {
+    if (this.selectedUser && this.selectedRole !== role && this.loggedinUserID) {
       this.selectedRole = role;
-      this.adminrightsService.updateUsersRole(this.loggedinUserDisplayName, this.selectedRole, this.selectedUser.displayName).subscribe(
+      this.adminrightsService.updateUsersRole(this.loggedinUserID, this.selectedRole, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins(); // Refreshing after the role is updated
           this.closeModal();
@@ -171,10 +171,10 @@ export class AdminrightsComponent implements OnInit {
   }
 
   changeUserDetails() {
-    if (this.selectedUser && this.loggedinUserDisplayName) {
+    if (this.selectedUser && this.loggedinUserID) {
       const updatedUser: User = {
         ...this.selectedUser,
-        loggedInUser: this.loggedinUserDisplayName,
+        loggedInUser: this.loggedinUserID,
         displayName: this.selectedUser.displayName,
         newDisplayName: this.newDisplayName,
         fullName: this.newFullName,
@@ -202,10 +202,10 @@ export class AdminrightsComponent implements OnInit {
   }
 
   hardDeleteUser() {
-    if (this.selectedUser && this.loggedinUserDisplayName) {
+    if (this.selectedUser && this.loggedinUserID) {
       const confirmDelete = window.confirm(`Are you sure you want to hard delete user ${this.selectedUser.displayName}? This action cannot be undone.`);
       if (confirmDelete) {
-      this.adminrightsService.hardDeleteUser(this.loggedinUserDisplayName, this.selectedUser.displayName).subscribe(
+      this.adminrightsService.hardDeleteUser(this.loggedinUserID, this.selectedUser.displayName).subscribe(
         () => {
           this.fetchAdmins();
           this.closeModal();
@@ -225,13 +225,13 @@ export class AdminrightsComponent implements OnInit {
   }
 
   undeleteUser(user: User) {
-    if (this.loggedinUserDisplayName) {
+    if (this.loggedinUserID) {
       const confirmUndelete = window.confirm(
         `Are you sure you want to restore user ${user.displayName}?`
       );
       if (confirmUndelete) {
         this.adminrightsService
-          .undeleteUser(this.loggedinUserDisplayName, user.displayName)
+          .undeleteUser(this.loggedinUserID, user.displayName)
           .subscribe(
             () => {
               this.searchUser(); // Refresh the list after undeleting

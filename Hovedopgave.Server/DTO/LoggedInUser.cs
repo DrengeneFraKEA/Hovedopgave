@@ -2,6 +2,6 @@
 {
     public class LoggedInUser
     {
-        public string LoggedInUserDisplayName { get; set; }
+        public string LoggedInUserID { get; set; }
     }
 }
