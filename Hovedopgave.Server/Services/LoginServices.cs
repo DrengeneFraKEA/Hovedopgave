@@ -10,9 +10,11 @@ namespace Hovedopgave.Server.Services
     {
         public async Task<LoginDTO> Login(LoginAttemptDTO credentials) 
         {
-            if (string.IsNullOrEmpty(credentials.username) || string.IsNullOrEmpty(credentials.password)) return null;
+            if (string.IsNullOrEmpty(credentials.username) || string.IsNullOrEmpty(credentials.password)) return new LoginDTO() { error = "no credentials provided."};
+            if (credentials.username.Length > 100 || credentials.password.Length > 100 || 
+                !Sanitizer.CheckInputValidity(credentials.username) || !Sanitizer.CheckInputValidity(credentials.password)) return new LoginDTO() { error = "invalid input provided." };
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT * FROM public.users WHERE display_name='{credentials.username}'");
@@ -53,7 +55,7 @@ namespace Hovedopgave.Server.Services
                 }
             }
 
-            return null;
+            return new LoginDTO() {error = "no user found." };
         }
     }
 }

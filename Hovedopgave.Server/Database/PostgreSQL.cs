@@ -3,18 +3,15 @@ namespace Hovedopgave.Server.Database
 {
     public class PostgreSQL
     {
-        private bool uselocaldb { get; set; }
+        private bool uselocaldb { get; set; } = false; // flip this for switching from local to azure.
         private string username { get; set; }
         private string password { get; set; }
         public string connectionstring {get; set; }
         public string host { get; set; }
         public string database { get; set; }
 
-        public PostgreSQL(bool uselocaldb) 
+        public PostgreSQL() 
         {
-            this.uselocaldb = uselocaldb;
-            
-            // Setup connection
             if (this.uselocaldb) 
             {
                 // Connect to local DB
@@ -37,9 +34,9 @@ namespace Hovedopgave.Server.Database
             }
         }
 
-        public static string GetConnectionString(bool localDb) 
+        public static string GetConnectionString() 
         {
-            return new PostgreSQL(localDb).connectionstring;
+            return new PostgreSQL().connectionstring;
         }
     }
 }

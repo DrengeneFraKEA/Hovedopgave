@@ -1063,7 +1063,7 @@ namespace Hovedopgave.Server.Utils
                 string batchCommand = string.Empty;
                 foreach (var c in batch) batchCommand += c;
 
-                PostgreSQL psql = new PostgreSQL(false); // change to false once azure is up
+                PostgreSQL psql = new PostgreSQL();
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
                 using var exeCommand = conn.CreateCommand(batchCommand);
@@ -1110,7 +1110,7 @@ namespace Hovedopgave.Server.Utils
 
                 hashset.Add(orgName);
 
-                PostgreSQL psql = new PostgreSQL(false); // change to false once azure is up
+                PostgreSQL psql = new PostgreSQL();
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
                 using var command = conn.CreateCommand($"INSERT INTO public.organizations (id, name, region, country, summary, description, created_at, updated_at)" +
@@ -1155,7 +1155,7 @@ namespace Hovedopgave.Server.Utils
 
                 hashset.Add(teamName);
 
-                PostgreSQL psql = new PostgreSQL(false); // change to false once azure is up
+                PostgreSQL psql = new PostgreSQL();
                 using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
                 using var command = conn.CreateCommand($"INSERT INTO public.teams (id, name, initials, game, country, created_at, updated_at)" +

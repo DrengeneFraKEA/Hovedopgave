@@ -12,7 +12,7 @@ namespace Hovedopgave.Server.Services
     {
         public async Task<List<UserDTO>> GetAllAdmins()
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> admins = new List<UserDTO>();
@@ -39,7 +39,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<List<UserDTO>> SearchActiveUsers(string displayName, int page, int pageSize)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
@@ -75,7 +75,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<List<UserDTO>> SearchDeletedUsers(string displayName, int page, int pageSize)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             List<UserDTO> users = new List<UserDTO>();
@@ -119,7 +119,7 @@ namespace Hovedopgave.Server.Services
                 return Roles.GetRoleByName(reader.GetString(0));
             }
 
-            return Roles.Role.GUEST;
+            return Roles.Role.INVALID;
         }
 
         private async Task<Roles.Role> GetUserRoleByID(string id, NpgsqlDataSource conn)
@@ -141,7 +141,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<bool> SoftDeleteUser(string loggedInUserID, string displayName)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             DateTime timestamp = DateTime.UtcNow;
@@ -172,13 +172,13 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUsersRole(string loggedInUserDisplayName, string displayName, Roles.Role role)
+        public async Task<bool> UpdateUsersRole(string loggedInUserID, string displayName, Roles.Role role)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserID, conn);
 
             // Get target users role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn);
@@ -209,13 +209,13 @@ namespace Hovedopgave.Server.Services
 
         }
 
-        public async Task<bool> UpdateUserDetails(string loggedInUserDisplayName, UserDTO user)
+        public async Task<bool> UpdateUserDetails(string loggedInUserID, UserDTO user)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserID, conn);
 
             // Get target users role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(user.DisplayName, conn);
@@ -254,7 +254,7 @@ namespace Hovedopgave.Server.Services
 
         public async Task<bool> ResetUserPassword(string displayName)
         {
-            PostgreSQL psql = new PostgreSQL(true); // Change to false once Azure is up
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get user's email
@@ -311,13 +311,13 @@ namespace Hovedopgave.Server.Services
             }
         }
 
-        public async Task<bool> HardDeleteUser(string loggedInUserDisplayName, string targetDisplayName)
+        public async Task<bool> HardDeleteUser(string loggedInUserID, string targetDisplayName)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in users role
-            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserID, conn);
 
             // Check if the logged in user is SYSTEMADMIN
             if (loggedInUserRole != Roles.Role.SYSTEMADMIN)
@@ -337,13 +337,13 @@ namespace Hovedopgave.Server.Services
             return rowsAffected > 0; // Return true if a row was deleted
         }
 
-        public async Task<bool> UndeleteUser(string loggedInUserDisplayName, string displayName)
+        public async Task<bool> UndeleteUser(string loggedInUserID, string displayName)
         {
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             // Get logged in user's role
-            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserDisplayName, conn);
+            Roles.Role loggedInUserRole = await GetUserRoleByID(loggedInUserID, conn);
 
             // Get target user's role
             Roles.Role targetUserRole = await GetUserRoleByDisplayName(displayName, conn, includeDeleted: true);
@@ -364,6 +364,16 @@ namespace Hovedopgave.Server.Services
             return rowsAffected > 0; // Return true if a row was updated
         }
 
+        public async Task<Users> GetUserById(string id) 
+        {
+            PostgreSQL psql = new PostgreSQL();
 
+            await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
+            await using var command = conn.CreateCommand($"SELECT display_name FROM public.users WHERE id = '{id}'");
+
+            await using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync()) return new Users() { display_name = reader.GetString(0) };
+            else return null;
+        }
     }
 }

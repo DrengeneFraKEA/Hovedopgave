@@ -111,7 +111,7 @@ namespace Hovedopgave.Server.Services
             string desiredFromDate = from.ToString("yyyy/MM/dd");
             string desiredToDate = to.AddDays(1).ToString("yyyy/MM/dd"); // Reason we add one is because toDate is midnight, so to get the last day we need to take the next day at midnight (when it starts)
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.{table} WHERE created_at BETWEEN '{desiredFromDate}' AND '{desiredToDate}'");
@@ -147,7 +147,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-daysInThePast).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.users WHERE created_at > '{desiredDate}'");
@@ -181,7 +181,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-weeksInThePast * 7).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.users WHERE created_at > '{desiredDate}'");
@@ -220,7 +220,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-','/');
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.users WHERE created_at > '{desiredDate}'");
@@ -247,7 +247,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-daysInThePast).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.teams WHERE created_at > '{desiredDate}'");
@@ -281,7 +281,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-weeksInThePast * 7).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.teams WHERE created_at > '{desiredDate}'");
@@ -320,7 +320,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-', '/');
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.teams WHERE created_at > '{desiredDate}'");
@@ -347,7 +347,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-daysInThePast).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.organizations WHERE created_at > '{desiredDate}'");
@@ -381,7 +381,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = DateTime.Now.AddDays(-weeksInThePast * 7).Date.ToString("yyyy/MM/dd");
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.organizations WHERE created_at > '{desiredDate}'");
@@ -420,7 +420,7 @@ namespace Hovedopgave.Server.Services
 
             string desiredDate = $"{DateTime.Now.AddMonths(-monthsInThePast).Date.ToString("yyyy/MM")}/01".Replace('-', '/');
 
-            PostgreSQL psql = new PostgreSQL(false);
+            PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
             await using var command = conn.CreateCommand($"SELECT created_at FROM public.organizations WHERE created_at > '{desiredDate}'");

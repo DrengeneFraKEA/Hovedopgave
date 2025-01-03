@@ -4,6 +4,7 @@
     {
         public enum Role
         {
+            INVALID = -1,
             GUEST = 0,
             USER = 1,
             AFFILIATE = 2,
@@ -24,7 +25,7 @@
                 "AFFILIATE" => Role.AFFILIATE,
                 "USER" => Role.USER,
                 "GUEST" => Role.GUEST,
-                _ => Role.GUEST, // Default case
+                _ => Role.INVALID, // Default case
             };
         }
 

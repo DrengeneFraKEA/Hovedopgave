@@ -16,13 +16,13 @@ builder.Services.AddCors(options =>
 });
 
 // Register PostgreSQL as a singleton
-builder.Services.AddSingleton(sp => new PostgreSQL(uselocaldb: true)); // False when using hosted DB
+builder.Services.AddSingleton(sp => new PostgreSQL()); // False when using hosted DB
 
 // Register ApplicationDbContext with the PostgreSQL connection string
 builder.Services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
 {
     var postgreSql = serviceProvider.GetRequiredService<PostgreSQL>();
-    options.UseNpgsql(PostgreSQL.GetConnectionString(false));
+    options.UseNpgsql(PostgreSQL.GetConnectionString());
 });
 
 builder.Services.AddControllers();

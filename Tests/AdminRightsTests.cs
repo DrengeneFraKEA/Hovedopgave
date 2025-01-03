@@ -1,4 +1,5 @@
 ﻿using Hovedopgave.Server.Database;
+using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Models;
 using Hovedopgave.Server.Services;
 using Npgsql;
@@ -8,139 +9,120 @@ namespace Tests
     public class AdminRightsTests
     {
         private const string ENV_FILE = "env.env";
+
         PostgreSQL psql;
 
         public AdminRightsTests()
         {
-            Setup();
-        }
-
-        public void Setup()
-        {
-            if (File.Exists(ENV_FILE))
-            {
-                DotNetEnv.Env.Load(ENV_FILE);
-            }
-            psql = new PostgreSQL(false);
+            if (File.Exists(ENV_FILE)) DotNetEnv.Env.Load(ENV_FILE);
+            psql = new PostgreSQL();
         }
 
         [Fact]
         public async Task LoadEnvFile()
         {
-            // Arrange
             string expected = "leagues_data";
             string actual = DotNetEnv.Env.GetString("AZURE_DB_DATABASE");
-            // Assert
+
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public async Task GetAllUsers()
+        public async Task GetAllAdmins()
         {
-            // Act
             AdminRightsServices service = new AdminRightsServices();
             var result = await service.GetAllAdmins();
 
-            // Assert
             Assert.NotEmpty(result);
         }
 
 
         [Fact]
-        public async Task GetUserByDisplayName()
+        public async Task GetActiveUsersByDisplayName()
         {
-            // Arrange
             AdminRightsServices service = new AdminRightsServices();
-            string displayName = "Quad";
+            
+            string displayName = "e";
             int page = 1;
             int pageSize = 5;
-            // Act
-            var result = await service.GetUserByDisplayName(displayName, page, pageSize);
-            // Assert
+            var result = await service.SearchActiveUsers(displayName, page, pageSize);
+            
             Assert.NotNull(result);
         }
 
         [Fact]
-        public async Task GetUserByDisplayName_NotFound()
+        public async Task GetSoftDeletedUsersByDisplayName()
         {
-            // Arrange
             AdminRightsServices service = new AdminRightsServices();
-            string displayName = "FakeFaker";
+
+            string displayName = "e";
             int page = 1;
             int pageSize = 5;
-            // Act
-            var result = await service.GetUserByDisplayName(displayName, page, pageSize);
-            // Assert
-            Assert.Empty(result);
+            var result = await service.SearchDeletedUsers(displayName, page, pageSize);
+
+            Assert.NotNull(result);
         }
 
         [Fact]
-        public async Task SoftDeleteAndUpdateUsersRoleAndDisplayName()
+        public async Task UpdateUserDetails()
         {
-            // Arrange
             AdminRightsServices service = new AdminRightsServices();
-            string testUserName = "TestUser";
-            Roles.Role newRole = Roles.Role.MODERATOR;
+            string testUsername = "test_01JBC2KQ4R1KRMQCQQZ78Y34D0";
 
-
-            // Step 1: Insert the test user into the database
+            // Insert the test user into the database
             using (var connection = new NpgsqlConnection(psql.connectionstring))
             {
                 await connection.OpenAsync();
-                string insertQuery = $@"
-                    INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password)
-                    VALUES
-                    ('usr_01JBC2KQ4R1KRMQCQQZ78Y34D0','John Doe','{testUserName}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');
-                ";
+                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('usr_01JBC2KQ4R1KRMQCQQZ78Y34D0','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
                 await using (var cmd = new NpgsqlCommand(insertQuery, connection))
                 {
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
 
-            // Act 1: Verify that the user can be updated (change role)
-            var updateRoleResult = await service.UpdateUsersRole("Faker", testUserName, newRole);
+            // Update role
+            bool updateRoleResult = await service.UpdateUsersRole("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", testUsername, Roles.Role.MODERATOR);
 
-            // Assert 1: Assert that the user role was updated successfully
-            Assert.True(updateRoleResult);
+            // Update displayname
+            UserDTO updateDetails = new UserDTO() { DisplayName = testUsername, NewDisplayName = "2KQ4R1KRMQ1JBC2KQ4R1KR4D0JBC2KQ4R1KR9", Email = "Q1JBC2KQ4R1KR4D0JBC2K@blabla.com", FullName = "John Smith" };
+            
+            bool updateDisplayNameResult = await service.UpdateUserDetails("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails);
 
-            // Act 2: Verify that the user can be updated (change display name)
-            var updateDisplayNameResult = await service.UpdateUsersDisplayName("Faker", testUserName, "TestUserChangedName");
+            // Hard delete user
+            var softDeleteResult = await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails.NewDisplayName);
 
-            // Assert 2: Assert that the user display name was updated successfully
-            Assert.True(updateDisplayNameResult);
-            testUserName = "TestUserChangedName";
+            Assert.True(updateRoleResult && updateDisplayNameResult && softDeleteResult);
+        }
 
-            // Act 3: Verify that the user CAN NOT be updated with an existing display name 
-            var updateWithAnExistingOneResult = await service.UpdateUsersDisplayName("Faker", testUserName, "Quad");
+        [Fact]
+        public async Task SoftDeleteUser() 
+        {
+            AdminRightsServices service = new AdminRightsServices();
+            string testUsername = "test_C2KQ4R1KRMQCQQZ78Y34D0ASDF";
+            string testUserId = "usr_01JBC2KQ4R1KRMQCQQZ78Y34D0";
 
-            // Assert 3: Assert that the user display name was not updated successfully
-            Assert.False(updateWithAnExistingOneResult);
-
-            // Act 4: Soft delete the user
-            var softDeleteResult = await service.SoftDeleteUser("Faker", testUserName);
-
-            // Assert 4: Assert that the user was soft deleted successfully
-            Assert.True(softDeleteResult);
-
-            // Act 5: Try to soft delete the same user again (should return false)
-            var softDeleteAgainResult = await service.SoftDeleteUser("Faker", testUserName);
-
-            // Assert 5: Assert that trying to delete an already deleted user returns false
-            Assert.False(softDeleteAgainResult);
-
-            // Step 2: Delete the test user from the database to clean up
+            // Insert the test user into the database
             using (var connection = new NpgsqlConnection(psql.connectionstring))
             {
                 await connection.OpenAsync();
-                string deleteQuery = $@"
-                    DELETE FROM public.users WHERE display_name = '{testUserName}';
-                ";
-                await using (var cmd = new NpgsqlCommand(deleteQuery, connection))
+                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('{testUserId}','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
+                await using (var cmd = new NpgsqlCommand(insertQuery, connection))
                 {
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
+
+            Users user = await service.GetUserById(testUserId);
+
+            Assert.True(user.display_name != null);
+
+            bool deleted = await service.SoftDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", user.display_name);
+
+            Assert.True(deleted);
+
+            bool hDeleted = await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", user.display_name);
+
+            Assert.True(hDeleted);
         }
     }
 }

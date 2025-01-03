@@ -28,6 +28,12 @@ export class LoginComponent {
         if (response != null) {
           var loginDto = JSON.parse(JSON.stringify(response));
 
+          if (loginDto.error != null)
+          {
+            this.errorMessage = loginDto.error;
+            return;
+          }
+
           // Check if anything is missing.
           if (loginDto.user_id === null || loginDto.user_id === "" || loginDto.token === null || loginDto.token === "") return;
 
@@ -39,7 +45,7 @@ export class LoginComponent {
           this.errorMessage = null;
         } else
         {
-          this.errorMessage = "User not found!"; 
+          this.errorMessage = "Something went wrong."; 
         }
       },
       (error) => {
