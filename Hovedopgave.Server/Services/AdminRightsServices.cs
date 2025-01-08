@@ -39,6 +39,19 @@ namespace Hovedopgave.Server.Services
 
         public async Task<List<UserDTO>> SearchActiveUsers(string displayName, int page, int pageSize)
         {
+            if (string.IsNullOrEmpty(displayName))
+            {
+                throw new ArgumentException("display name cannot be empty.");
+            }
+            if (!Sanitizer.CheckInputValidity(displayName))
+            {
+                throw new ArgumentException("invalid characters in display name.");
+            }
+            if (displayName.Length > 100)
+            {
+                throw new ArgumentException("display name cannot exceed 100 characters.");
+            }
+
             PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 
@@ -75,6 +88,19 @@ namespace Hovedopgave.Server.Services
 
         public async Task<List<UserDTO>> SearchDeletedUsers(string displayName, int page, int pageSize)
         {
+            if (string.IsNullOrEmpty(displayName))
+            {
+                throw new ArgumentException("display name cannot be empty.");
+            }
+            if (!Sanitizer.CheckInputValidity(displayName))
+            {
+                throw new ArgumentException("invalid characters in display name.");
+            }
+            if (displayName.Length > 100)
+            {
+                throw new ArgumentException("display name cannot exceed 100 characters.");
+            }
+
             PostgreSQL psql = new PostgreSQL();
             await using NpgsqlDataSource conn = NpgsqlDataSource.Create(psql.connectionstring);
 

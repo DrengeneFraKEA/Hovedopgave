@@ -19,7 +19,7 @@
     <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'league_profiles'}"><a (click)="updateView('league_profiles')">League Profiles</a></li>
     <li [ngClass]="{'grayed-out-light': currentTheme === 'light', 'grayed-out-dark': currentTheme === 'dark', 'active': activeView === 'competitions'}"><a (click)="updateView('competitions')">Competitions</a></li>
     
-    <li class="menu-section-title">Placeholder</li>
+    <li class="menu-section-title">Management</li>
     <li><a id="nav-adminrights" (click)="updateView('adminrights')">Admin Rights</a></li>
   </ul>
   <div class="theme-controller-container mt-auto p-4">
