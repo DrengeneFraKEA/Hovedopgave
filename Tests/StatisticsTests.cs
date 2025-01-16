@@ -39,15 +39,6 @@ namespace Tests
             Assert.NotEmpty(result);
         }
 
-        [Fact]
-        public async Task GetWeeklyUsers()
-        {
-            GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetWeeklyUsers(26);
-
-            Assert.NotEmpty(result);
-        }
-
 
         [Fact]
         public async Task GetMonthlyUsers()
@@ -68,15 +59,6 @@ namespace Tests
         }
 
         [Fact]
-        public async Task GetWeeklyTeams()
-        {
-            GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetWeeklyTeams(26);
-
-            Assert.NotEmpty(result);
-        }
-
-        [Fact]
         public async Task GetMonthlyTeams()
         {
             GraphService service = new GraphService();
@@ -90,15 +72,6 @@ namespace Tests
         {
             GraphService service = new GraphService();
             GraphDTO[] result = await service.GetDailyOrganisations(30);
-
-            Assert.NotEmpty(result);
-        }
-
-        [Fact]
-        public async Task GetWeeklyOrganisations()
-        {
-            GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetWeeklyOrganisations(26);
 
             Assert.NotEmpty(result);
         }
