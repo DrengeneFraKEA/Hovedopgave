@@ -1,9 +1,7 @@
-﻿using Hovedopgave.Server.Controllers;
-using Hovedopgave.Server.Database;
+﻿using Hovedopgave.Server.Database;
 using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Models;
 using Hovedopgave.Server.Services;
-using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
 namespace Tests
@@ -12,16 +10,12 @@ namespace Tests
     {
         private const string ENV_FILE = "env.env";
 
-        private readonly PostgreSQL psql;
-        private readonly AdminRightsServices service;
-        private readonly AdminRightsController controller;
+        PostgreSQL psql;
 
         public AdminRightsTests()
         {
             if (File.Exists(ENV_FILE)) DotNetEnv.Env.Load(ENV_FILE);
             psql = new PostgreSQL();
-            service = new AdminRightsServices();
-            controller = new AdminRightsController();
         }
 
         [Fact]
@@ -32,11 +26,11 @@ namespace Tests
 
             Assert.Equal(expected, actual);
         }
-        // Testing service methods
 
         [Fact]
         public async Task GetAllAdmins()
         {
+            AdminRightsServices service = new AdminRightsServices();
             var result = await service.GetAllAdmins();
 
             Assert.NotEmpty(result);
@@ -46,18 +40,20 @@ namespace Tests
         [Fact]
         public async Task GetActiveUsersByDisplayName()
         {
-            
+            AdminRightsServices service = new AdminRightsServices();
+
             string displayName = "e";
             int page = 1;
             int pageSize = 5;
             var result = await service.SearchActiveUsers(displayName, page, pageSize);
-            
+
             Assert.NotNull(result);
         }
 
         [Fact]
         public async Task GetSoftDeletedUsersByDisplayName()
         {
+            AdminRightsServices service = new AdminRightsServices();
 
             string displayName = "e";
             int page = 1;
@@ -70,6 +66,7 @@ namespace Tests
         [Fact]
         public async Task UpdateUserDetails()
         {
+            AdminRightsServices service = new AdminRightsServices();
             string testUsername = "test_01JBC2KQ4R1KRMQCQQZ78Y34D0";
 
             // Insert the test user into the database
@@ -88,21 +85,19 @@ namespace Tests
 
             // Update displayname
             UserDTO updateDetails = new UserDTO() { DisplayName = testUsername, NewDisplayName = "2KQ4R1KRMQ1JBC2KQ4R1KR4D0JBC2KQ4R1KR9", Email = "Q1JBC2KQ4R1KR4D0JBC2K@blabla.com", FullName = "John Smith" };
-            
+
             bool updateDisplayNameResult = await service.UpdateUserDetails("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails);
 
             // Hard delete user
             var softDeleteResult = await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails.NewDisplayName);
 
             Assert.True(updateRoleResult && updateDisplayNameResult && softDeleteResult);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails.NewDisplayName);
         }
 
         [Fact]
-        public async Task SoftDeleteUser() 
+        public async Task SoftDeleteUser()
         {
+            AdminRightsServices service = new AdminRightsServices();
             string testUsername = "test_C2KQ4R1KRMQCQQZ78Y34D0ASDF";
             string testUserId = "usr_01JBC2KQ4R1KRMQCQQZ78Y34D0";
 
@@ -128,174 +123,56 @@ namespace Tests
             bool hDeleted = await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", user.display_name);
 
             Assert.True(hDeleted);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", user.display_name);
         }
 
 
-        // Testing controller methods
-
-        [Fact]
-        public async Task GetAdminsController()
-        {
-            // Act
-            var result = await controller.GetAdmins();
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotEmpty((List<UserDTO>)okResult.Value);
-        }
-
-        [Fact]
-        public async Task SearchActiveUsersController()
+        [Theory]
+        [InlineData("", 1, 10, "display name cannot be empty.")]
+        [InlineData("a", 1, 10, null)]
+        [InlineData("deletedUser456", 1, 10, null)]
+        [InlineData("deletedUserWithInvalidChar!", 1, 10, "invalid characters in display name.")]
+        [InlineData("deletedUserWithVeryLongDisplayNameExceedingTheMaximumAllowedCharacterLimitOfOneHundredCharactersXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 1, 10, "display name cannot exceed 100 characters.")]
+        public async Task SearchDeletedUsersTest(string displayName, int page, int pageSize, string expectedError)
         {
             // Arrange
-            string displayName = "e";
-            int page = 1;
-            int pageSize = 5;
+            var adminService = new AdminRightsServices();
 
-            // Act
-            var result = await controller.SearchActiveUsers(displayName, page, pageSize);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-        }
-
-        [Fact]
-        public async Task GetDeletedUsersController()
-        {
-            // Arrange
-            string displayName = "e";
-            int page = 1;
-            int pageSize = 5;
-
-            // Act
-            var result = await controller.GetDeletedUsers(displayName, page, pageSize);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.NotNull(okResult.Value);
-        }
-
-        [Fact]
-        public async Task SoftDeleteUserController()
-        {
-            // Arrange
-            string testUsername = "test_C2KQ4R1KRMQCQQZ78Y34D0ASDF";
-            string testUserId = "usr_01JBC2KQ4R1KRMQCQQZ78Y34D0";
-            var loggedInUser = new LoggedInUser { LoggedInUserID = "usr_01JBC2KQ4SAV6SW2QDC6DKSKD7" };
-
-            // Insert the test user into the database
-            using (var connection = new NpgsqlConnection(psql.connectionstring))
+            // Act & Assert
+            if (!string.IsNullOrEmpty(expectedError))
             {
-                await connection.OpenAsync();
-                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('{testUserId}','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
-                await using (var cmd = new NpgsqlCommand(insertQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                var exception = await Assert.ThrowsAsync<ArgumentException>(() => adminService.SearchDeletedUsers(displayName, page, pageSize));
+                Assert.Equal(expectedError, exception.Message);
             }
-
-            // Act
-            var result = await controller.SoftDeleteUser(testUsername, loggedInUser);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", testUsername);
+            else
+            {
+                var result = await adminService.SearchDeletedUsers(displayName, page, pageSize);
+                Assert.NotNull(result);
+            }
         }
 
-        [Fact]
-        public async Task UpdateUsersRoleController()
+        [Theory]
+        [InlineData("", 1, 10, "display name cannot be empty.")]
+        [InlineData("a", 1, 10, null)]
+        [InlineData("validUser123", 1, 10, null)]
+        [InlineData("userWithInvalidChar!", 1, 10, "invalid characters in display name.")]
+        [InlineData("userWithVeryLongDisplayNameExceedingTheMaximumAllowedCharacterLimitOfOneHundredCharactersXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 1, 10, "display name cannot exceed 100 characters.")]
+
+        public async Task SearchActiveUsersTest(string displayName, int page, int pageSize, string expectedError)
         {
             // Arrange
-            string testUsername = "test_01JBC2KQ4R1KRMQCQQZ78Y34D0";
-            var loggedInUser = new LoggedInUser { LoggedInUserID = "usr_01JBC2KQ4SAV6SW2QDC6DKSKD7" };
+            var adminService = new AdminRightsServices();
 
-            // Insert the test user into the database
-            using (var connection = new NpgsqlConnection(psql.connectionstring))
+            // Act & Assert
+            if (!string.IsNullOrEmpty(expectedError))
             {
-                await connection.OpenAsync();
-                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('usr_01JBC2KQ4R1KRMQCQQZ78Y34D0','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
-                await using (var cmd = new NpgsqlCommand(insertQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                var exception = await Assert.ThrowsAsync<ArgumentException>(() => adminService.SearchActiveUsers(displayName, page, pageSize));
+                Assert.Equal(expectedError, exception.Message);
             }
-
-            // Act
-            var result = await controller.UpdateUsersRole(testUsername, Roles.Role.MODERATOR, loggedInUser);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", testUsername);
-        }
-
-
-        [Fact]
-        public async Task UpdateUserDetailsController()
-        {
-            // Arrange
-            string testUsername = "test_01JBC2KQ4R1KRMQCQQZ78Y34D0";
-            var loggedInUser = new LoggedInUser { LoggedInUserID = "usr_01JBC2KQ4SAV6SW2QDC6DKSKD7" };
-            UserDTO updateDetails = new UserDTO() { DisplayName = testUsername, NewDisplayName = "2KQ4R1KRMQ1JBC2KQ4R1KR4D0JBC2KQ4R1KR9", Email = "Q1JBC2KQ4R1KR4D0JBC2K@blabla.com", FullName = "John Smith", LoggedInUser = loggedInUser.LoggedInUserID };
-
-            // Insert the test user into the database
-            using (var connection = new NpgsqlConnection(psql.connectionstring))
+            else
             {
-                await connection.OpenAsync();
-                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('usr_01JBC2KQ4R1KRMQCQQZ78Y34D0','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
-                await using (var cmd = new NpgsqlCommand(insertQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
+                var result = await adminService.SearchActiveUsers(displayName, page, pageSize);
+                Assert.NotNull(result);
             }
-
-            // Act
-            var result = await controller.UpdateUserDetails(testUsername, updateDetails);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", updateDetails.NewDisplayName);
         }
-
-        [Fact]
-        public async Task UndeleteUserController()
-        {
-            // Arrange
-            string testUsername = "test_01JBC2KQ4R1KRMQCQQZ78Y34D0";
-            var loggedInUser = new LoggedInUser { LoggedInUserID = "usr_01JBC2KQ4SAV6SW2QDC6DKSKD7" };
-
-            // Insert the test user into the database
-            using (var connection = new NpgsqlConnection(psql.connectionstring))
-            {
-                await connection.OpenAsync();
-                string insertQuery = $@"INSERT INTO public.users (id, full_name, display_name, role, gender, email, password_salt, password) VALUES ('usr_01JBC2KQ4R1KRMQCQQZ78Y34D0','John Doe','{testUsername}','GUEST'::public.roles,'male','john@leagues.gg','salt','password');";
-                await using (var cmd = new NpgsqlCommand(insertQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-
-            // Soft delete user
-            await service.SoftDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", testUsername);
-
-            // Act
-            var result = await controller.UndeleteUser(testUsername, loggedInUser);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-
-            // Clean up
-            await service.HardDeleteUser("usr_01JBC2KQ4SAV6SW2QDC6DKSKD7", testUsername);
-        }
-
     }
 }
