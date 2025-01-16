@@ -116,7 +116,7 @@ namespace Tests
         public async Task GetCustomGraphUsers()
         {
             GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetCustomGraphData("26-08-2024", "11-01-2025", "users");
+            GraphDTO[] result = await service.GetCustomGraphData("26/08/2024", "11/01/2025", "users");
 
             Assert.NotEmpty(result);
         }
@@ -125,7 +125,7 @@ namespace Tests
         public async Task GetCustomGraphTeams()
         {
             GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetCustomGraphData("26-08-2024", "11-01-2025", "teams");
+            GraphDTO[] result = await service.GetCustomGraphData("26/08/2024", "11/01/2025", "teams");
 
             Assert.NotEmpty(result);
         }
@@ -134,7 +134,7 @@ namespace Tests
         public async Task GetCustomGraphOrganisations()
         {
             GraphService service = new GraphService();
-            GraphDTO[] result = await service.GetCustomGraphData("26-08-2024", "11-01-2025", "organisations");
+            GraphDTO[] result = await service.GetCustomGraphData("26/08/2024", "11/01/2025", "organisations");
 
             Assert.NotEmpty(result);
         }
