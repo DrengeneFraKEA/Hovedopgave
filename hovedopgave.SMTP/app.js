@@ -33,8 +33,8 @@ app.post("/send-email", async (req, res) => {
     };
 
     try {
-        const info = await transporterMailpit.sendMail(mailOptionsMailpit);
-        //const info = await transporterGmail.sendMail(mailOptions)
+        //const info = await transporterMailpit.sendMail(mailOptionsMailpit);
+        const info = await transporterGmail.sendMail(mailOptions)
         console.log("Email sent:", info.messageId);
         res.status(200).send({ message: "Email sent successfully" });
     } catch (error) {
