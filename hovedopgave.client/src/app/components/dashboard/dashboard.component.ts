@@ -75,16 +75,33 @@ export class DashboardComponent implements OnInit {
 
   CustomRefreshGraphData()
   {
-    const params = new HttpParams().append('fromDate', `${this.fromDate}`).append('toDate', `${this.toDate}`).append('type', `${this.selectedView}`);
-    this.selectedFilter = 'custom';
-    this.http.get<graphData[]>(`https://localhost:7213/graph/custom`, { params }).subscribe((data) => {
-      this.data = data;
-      this.DrawLineChart();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
+
+    const params = new HttpParams()
+      .set('fromDate', `${this.fromDate}`)
+      .set('toDate', `${this.toDate}`)
+      .set('type', `${this.selectedView}`);
+
+    this.selectedFilter = 'custom';
+  
+    this.http.get<graphData[]>('https://localhost:7213/graph/custom', { headers, params })
+      .subscribe((data) => {
+        this.data = data;
+        this.DrawLineChart();
+      });
   }
 
   RefreshGraphData() {
-      this.http.get<graphData[]>(`https://localhost:7213/graph/${this.selectedFilter}/${this.selectedView}`).subscribe((data) => {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+    };
+    this.http.get<graphData[]>(`https://localhost:7213/graph/${this.selectedFilter}/${this.selectedView}`, httpOptions).subscribe((data) => {
 
         this.data = data;
         this.DrawLineChart();

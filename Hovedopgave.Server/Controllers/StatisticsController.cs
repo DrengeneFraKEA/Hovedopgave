@@ -5,6 +5,7 @@ using Hovedopgave.Server.Database;
 using Hovedopgave.Server.Services;
 using Hovedopgave.Server.DTO;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [EnableCors("FrontEndUI")]
@@ -18,6 +19,7 @@ public class StatisticsController : ControllerBase
         _statisticsService = statisticsService;
     }
 
+    [Authorize]
     [HttpGet("totals/overview")]
     public async Task<IActionResult> GetOverviewTotals()
     {

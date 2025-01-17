@@ -1,5 +1,6 @@
 ﻿using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ public class GraphController : ControllerBase
         _graphService = graphService;
     }
 
+    [Authorize]
     [HttpGet("custom")]
     public async Task<GraphDTO[]> GetCustomUsers(string fromDate, string toDate, string type)
     {
@@ -29,7 +31,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
-
+    [Authorize]
     [HttpGet("daily/users")]
     public async Task<GraphDTO[]> GetDailyUsers() 
     {
@@ -45,6 +47,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("weekly/users")]
     public async Task<GraphDTO[]> GetWeeklyUsers()
     {
@@ -60,6 +63,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("monthly/users")]
     public async Task<GraphDTO[]> GetMonthlyUsers()
     {
@@ -75,6 +79,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("daily/teams")]
     public async Task<GraphDTO[]> GetDailyTeams()
     {
@@ -90,6 +95,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("weekly/teams")]
     public async Task<GraphDTO[]> GetWeeklyTeams()
     {
@@ -105,6 +111,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("monthly/teams")]
     public async Task<GraphDTO[]> GetMonthlyTeams()
     {
@@ -120,6 +127,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("daily/organisations")]
     public async Task<GraphDTO[]> GetDailyOrganisations()
     {
@@ -135,6 +143,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("weekly/organisations")]
     public async Task<GraphDTO[]> GetWeeklyOrganisations()
     {
@@ -150,6 +159,7 @@ public class GraphController : ControllerBase
         return null;
     }
 
+    [Authorize]
     [HttpGet("monthly/organisations")]
     public async Task<GraphDTO[]> GetMonthlyOrganisations()
     {

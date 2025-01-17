@@ -1,6 +1,7 @@
 ﻿using Hovedopgave.Server.DTO;
 using Hovedopgave.Server.Models;
 using Hovedopgave.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,7 @@ namespace Hovedopgave.Server.Controllers
             adminRightsServices = new AdminRightsServices();
         }
 
-        [HttpGet("hello")]
-        public IActionResult HelloWorld()
-        {
-            return Ok("Hello, World!");
-        }
-
+        [Authorize]
         [HttpGet("admins")]
         public async Task<IActionResult> GetAdmins()
         {
@@ -40,6 +36,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("search-users/{displayName}")]
         public async Task<IActionResult> SearchActiveUsers(string displayName, [FromQuery] int page, [FromQuery] int pageSize)
         {
@@ -60,6 +57,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("search-deleted-users")]
         public async Task<IActionResult> GetDeletedUsers([FromQuery] string? displayName, [FromQuery] int page, [FromQuery] int pageSize)
         {
@@ -80,6 +78,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("soft-delete/{displayName}")]
         public async Task<IActionResult> SoftDeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser) 
         {
@@ -102,7 +101,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut("update-role/{role}/name/{displayName}")]
         public async Task<IActionResult> UpdateUsersRole(string displayName, Roles.Role role, [FromBody] LoggedInUser loggedInUser)
         {
@@ -126,7 +125,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut("update-user/{displayName}")]
         public async Task<IActionResult> UpdateUserDetails(string displayName, [FromBody] UserDTO user)
         {
@@ -149,6 +148,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("reset-password/{displayName}")]
         public async Task<IActionResult> ResetUserPassword(string displayName)
         {
@@ -171,6 +171,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("hard-delete/{displayName}")]
         public async Task<IActionResult> HardDeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser)
         {
@@ -193,6 +194,7 @@ namespace Hovedopgave.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("undelete-user/{displayName}")]
         public async Task<IActionResult> UndeleteUser(string displayName, [FromBody] LoggedInUser loggedInUser)
         {
@@ -214,7 +216,5 @@ namespace Hovedopgave.Server.Controllers
                 return StatusCode(500, new { message = "An error occurred while undeleting the user.", details = ex.Message });
             }
         }
-
-
     }
 }
