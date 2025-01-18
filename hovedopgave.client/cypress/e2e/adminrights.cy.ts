@@ -19,15 +19,26 @@ describe('Dashboard and Sidebar Functionality', () => {
     const username = 'Faker';
     const password = '1234';
 
-    // Mock the login response
+    cy.get('input[id="username"]').type(username);
+    cy.get('input[id="password"]').type(password);
+
+    // Click login and go to /main
+    cy.get('button[id="loginbutton"]').click();
+
+    cy.request('POST', 'https://localhost:7213/login', { username: username, password: password }).then(({ body }) => {
+      expect(body.user_id).eq('usr_01JBC2KQ4SAV6SW2QDC6DKSKD7'); // User logged in correctly?
+      expect(body.token).to.not.equal(""); // Is token legitimate?
+    });
+    
+    /* Mock the login response
     cy.intercept('POST', 'https://localhost:7213/login', {
       statusCode: 200,
       body: { token: 'mockToken' },
     }).as('loginRequest');
-
-    cy.get('input[id="username"]').type(username);
-    cy.get('input[id="password"]').type(password);
-    cy.get('button[id="loginbutton"]').click();
+    */
+    // cy.get('input[id="username"]').type(username);
+    //  cy.get('input[id="password"]').type(password);
+    //cy.get('button[id="loginbutton"]').click();
   })
 
   
@@ -42,26 +53,26 @@ describe('Dashboard and Sidebar Functionality', () => {
   });
 
   it('should navigate to the Users statistics view', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('a').contains('Users').click({ force: true }); // Navigate to Users
+    cy.get('.sidebar').trigger('mouseover'); 
+    cy.get('a').contains('Users').click({ force: true }); //  Users
     cy.get('canvas#chart-container').should('exist'); // Assert chart exists
   });
 
   it('should navigate to the Teams statistics view', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('a').contains('Teams').click({ force: true }); // Navigate to Teams
+    cy.get('.sidebar').trigger('mouseover'); 
+    cy.get('a').contains('Teams').click({ force: true }); // Teams
     cy.get('canvas#chart-container').should('exist'); // Assert chart exists
   });
 
   it('should navigate to the Organizations statistics view', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('a').contains('Organizations').click({ force: true }); // Navigate to Organizations
+    cy.get('.sidebar').trigger('mouseover'); 
+    cy.get('a').contains('Organizations').click({ force: true }); //  Organizations
     cy.get('canvas#chart-container').should('exist'); // Assert chart exists
   });
 
   it('should filter by daily, weekly, and monthly views', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('#nav-overview').click({ force: true }); // Navigate to Overview
+    cy.get('.sidebar').trigger('mouseover'); // 
+    cy.get('#nav-overview').click({ force: true }); // Overview
 
     // Daily filter
     cy.get('button').contains('Daily').click();
@@ -77,31 +88,56 @@ describe('Dashboard and Sidebar Functionality', () => {
   });
 
   it('should navigate to the Admin Rights view and search for a user', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('#nav-adminrights').click({ force: true }); // Navigate to Admin Rights
+    // Hover over sidebar and go to Admin Rights
+    cy.get('.sidebar').trigger('mouseover');
+    cy.get('#nav-adminrights').click({ force: true });
 
-    // Search for a user
-    cy.get('input#search-users-input').type('Faker'); // Enter a search query
-    cy.get('.user-display-name').contains('Faker').should('exist'); // Assert user is found
+    //https://docs.cypress.io/api/commands/intercept "Spy and stub network requests/responses"
+    // Intercept the GET request that runs when typing "Faker"
+    cy.intercept('GET', '**/adminrights/search-users/Faker*').as('searchUsersFaker');
+
+    // Type "Faker" into the search box
+    cy.get('#search-users-input').type('Faker');
+
+    // Wait for request before assert
+    cy.wait('@searchUsersFaker');
+
+    // 4) Assert "Faker" shows up
+    cy.contains('span.flex-1', 'Faker', { timeout: 10000 }).should('be.visible');
   });
+
+
 
   it('should open the edit modal for a user in Admin Rights view', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('#nav-adminrights').click({ force: true }); // Navigate to Admin Rights
+    // Hover over sidebar and go to Admin Rights
+    cy.get('.sidebar').trigger('mouseover');
+    cy.get('#nav-adminrights').click({ force: true });
 
-    // Search and open the edit modal
-    cy.get('input#search-users-input').type('AdminUser'); // Search for an admin
-    cy.get('button').contains('Edit').click(); // Click the Edit button
-    cy.get('#admin-modal').should('have.class', 'active'); // Assert modal is active
+    //https://docs.cypress.io/api/commands/intercept "Spy and stub network requests/responses"
+    cy.intercept('GET', '**/adminrights/search-users/Faker*').as('searchAdminUser');
+
+    cy.get('#search-users-input').type('Faker');
+
+    // Wait for request
+    cy.wait('@searchAdminUser');
+
+    // click the Edit button
+    cy.contains('span.flex-1', 'Faker', { timeout: 10000 })
+      .parent() // the .flex items-center row
+      .find('button')
+      .contains('Edit')
+      .click();
+
+    //  Check the modal is visible.
+    cy.get('#admin-modal').should('have.class', 'modal-open');
   });
-
 
 
   it('should apply a custom date range filter', () => {
-    cy.get('.sidebar').trigger('mouseover'); // Hover over sidebar
-    cy.get('#nav-overview').click({ force: true }); // Navigate to Overview
+    cy.get('.sidebar').trigger('mouseover'); 
+    cy.get('#nav-overview').click({ force: true }); 
 
-    // Set a custom date range
+    // Set custom date range
     cy.get('#fromDate').type('2023-01-01');
     cy.get('#toDate').type('2023-12-31');
     cy.get('button').contains('Custom').click();
